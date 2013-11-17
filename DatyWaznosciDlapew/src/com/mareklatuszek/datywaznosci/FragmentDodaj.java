@@ -1,6 +1,7 @@
 package com.mareklatuszek.datywaznosci;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -25,6 +26,7 @@ import android.widget.Spinner;
 
 import com.actionbarsherlock.app.SherlockFragment;
 import com.google.zxing.WriterException;
+import com.mareklatuszek.datywznosci.utilities.CommonUtilities;
 import com.mareklatuszek.datywznosci.utilities.Contents;
 import com.mareklatuszek.datywznosci.utilities.FinalVariables;
 import com.mareklatuszek.datywznosci.utilities.QRCodeEncoder;
@@ -38,6 +40,7 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 	
 	AdapterAddPowiadomienia przypAdapter;
 	AdapterDB dbAdapter;
+	CommonUtilities utilities = new CommonUtilities();
 	
 	ImageView barcodeImage;
 	Button dataOtwButton, terminWazButton, zapiszButton;
@@ -134,14 +137,14 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		
 		String nazwa = nazwaTextBox.getText().toString();
 		String dataOtwarcia = dataOtwButton.getText().toString();
-		String okresWaznosci = getPeriodFromBoxAndSpinner(okresWazTextBox, okresWazSpinner);
+		String okresWaznosci = getPeriodFromBoxAndSpinner(okresWazTextBox, okresWazSpinner);//TODO
 		String terminWaznosci = getTerminWaznosci();
 		String kategoria = getKategoria();
 		String kod = code;
 		String typKodu = codeFormat;
 		String obrazek = ""; //TODO
 		String opis = ""; //TODO
-		ArrayList<HashMap<String, String>> przypomnienia = przypAdapter.getAdapterData();
+		ArrayList<HashMap<String, String>> przypomnienia = preparePrzypomnienia(przypAdapter.getAdapterData(), terminWaznosci);;
 		
 		product.setNazwa(nazwa);
 		product.setDataOtwarcia(dataOtwarcia);
@@ -155,6 +158,33 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		product.setPrzypomnienia(przypomnienia);
 		
 		return product;
+	}
+	
+	private ArrayList<HashMap<String, String>> preparePrzypomnienia(ArrayList<HashMap<String, String>> przypomnienia, String terminWaznosci) {
+		
+		for (int i = 0; i < przypomnienia.size(); i++) {
+			HashMap<String, String> przypomnienie = przypomnienia.get(i);
+			String boxVal = przypomnienie.get(PRZYP_TEXT_BOX);
+			String spinnerVal = przypomnienie.get(PRZYP_SPINNER);
+			String notifHour = przypomnienie.get(PRZYP_HOUR);
+			long date = 0;
+			
+			if(!boxVal.equals(""))
+			{
+				try {
+					date = utilities.parsePrzypmnienieToDate(boxVal, spinnerVal, terminWaznosci, notifHour);
+				} catch (ParseException e) {
+					Log.i("preparePrzyp", "parese " + i + "error");
+					date = 0;
+				}
+			}
+			
+			String przypDate = String.valueOf(date);
+			przypomnienie.put(PRZYP_DATE, przypDate);		
+		}
+		
+		
+		return przypomnienia;
 	}
 	
 	private void saveData() {

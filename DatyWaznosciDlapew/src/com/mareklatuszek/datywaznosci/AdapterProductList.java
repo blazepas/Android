@@ -5,6 +5,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import com.mareklatuszek.datywznosci.utilities.CommonUtilities;
+
 import android.app.Activity;
 import android.content.Context;
 import android.support.v4.app.FragmentManager;
@@ -21,6 +23,7 @@ public class AdapterProductList extends BaseAdapter {
 	private LayoutInflater inflater=null;
 	private Activity mActivity;
 	private ArrayList<Product> products;
+	private CommonUtilities utilities = new CommonUtilities();
 	
 	TextView nazwaTxtList, dataOtwTxtList, okresWazTxtList, terminWazTxtList;	
 	ProgressBar pozostaloPrgsList;
@@ -63,7 +66,7 @@ public class AdapterProductList extends BaseAdapter {
         String dataOtw = product.getDataOtwarcia();
         String okresWaz = product.getOkresWaznosci();
         String terminWaz = product.getTerminWaznosci();
-        int progress = getProgress(dataOtw, terminWaz);
+        int progress = utilities.getProgress(dataOtw, terminWaz);
         
         nazwaTxtList.setText(nazwa);
         dataOtwTxtList.setText(dataOtw);
@@ -72,40 +75,6 @@ public class AdapterProductList extends BaseAdapter {
         pozostaloPrgsList.setProgress(progress);
         
 		return vi;
-	}
-	
-	private int getProgress(String dataOtw, String terminWaz) {
-		
-		int progress = 100;
-		
-		try {
-			
-			double start = parseDate(dataOtw);
-			double end = parseDate(terminWaz);
-			double current = (new Date()).getTime();
-			
-			double x = end - start;
-			double y = end - current;
-			double z = y / x;
-			double pr = (((end - current) / (end - start))) * 100;
-			
-			progress = (int) pr;
-			
-		} catch (ParseException e) {
-			return 100;
-		}
-		
-		
-		return progress;		
-	}
-	
-	private long parseDate(String dateToParse) throws ParseException {
-		String toParse = dateToParse;
-		SimpleDateFormat formatter = new SimpleDateFormat("d/M/yyyy");
-		Date date = formatter.parse(toParse);
-		long millis = date.getTime();
-		
-		return millis;
-	}
+	}	
 
 }

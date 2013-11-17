@@ -10,6 +10,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 public class AdapterDB implements FinalVariables {
 	private SQLiteDatabase db;
@@ -52,13 +53,13 @@ public class AdapterDB implements FinalVariables {
 		
 	    //TODO wyszukuje w bazie danego produktu
 		//ustalic co jest id
-		String where = ""; //TODO w zalerznoœci co jest id
+		String where = ""; //TODO w zaleznoœci co jest id
 	
 	    return db.update(DB_PRODUCT_TABLE, updateProductVal, where, null) > 0;
 	}
 	
 	public boolean deleteProduct(Product product){
-	    String where = ""; //TODO w zalerznoœci co jest id
+	    String where = ""; //TODO w zaleznoœci co jest id
 	    return db.delete(DB_PRODUCT_TABLE, where, null) > 0;
 	}
 	
@@ -83,7 +84,7 @@ public class AdapterDB implements FinalVariables {
 		int columnCodeFormat =  cursor.getColumnIndex(DB_CODE_FORMAT);
 		int columnImage =  cursor.getColumnIndex(DB_OBRAZEK);
 		int columnOpis =  cursor.getColumnIndex(DB_OPIS);
-		//TODO			int columnPrzypomnienia =  cursor.getColumnIndex();
+		int columnPrzypomnienia =  cursor.getColumnIndex(DB_PRZYPOMNIENIA);
 		
 		while(cursor.moveToNext()) {
 			Product product = new Product();
@@ -97,7 +98,7 @@ public class AdapterDB implements FinalVariables {
 			String codeFormat = cursor.getString(columnCodeFormat);
 			String image = cursor.getString(columnImage);
 			String opis = cursor.getString(columnOpis);
-			//TODO			ArrayList<HashMap<String, String>> przypomnienia = cursor.getString(cursor.getColumnIndex());
+			String przypomnienia = cursor.getString(columnPrzypomnienia);
 	        
 			product.setNazwa(nazwa);
 			product.setDataOtwarcia(dataOtwarcia);
@@ -108,7 +109,7 @@ public class AdapterDB implements FinalVariables {
 			product.setCodeFormat(codeFormat);
 			product.setImage(image);
 			product.setOpis(opis);
-			//TODO			product.setPrzypomnienia(przypomnienia);
+			product.setPrzypomnieniaFromDB((przypomnienia));
 			
 			productList.add(product);
 		}
@@ -154,7 +155,7 @@ public class AdapterDB implements FinalVariables {
 			String codeFormat = cursor.getString(cursor.getColumnIndex(DB_CODE_FORMAT));
 			String image = cursor.getString(cursor.getColumnIndex(DB_OBRAZEK));
 			String opis = cursor.getString(cursor.getColumnIndex(DB_OPIS));
-			//TODO			ArrayList<HashMap<String, String>> przypomnienia = cursor.getString(cursor.getColumnIndex());
+			String przypomnienia = cursor.getString(cursor.getColumnIndex(DB_PRZYPOMNIENIA));
 	        
 			product.setNazwa(nazwa);
 			product.setDataOtwarcia(dataOtwarcia);
@@ -165,7 +166,7 @@ public class AdapterDB implements FinalVariables {
 			product.setCodeFormat(codeFormat);
 			product.setImage(image);
 			product.setOpis(opis);
-			//TODO			product.setPrzypomnienia(przypomnienia);
+			product.setPrzypomnieniaFromDB(przypomnienia);
 			
 	    }
 	    
@@ -185,7 +186,9 @@ public class AdapterDB implements FinalVariables {
 		String codeFormat = product.getCodeFormat();
 		String image = product.getImage();
 		String opis = product.getOpis();
-		ArrayList<HashMap<String, String>> przypomnienia = product.getPrzypomnienia();
+		String przypomnienia = product.getPrzypomnieniaToDB();
+		
+		Log.i("DBPrzypomnienia", przypomnienia);
 	    
 		newProductVal.put(DB_NAZWA, nazwa);
 		newProductVal.put(DB_DATA_OTWARCIA, dataOtwarcia);
@@ -196,7 +199,7 @@ public class AdapterDB implements FinalVariables {
 		newProductVal.put(DB_CODE_FORMAT, codeFormat);
 		newProductVal.put(DB_OBRAZEK, image);
 		newProductVal.put(DB_OPIS, opis);
-		//TODO	newProductVal.put(DB_NAZWA, przypomnienia);
+		newProductVal.put(DB_PRZYPOMNIENIA, przypomnienia);
 		
 		return newProductVal;
 	}

@@ -36,7 +36,8 @@ public interface FinalVariables {
             DB_CODE + " " + CELL_DEFAULT + ", " +
             DB_CODE_FORMAT + " " + CELL_DEFAULT + ", " +
             DB_OBRAZEK + " " + CELL_DEFAULT + ", " +
-            DB_OPIS + " " + CELL_DEFAULT + 
+            DB_OPIS + " " + CELL_DEFAULT + ", " +
+            DB_PRZYPOMNIENIA + " " + CELL_DEFAULT +
             ");";
 	
 	public static final String DB_CREATE_CATEGORIES_TABLE = "CREATE TABLE " + DB_CATEGORIES_TABLE + "( " +
@@ -46,5 +47,7 @@ public interface FinalVariables {
 	
 	public static final String PRZYP_TEXT_BOX = "przypTextBox";
 	public static final String PRZYP_SPINNER = "przypSpinner";
+	public static final String PRZYP_DATE = "przypDate";
+	public static final String PRZYP_HOUR = "przypHour";
 
 }

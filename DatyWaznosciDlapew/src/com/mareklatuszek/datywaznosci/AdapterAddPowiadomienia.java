@@ -94,6 +94,7 @@ public class AdapterAddPowiadomienia extends BaseAdapter implements FinalVariabl
 				EditText textBox = (EditText) v;
 				String textBoxTxt = textBox.getText().toString();
 				editRowAdapterData(position, PRZYP_TEXT_BOX, textBoxTxt);
+				//TODO
 				return false;
 			}
 		});
@@ -104,6 +105,7 @@ public class AdapterAddPowiadomienia extends BaseAdapter implements FinalVariabl
 			public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 				String spinnerPosition = String.valueOf(arg2);
 				editRowAdapterData(position, PRZYP_SPINNER, spinnerPosition);
+				//TODO
 			}
 			
 			@Override
@@ -126,7 +128,7 @@ public class AdapterAddPowiadomienia extends BaseAdapter implements FinalVariabl
 		HashMap<String, String> rowData;
 		
 		if (dataSize < (position + 1)) {			
-			rowData = addRowAdapterData();		
+			rowData = addEmptyRowAdapterData();		
 		} else {
 			rowData = adapterData.get(position); 
 		}
@@ -149,6 +151,8 @@ public class AdapterAddPowiadomienia extends BaseAdapter implements FinalVariabl
 		
 		rowData.put(PRZYP_TEXT_BOX, "");
 		rowData.put(PRZYP_SPINNER, "0");
+		rowData.put(PRZYP_DATE, "0");
+		rowData.put(PRZYP_HOUR, ""); // TODO ogarn¹æ jak b¹d¹ godz powiadomienia
 		
 		allData.add(rowData);
 		
@@ -161,13 +165,15 @@ public class AdapterAddPowiadomienia extends BaseAdapter implements FinalVariabl
     	fragmentDodaj.setRowPrzypomnienia(newCount);
 	}
 		
-	private HashMap<String, String> addRowAdapterData() {
+	private HashMap<String, String> addEmptyRowAdapterData() {
 		HashMap<String, String> rowData = new HashMap<String, String>();
 		
 		rowData.put(PRZYP_TEXT_BOX, "");
 		rowData.put(PRZYP_SPINNER, "0");
-		
+		rowData.put(PRZYP_DATE, "0");
+		rowData.put(PRZYP_HOUR, ""); // TODO ogarn¹æ jak b¹d¹ godz powiadomienia
 		adapterData.add(rowData);
+		
 		return rowData;	
 	}
 	

@@ -88,17 +88,23 @@ public class Product implements FinalVariables {
 				JSONObject jObj = new JSONObject();
 				HashMap<String, String> przypomnienie = przypomnienia.get(i);
 				
-				String number = przypomnienie.get(PRZYP_TEXT_BOX);
-				String date = przypomnienie.get(PRZYP_SPINNER);
+				Log.i("przyp to json", przypomnienie+"");
 				
-				jObj.put(PRZYP_TEXT_BOX, number);
-				jObj.put(PRZYP_SPINNER, date);
+				String textBox = przypomnienie.get(PRZYP_TEXT_BOX);
+				String spinner = przypomnienie.get(PRZYP_SPINNER);
+				String date = przypomnienie.get(PRZYP_DATE);
+				String hour = przypomnienie.get(PRZYP_HOUR);
+				
+				jObj.put(PRZYP_TEXT_BOX, textBox);
+				jObj.put(PRZYP_SPINNER, spinner);
+				jObj.put(PRZYP_DATE, date);
+				jObj.put(PRZYP_HOUR, hour);
 				
 				jArr.put(jObj);
 			}
 		
 		} catch (JSONException e) {
-			Log.i("przyp to json", "save err");
+			Log.i("przyp to json", "get err");
 		} finally {
 			przypomnieniaJson = jArr.toString();
 		}
@@ -184,18 +190,28 @@ public class Product implements FinalVariables {
 			
 			for (int i = 0; i < jArr.length(); i++) {
 				JSONObject jObj = jArr.getJSONObject(i);
+
 				HashMap<String, String> przypomnienie = new HashMap<String, String>();
 				
-				String number = jObj.getString(PRZYP_TEXT_BOX);
-				String value = jObj.getString(PRZYP_SPINNER);
+				String textBox = jObj.getString(PRZYP_TEXT_BOX);
+				String spinner = jObj.getString(PRZYP_SPINNER);
+				String date = jObj.getString(PRZYP_DATE);
+				String hour = jObj.getString(PRZYP_HOUR);
 				
-				przypomnienie.put(PRZYP_TEXT_BOX, number);
-				przypomnienie.put(PRZYP_SPINNER, value);
+				przypomnienie.put(PRZYP_TEXT_BOX, textBox);
+				przypomnienie.put(PRZYP_SPINNER, spinner);
+				przypomnienie.put(PRZYP_DATE, date);
+				przypomnienie.put(PRZYP_HOUR, hour);
+				
+				przypomnienia.add(przypomnienie);
 			}
 			
+			Log.i("json to przyp", przypomnienia+"");
+			
 		} catch (JSONException e) {
-			Log.i("przyp to json", "save err");
+			Log.i("json to przyp", "set err");
 		}
+		
 		
 		this.przypomnienia = przypomnienia;
 	}
