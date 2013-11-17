@@ -69,12 +69,8 @@ public class AdapterAddPowiadomienia extends BaseAdapter implements FinalVariabl
 		View vi=convertView;
         vi = inflater.inflate(R.layout.listview_add_powiadomienia, null);
         
-        Log.i("adapterPos", position+"");
-        Log.i("adapterDataSiz", adapterData.size()+"");
-        
         final int count = getCount();
-       
- 
+  
         przypTextBox = (EditText) vi.findViewById(R.id.przypTextBox);
         przypSpinner = (Spinner) vi.findViewById(R.id.przypSpinner);
         przypButton = (Button) vi.findViewById(R.id.przypButton);

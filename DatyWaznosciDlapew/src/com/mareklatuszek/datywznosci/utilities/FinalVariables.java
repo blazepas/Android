@@ -20,6 +20,7 @@ public interface FinalVariables {
 	public static final String DB_CODE_FORMAT = "codeFormat";
 	public static final String DB_OBRAZEK = "obrazek";
 	public static final String DB_OPIS = "opis";
+	public static final String DB_PRZYPOMNIENIA = "przypomnienia";
 	
 	public static final String DB_CAT_CATEGORY = "cat_category";
 	

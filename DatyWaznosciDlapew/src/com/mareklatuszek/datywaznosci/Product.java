@@ -3,6 +3,12 @@ package com.mareklatuszek.datywaznosci;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import android.util.Log;
+
 import com.mareklatuszek.datywznosci.utilities.FinalVariables;
 
 public class Product implements FinalVariables {
@@ -69,6 +75,35 @@ public class Product implements FinalVariables {
 	
 	public ArrayList<HashMap<String, String>> getPrzypomnienia() {
 		return przypomnienia;
+	}
+	
+	public String getPrzypomnieniaToDB() {
+		
+		JSONArray jArr = new JSONArray();
+		String przypomnieniaJson = "";
+		
+		try {
+			
+			for (int i = 0; i < przypomnienia.size(); i++) {
+				JSONObject jObj = new JSONObject();
+				HashMap<String, String> przypomnienie = przypomnienia.get(i);
+				
+				String number = przypomnienie.get(PRZYP_TEXT_BOX);
+				String date = przypomnienie.get(PRZYP_SPINNER);
+				
+				jObj.put(PRZYP_TEXT_BOX, number);
+				jObj.put(PRZYP_SPINNER, date);
+				
+				jArr.put(jObj);
+			}
+		
+		} catch (JSONException e) {
+			Log.i("przyp to json", "save err");
+		} finally {
+			przypomnieniaJson = jArr.toString();
+		}
+		
+		return przypomnieniaJson;
 	}
 		
 //	public String getGrupa(int rodzajGrupy) {
@@ -138,6 +173,30 @@ public class Product implements FinalVariables {
 	}
 	
 	public void setPrzypomnienia(ArrayList<HashMap<String, String>> przypomnienia) {
+		this.przypomnienia = przypomnienia;
+	}
+	
+	public void setPrzypomnieniaFromDB(String przypomnieniaJson) {
+		ArrayList<HashMap<String, String>> przypomnienia = new ArrayList<HashMap<String,String>>();
+		
+		try {
+			JSONArray jArr = new JSONArray(przypomnieniaJson);
+			
+			for (int i = 0; i < jArr.length(); i++) {
+				JSONObject jObj = jArr.getJSONObject(i);
+				HashMap<String, String> przypomnienie = new HashMap<String, String>();
+				
+				String number = jObj.getString(PRZYP_TEXT_BOX);
+				String value = jObj.getString(PRZYP_SPINNER);
+				
+				przypomnienie.put(PRZYP_TEXT_BOX, number);
+				przypomnienie.put(PRZYP_SPINNER, value);
+			}
+			
+		} catch (JSONException e) {
+			Log.i("przyp to json", "save err");
+		}
+		
 		this.przypomnienia = przypomnienia;
 	}
 

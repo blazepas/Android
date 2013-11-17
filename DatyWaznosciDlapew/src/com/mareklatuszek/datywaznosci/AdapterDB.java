@@ -1,6 +1,7 @@
 package com.mareklatuszek.datywaznosci;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import com.mareklatuszek.datywznosci.utilities.FinalVariables;
 
@@ -34,7 +35,7 @@ public class AdapterDB implements FinalVariables {
 	}
 	
 	public boolean insertProduct(Product product) {
-	    ContentValues newProductVal = generateContentValues(product);
+	    ContentValues newProductVal = generateProductContentVal(product);
 	    
 	    return db.insert(DB_PRODUCT_TABLE, null, newProductVal) > 0;
 	}
@@ -47,7 +48,7 @@ public class AdapterDB implements FinalVariables {
 	}
 	
 	public boolean updateProduct(Product product) {
-		ContentValues updateProductVal = generateContentValues(product);
+		ContentValues updateProductVal = generateProductContentVal(product);
 		
 	    //TODO wyszukuje w bazie danego produktu
 		//ustalic co jest id
@@ -172,7 +173,7 @@ public class AdapterDB implements FinalVariables {
 	    return product;
 	}
 	
-	private ContentValues generateContentValues(Product product) {
+	private ContentValues generateProductContentVal(Product product) {
 		ContentValues newProductVal = new ContentValues();
 		
 		String nazwa = product.getNazwa();
@@ -184,7 +185,7 @@ public class AdapterDB implements FinalVariables {
 		String codeFormat = product.getCodeFormat();
 		String image = product.getImage();
 		String opis = product.getOpis();
-		//TODO		ArrayList<HashMap<String, String>> przypomnienia = product.getPrzypomnienia();
+		ArrayList<HashMap<String, String>> przypomnienia = product.getPrzypomnienia();
 	    
 		newProductVal.put(DB_NAZWA, nazwa);
 		newProductVal.put(DB_DATA_OTWARCIA, dataOtwarcia);

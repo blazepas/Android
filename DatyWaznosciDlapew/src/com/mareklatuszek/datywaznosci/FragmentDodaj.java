@@ -177,7 +177,7 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 				//TODO zrobic okienko jesli niepowodzenie
 				terminWazIsSet = false;
 				progressDialog.dismiss();
-				((MainActivity) getActivity()).selectFragment(2);
+				((MainActivity) getActivity()).selectFragment(2); // prze³¹cza a ekran listy produktów
 			}
 		}.execute();
 	}
