@@ -1,17 +1,14 @@
 package com.mareklatuszek.datywaznosci;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import com.mareklatuszek.datywznosci.utilities.FinalVariables;
 
 import android.app.Activity;
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
 public class AdapterDB implements FinalVariables {
 	private SQLiteDatabase db;
