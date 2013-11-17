@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="array_date">
+        <item name="dzien">Dzień</item>
+        <item name ="miesiac">Miesiąc</item>
+        <item name ="rok">Rok</item>
+    </string-array>
+    
+    <string-array name="array_temp_kategorie">
+        <item>Nabiał</item>
+        <item>Wędliny</item>
+        <item>Owoce</item>
+        <item>Ważywa</item>
+        <item>Napoje</item>
+        <item>Słodycze</item>
+    </string-array>
+    
+</resources>
