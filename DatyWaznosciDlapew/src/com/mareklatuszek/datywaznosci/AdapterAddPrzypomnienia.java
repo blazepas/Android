@@ -24,13 +24,13 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
-public class AdapterAddPowiadomienia extends BaseAdapter implements FinalVariables {
+public class AdapterAddPrzypomnienia extends BaseAdapter implements FinalVariables {
 
-	private LayoutInflater inflater=null;
+	private LayoutInflater inflater = null;
 	private Activity mActivity;
 	public int przypCount;
-	FragmentManager fragmentManager;
-	int fragmentDodajId;
+	private FragmentManager fragmentManager;
+	private int fragmentId;
 	
 	private ArrayList<HashMap<String, String>> adapterData = new ArrayList<HashMap<String,String>>();
 
@@ -38,12 +38,12 @@ public class AdapterAddPowiadomienia extends BaseAdapter implements FinalVariabl
 	private Spinner przypSpinner;
 	private Button przypButton;
 	
-	public AdapterAddPowiadomienia(Activity mActivity, int przypCount, FragmentManager fragmentManager, int fragmentDodajId) {
+	public AdapterAddPrzypomnienia(Activity mActivity, int przypCount, FragmentManager fragmentManager, int fragmentId) {
 		this.mActivity = mActivity;
 		inflater = (LayoutInflater)mActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		adapterData = initiateAdapterData();
 		this.fragmentManager = fragmentManager;
-		this.fragmentDodajId = fragmentDodajId;
+		this.fragmentId = fragmentId;
 	}
 		
 	@Override
@@ -161,7 +161,7 @@ public class AdapterAddPowiadomienia extends BaseAdapter implements FinalVariabl
 	
 	private void addRowInFragment(int count) {
 		int newCount = count + 1; 
-    	FragmentDodaj fragmentDodaj = (FragmentDodaj) fragmentManager.findFragmentById(fragmentDodajId);
+    	FragmentDodaj fragmentDodaj = (FragmentDodaj) fragmentManager.findFragmentById(fragmentId);
     	fragmentDodaj.setRowPrzypomnienia(newCount);
 	}
 		

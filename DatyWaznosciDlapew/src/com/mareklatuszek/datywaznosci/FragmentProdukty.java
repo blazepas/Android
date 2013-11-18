@@ -9,6 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -69,8 +71,21 @@ public class FragmentProdukty extends SherlockFragment {
 			protected void onPostExecute(Void v) {
 				listAdapter = new AdapterProductList(getActivity(), products);
 				productsList.setAdapter(listAdapter);
+				productsList.setOnItemClickListener(new OnItemClickListener() {
+
+					@Override
+					public void onItemClick(AdapterView<?> arg0, View arg1, int pos, long arg3) {
+							switchToProductFragment(pos);
+							Log.i("itemClick", pos+"");
+					}
+				});
 			}
 		}.execute();
+	}
+	
+	private void switchToProductFragment(int positon) {
+		Product product = products.get(positon);
+		((MainActivity) getActivity()).selectFragmentToShowProduct(product);
 	}
 
 }

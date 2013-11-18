@@ -2,7 +2,9 @@ package com.mareklatuszek.datywaznosci;
 
 import java.util.ArrayList;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -17,23 +19,24 @@ import com.actionbarsherlock.app.SherlockFragment;
 public class FragmentKategorie extends SherlockFragment implements OnClickListener{
 	
 	AdapterDB adapterDb;
+	AdapterKategorie adapterCat;
 	ArrayList<String> categories = new ArrayList<String>();
-			
+	
+	View rootView;
 	EditText categoryTxtBoxKat;
 	Button dodajButtonKat;
 	ListView categoryList;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		View rootView = inflater.inflate(R.layout.fragment_kategorie, container, false);
+		rootView = inflater.inflate(R.layout.fragment_kategorie, container, false);
 		
 		categoryTxtBoxKat = (EditText) rootView.findViewById(R.id.categoryTxtBoxKat);
 		dodajButtonKat = (Button) rootView.findViewById(R.id.dodajButtonKat);
-		categoryList = (ListView) rootView.findViewById(R.id.categoryList);
+		dodajButtonKat.setOnClickListener(this);
 		
-		//kategorie chyba w dialogu lepiej daæ
-		//TODO dorobiæ adapter
-		
+		initList();
+				
 		return rootView;
 	}
 	
@@ -43,21 +46,68 @@ public class FragmentKategorie extends SherlockFragment implements OnClickListen
 		case R.id.dodajButtonKat:
 			String category = categoryTxtBoxKat.getText().toString();
 			if (category.equals("")) {
-				Toast.makeText(getActivity(), "Proszê podaæ nazwê kategorii", 2000).show();
+				Toast.makeText(getActivity(), "ProszÄ™ podaÄ‡ nazwÄ™ kategorii", 2000).show();
 			} else {
 				addCategory(category);
-				//TODO odswierz liste
 			}
 			break;
 		}
 		
 	}
 	
+	private void initList() {
+		
+		new AsyncTask<Void, Void, Void>() {
+			
+			@Override
+			protected void onPreExecute() {
+				adapterDb = new AdapterDB(getActivity());
+				categoryList = (ListView) rootView.findViewById(R.id.categoryList);
+			}
+			
+			@Override
+			protected Void doInBackground(Void... params) {
+				adapterDb.open();
+				categories = adapterDb.getAllCategories();
+				adapterDb.close();
+				return null;
+			}
+			
+			@Override
+			protected void onPostExecute(Void v) {
+				adapterCat = new AdapterKategorie(getActivity(), categories, getFragmentManager(), getId());
+				categoryList.setAdapter(adapterCat);
+			}
+		}.execute();
+	}
+	
 	private boolean addCategory(String category) {
 		adapterDb.open();
 		boolean status = adapterDb.insertCategory(category);
-		adapterDb.close();		
+		adapterDb.close();
+		if (status) {
+			categories.add(category);
+		}
+		refreshCategories();
 		return status;
+	}
+	
+	public boolean removeCategory(String category) {
+		adapterDb.open();
+		categories.remove(category);
+		boolean status = adapterDb.deleteCategory(category);
+		adapterDb.close();
+		if(status) {
+			categories.remove(category);
+			Log.i("remove", category);
+		}
+		refreshCategories();
+		return status;
+	}
+	
+	public void refreshCategories() {
+		adapterCat.notifyDataSetChanged();
+		//TODO odswierzanie we fragmencie Dodaj
 	}
 
 	

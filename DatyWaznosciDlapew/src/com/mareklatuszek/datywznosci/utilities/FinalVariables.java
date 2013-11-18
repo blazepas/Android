@@ -8,7 +8,7 @@ public interface FinalVariables {
 	public static final String DB_PRODUCT_TABLE = "product";
 	public static final String DB_CATEGORIES_TABLE = "categories";
     public static final String ID_OPTIONS = "INTEGER PRIMARY KEY AUTOINCREMENT";
-    public static final String CELL_DEFAULT = "TEXT DEFAULT 0";
+    public static final String CELL_DEFAULT = "TEXT";
 
     public static final String KEY_ID = "_id";
 	public static final String DB_NAZWA = "nazwa";
@@ -42,7 +42,7 @@ public interface FinalVariables {
 	
 	public static final String DB_CREATE_CATEGORIES_TABLE = "CREATE TABLE " + DB_CATEGORIES_TABLE + "( " +
 			 KEY_ID + " " + ID_OPTIONS + ", " +
-			 DB_NAZWA + " " + CELL_DEFAULT + ");";
+			 DB_CAT_CATEGORY + " " + CELL_DEFAULT + ");";
 	
 	
 	public static final String PRZYP_TEXT_BOX = "przypTextBox";

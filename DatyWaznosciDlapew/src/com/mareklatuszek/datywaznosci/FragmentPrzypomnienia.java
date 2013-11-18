@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.actionbarsherlock.app.SherlockFragment;
+import com.mareklatuszek.datywznosci.utilities.CommonUtilities;
 import com.mareklatuszek.datywznosci.utilities.FinalVariables;
 
 public class FragmentPrzypomnienia extends SherlockFragment implements FinalVariables{
@@ -23,7 +24,7 @@ public class FragmentPrzypomnienia extends SherlockFragment implements FinalVari
 	AdapterDB adapterDb;
 	AdapterPrzypomnienia adapterPrzyp;
 	ArrayList<HashMap<String, String>> dataToAdpter = new ArrayList<HashMap<String,String>>();
-	
+	CommonUtilities utiliteis = new CommonUtilities();	
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -50,7 +51,7 @@ public class FragmentPrzypomnienia extends SherlockFragment implements FinalVari
 				adapterDb.open();
 				products = adapterDb.getAllProducts();
 				adapterDb.close();
-				dataToAdpter = sortPrzypomnieniaAll(fillPrzypomnienia(products));
+				dataToAdpter = utiliteis.sortPrzypomnieniaAll(fillPrzypomnienia(products));
 				adapterPrzyp = new AdapterPrzypomnienia(getActivity(), dataToAdpter);
 				return null;
 			}
@@ -93,20 +94,6 @@ public class FragmentPrzypomnienia extends SherlockFragment implements FinalVari
 		
 	}
 	
-	private ArrayList<HashMap<String, String>> sortPrzypomnieniaAll(ArrayList< HashMap< String,String >> toSort) {
-		
-	    Collections.sort(toSort, new Comparator<HashMap< String,String >>() {
-
-	        @Override
-	        public int compare(HashMap<String, String> first, HashMap<String, String> second) {
-	        	//sortuje wg daty przypomenia
-	        	String firstValue = first.get(PRZYP_DATE);
-	            String secondValue = second.get(PRZYP_DATE);
-	            return firstValue.compareTo(secondValue);
-	        }
-	    });
-	    
-		return toSort;
-	}
+	
 
 }

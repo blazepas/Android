@@ -56,21 +56,18 @@
                             android:gravity="bottom" >
 
                             <TextView
-                                android:id="@+id/nazwaTxt"
+                                android:id="@+id/TextView1"
                                 android:layout_width="wrap_content"
                                 android:layout_height="match_parent"
                                 android:gravity="bottom"
-                                android:text="Nazwa:" />
+                                android:text="Nazwa: " />
 
-                            <EditText
-                                android:id="@+id/nazwaTextBox"
+                            <TextView
+                                android:id="@+id/nazwaTxt"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:ems="10" >
-
-                                <requestFocus />
-                            </EditText>
+                                android:text="Medium Text"
+                                android:textAppearance="?android:attr/textAppearanceMedium" />
                         </LinearLayout>
                     </LinearLayout>
 
@@ -94,44 +91,23 @@
                         android:gravity="bottom"
                         android:text="Okres ważności:" />
 
-                    <EditText
-                        android:id="@+id/okresWazTextBox"
-                        android:layout_width="90dp"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="bottom"
-                        android:layout_weight="1"
-                        android:ems="10"
-                        android:inputType="number" />
+                    <TextView
+                        android:id="@+id/okresTxt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Medium Text"
+                        android:textAppearance="?android:attr/textAppearanceMedium" />
 
-                    <Spinner
-                        android:id="@+id/okresWazSpinner"
-                        android:layout_width="84dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:entries="@array/array_date" />
                 </LinearLayout>
 
             </LinearLayout>
 
-            <Button
-                android:id="@+id/dodatkoweButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Dodatkowe dane" />
-
             <LinearLayout
                 android:id="@+id/dodatkowe"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_marginTop="10dp"
+                android:layout_height="wrap_content"
                 android:orientation="vertical" >
             </LinearLayout>
-
-            <Button
-                android:id="@+id/zapiszButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Zapisz" />
         </LinearLayout>
     </ScrollView>
 

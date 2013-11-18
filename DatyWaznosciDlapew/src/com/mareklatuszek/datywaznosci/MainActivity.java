@@ -37,6 +37,7 @@ public class MainActivity extends SherlockFragmentActivity {
 	Fragment fragmentProdukty = new FragmentProdukty();
 	Fragment fragmentKategorie = new FragmentKategorie();
 	Fragment fragmentPrzypomnienia = new FragmentPrzypomnienia();
+	Fragment fragmentProdukt = new FragmentProdukt();
 	
 	private CharSequence mDrawerTitle;
 	private CharSequence mTitle;
@@ -50,13 +51,13 @@ public class MainActivity extends SherlockFragmentActivity {
 		// Tytul
 		mTitle = mDrawerTitle = getTitle();
 
-		// Nag³ówki elementów menu
-		title = new String[] { "Skanowanie produktu", "W³asny produkt",
-				"Lista produktów", "Kategorie produktów", "Przypomnienia" };
+		// Nagï¿½ï¿½wki elementï¿½w menu
+		title = new String[] { "Skanowanie produktu", "WÅ‚asny produkt",
+				"Lista produktÃ³w", "Kategorie produktÃ³w", "Przypomnienia" };
 
-		// Opisy nag³ówkó
-		subtitle = new String[] { "Zeskanuj kod", "Dodaj w³asny",
-				"Przegl¹daj dodane", "Przegl¹daj kategorie", "Przegl¹daj przypomnienia" };
+		// Opisy nagï¿½ï¿½wkï¿½
+		subtitle = new String[] { "Zeskanuj kod", "Dodaj wÅ‚asny",
+				"PrzeglÄ…daj dodane", "PrzeglÄ…daj kategorie", "PrzeglÄ…daj przypomnienia" };
 
 		// przypisywanie ikon elementom menu
 		icon = new int[] { R.drawable.collections_cloud, R.drawable.collections_cloud,
@@ -66,7 +67,7 @@ public class MainActivity extends SherlockFragmentActivity {
 
 		mDrawerList = (ListView) findViewById(R.id.listview_drawer);
 
-		// cieñ menu
+		// cieï¿½ menu
 		mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow,GravityCompat.START);
 
 		mMenuAdapter = new AdapterMenu(MainActivity.this, title, subtitle,
@@ -146,6 +147,10 @@ public class MainActivity extends SherlockFragmentActivity {
 		case 4:
 			ft.replace(R.id.content_frame, fragmentPrzypomnienia);
 			break;
+		case 5:
+			ft.replace(R.id.content_frame, fragmentProdukt);
+			ft.commit();
+			return;
 		}
 		ft.commit();
 		mDrawerList.setItemChecked(position, true);
@@ -184,7 +189,7 @@ public class MainActivity extends SherlockFragmentActivity {
         	}
         	
         } else {
-        	//TODO wyœwietliæ informacjê o nieudanym skanowaniu
+        	//TODO wyï¿½wietliï¿½ informacjï¿½ o nieudanym skanowaniu
         }
        
 	}
@@ -202,7 +207,7 @@ public class MainActivity extends SherlockFragmentActivity {
 	}
 	
 	private void selectFragmentToStoreCode(String code, String codeFormat) {
-		//TODO sprawdziæ czy w kodzie s¹ jakieœ dane i je przekazaæ
+		//TODO sprawdziï¿½ czy w kodzie sï¿½ jakieï¿½ dane i je przekazaï¿½
 		Log.i("kod", code);
 	
 		Bundle data = new Bundle();
@@ -219,6 +224,14 @@ public class MainActivity extends SherlockFragmentActivity {
         }
         
 		
+	}
+	
+	public void selectFragmentToShowProduct(Product product) {
+		Bundle data = new Bundle();
+        data.putSerializable("product", product);
+
+        fragmentProdukt.setArguments(data);
+        selectFragment(5);		
 	}
 	
 	

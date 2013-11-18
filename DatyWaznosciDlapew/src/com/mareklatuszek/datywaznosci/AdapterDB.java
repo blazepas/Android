@@ -45,6 +45,8 @@ public class AdapterDB implements FinalVariables {
 	    ContentValues newCategoryVal = new ContentValues();
 	    newCategoryVal.put(DB_CAT_CATEGORY, category);
 	    
+	    Log.i("insertCat", category);
+	    
 	    return db.insert(DB_CATEGORIES_TABLE, null, newCategoryVal) > 0;
 	}
 	
@@ -58,14 +60,38 @@ public class AdapterDB implements FinalVariables {
 	    return db.update(DB_PRODUCT_TABLE, updateProductVal, where, null) > 0;
 	}
 	
+	public boolean updateCategory(String categoryOld, String categoryNew) {
+		ContentValues updateCategoryVal = new ContentValues();
+		updateCategoryVal.put(DB_CAT_CATEGORY, categoryNew);
+		
+		String whereCat = DB_CAT_CATEGORY + " = " + categoryOld;
+		boolean categoryStatus = db.update(DB_CATEGORIES_TABLE, updateCategoryVal, whereCat, null) > 0; //aktualizacja tabeli z kategoriami
+		
+		ContentValues updateProductVal = new ContentValues();
+		updateProductVal.put(DB_KATEGORIA, categoryNew);	
+		String whereProd = DB_KATEGORIA + " = " + categoryOld;
+		boolean productStatus = db.update(DB_PRODUCT_TABLE, updateProductVal, whereProd, null) > 0; //aktualizacja kategori w tebeli produktów
+	
+	    return categoryStatus & productStatus;
+	}
+	
 	public boolean deleteProduct(Product product){
 	    String where = ""; //TODO w zaleznoœci co jest id
 	    return db.delete(DB_PRODUCT_TABLE, where, null) > 0;
 	}
 	
-	public boolean deleteCategory(String category){
-	    String where = DB_CAT_CATEGORY + " = " + category;
-	    return db.delete(DB_CATEGORIES_TABLE, where, null) > 0;
+	public boolean deleteCategory(String categoryToDelete){
+	    String whereCat = DB_CAT_CATEGORY + " =? ";
+	    boolean caategoryStatus = db.delete(DB_CATEGORIES_TABLE, whereCat, new String[]{categoryToDelete}) > 0;
+	    
+		ContentValues updateProductVal = new ContentValues();
+		updateProductVal.put(DB_KATEGORIA, "");	//ustawia pust¹ wartoœæ w kolumnie kategoria
+		String whereProd = DB_KATEGORIA + " = '" + categoryToDelete + "'";
+		boolean productStatus = db.update(DB_PRODUCT_TABLE, updateProductVal, whereProd, null) > 0; //aktualizacja kategori w tebeli produktów
+	    
+		Log.i("delCat", categoryToDelete);
+		
+	    return caategoryStatus & productStatus;
 	}
 	
 	@SuppressWarnings("deprecation")
@@ -173,6 +199,22 @@ public class AdapterDB implements FinalVariables {
 	    
 	    return product;
 	}
+	
+//	public String[] getCategoryIdsInProductsTable(String category) {
+//		String where = DB_KATEGORIA + "=?";
+//		Cursor cursor = db.query(DB_PRODUCT_TABLE,
+//		mActivity.startManagingCursor(cursor);
+//		
+//		int columnCategory =  cursor.getColumnIndex(DB_KATEGORIA);
+//
+//		
+//		while(cursor.moveToNext()) {
+//			String category = cursor.getString(columnCategory);		
+//			categoriesList.add(category);
+//		}
+//		
+//		mActivity.stopManagingCursor(cursor);
+//	}
 	
 	private ContentValues generateProductContentVal(Product product) {
 		ContentValues newProductVal = new ContentValues();

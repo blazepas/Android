@@ -1,5 +1,6 @@
 package com.mareklatuszek.datywaznosci;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -11,7 +12,8 @@ import android.util.Log;
 
 import com.mareklatuszek.datywznosci.utilities.FinalVariables;
 
-public class Product implements FinalVariables {
+@SuppressWarnings("serial")
+public class Product implements FinalVariables, Serializable {
 	
 	private String nazwa;
 	private String dataOtwarcia;

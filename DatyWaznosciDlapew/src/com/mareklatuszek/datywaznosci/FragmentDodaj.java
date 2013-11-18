@@ -21,6 +21,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
 import android.widget.ListView;
 import android.widget.Spinner;
 
@@ -38,54 +39,39 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 	String code = "";
 	String codeFormat = "";
 	
-	AdapterAddPowiadomienia przypAdapter;
+	AdapterAddPrzypomnienia przypAdapter;
 	AdapterDB dbAdapter;
 	CommonUtilities utilities = new CommonUtilities();
 	
+	View rootView;
 	ImageView barcodeImage;
-	Button dataOtwButton, terminWazButton, zapiszButton;
+	Button dataOtwButton, terminWazButton, zapiszButton, dodatkoweButton;
 	EditText nazwaTextBox, okresWazTextBox;
 	Spinner okresWazSpinner, kategorieSpinner;
-	LinearLayout przypLayout;
+	LinearLayout podstawowe, dodatkowe, przypLayout, latDodatkoweEdit;
 	View przypRow;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		super.onCreateView(inflater, container, savedInstanceState);
-		View rootView = inflater.inflate(R.layout.fragment_dodaj, container, false);
+		rootView = inflater.inflate(R.layout.fragment_dodaj, container, false);
+		currentDate = utilities.getCurrentDate();
 		
-		przypAdapter = new AdapterAddPowiadomienia(getActivity(), 1, getFragmentManager(), getId());
-		dbAdapter = new AdapterDB(getActivity());
+		initPodstawowe();
 		
-		barcodeImage = (ImageView) rootView.findViewById(R.id.barcodeImage);
-		dataOtwButton = (Button) rootView.findViewById(R.id.dataOtwButton);
-		terminWazButton = (Button) rootView.findViewById(R.id.terminWazButton);
-		zapiszButton = (Button) rootView.findViewById(R.id.zapiszButton);
-		nazwaTextBox = (EditText) rootView.findViewById(R.id.nazwaTextBox);
-		okresWazTextBox = (EditText) rootView.findViewById(R.id.okresWazTextBox);
-		okresWazSpinner = (Spinner) rootView.findViewById(R.id.okresWazSpinner);
-		kategorieSpinner = (Spinner) rootView.findViewById(R.id.kategorieSpinner);
-		przypLayout = (LinearLayout) rootView.findViewById(R.id.przypLayout);
+		return rootView;
+	}
 	
-		barcodeImage.setOnClickListener(this);
-		dataOtwButton.setOnClickListener(this);
-		terminWazButton.setOnClickListener(this);
-		zapiszButton.setOnClickListener(this);
-		
-		Bundle extras = getArguments(); // dane przes³ane do fragmentu
+	@Override
+	public void onResume() {
+		super.onResume();
+
+		Bundle extras = getArguments(); // dane przesï¿½ane do fragmentu
 		if (extras != null) {
 			code = extras.getString("scanResultCode");
 			codeFormat = extras.getString("scanResultCodeFormat");
 			setDataFromScan(code, codeFormat); 
 		}
-		
-		currentDate = getCurrentDate();
-		dataOtwButton.setText(currentDate);
-		
-		View item = przypAdapter.getView(0, null, null);
-		przypLayout.addView(item);
-			
-		return rootView;
 	}
 	
 	@Override
@@ -106,31 +92,58 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 			if (terminWazIsSet) {
 				saveData();
 			} else {
-				// okienko, ¿e nale¿y podaæ termin wa¿noœci
+				// okienko, ï¿½e naleï¿½y podaï¿½ termin waï¿½noï¿½ci
 			}
 			
 			break;
+		case R.id.dodatkoweButton:
+			initDodatkowe();
+			showDodatkowe();
+			break;	
 		}
 	}
-			
-	private Bitmap encodeCodeToBitmap(String code, String codeFormat)
-	{
-		//konwersja zeskanowanego kodu na obrazek, na podstawie kodu i jego formatu
+	
+	private void initPodstawowe() {
+		podstawowe = (LinearLayout) rootView.findViewById(R.id.podstawowe);
+		barcodeImage = (ImageView) rootView.findViewById(R.id.barcodeImage);
+		nazwaTextBox = (EditText) rootView.findViewById(R.id.nazwaTextBox);
+		okresWazTextBox = (EditText) rootView.findViewById(R.id.okresWazTextBox);
+		okresWazSpinner = (Spinner) rootView.findViewById(R.id.okresWazSpinner);
+		zapiszButton = (Button) rootView.findViewById(R.id.zapiszButton);
+		dodatkoweButton = (Button) rootView.findViewById(R.id.dodatkoweButton);
 		
-	    int qrCodeDimention = 150; //rozmiar obrazka
-
-	    QRCodeEncoder qrCodeEncoder = new QRCodeEncoder(code, null, Contents.Type.TEXT, codeFormat, qrCodeDimention);
-
-	    try {
-	        Bitmap bitmap = qrCodeEncoder.encodeAsBitmap();
-	        return bitmap;
-	    } catch (WriterException e) {
-	    	//w razie niepowodzenia - domyœlna grafika
-	    	Bitmap bitmap= BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.zxinglib_icon); 
-	        return null;
-	    }	
+		barcodeImage.setOnClickListener(this);
+		zapiszButton.setOnClickListener(this);	
+		dodatkoweButton.setOnClickListener(this);
 	}
 	
+	private void initDodatkowe() {		
+		LayoutInflater inflater = LayoutInflater.from(getActivity());
+		latDodatkoweEdit = (LinearLayout) inflater.inflate(R.layout.lay_dodatkowe_edit, null);		
+		dodatkowe = (LinearLayout) rootView.findViewById(R.id.dodatkowe);	
+		dodatkowe.addView(latDodatkoweEdit);
+		
+		dataOtwButton = (Button) dodatkowe.findViewById(R.id.dataOtwButton);
+		terminWazButton = (Button) dodatkowe.findViewById(R.id.terminWazButton);		
+		kategorieSpinner = (Spinner) dodatkowe.findViewById(R.id.kategorieSpinner);
+		przypLayout = (LinearLayout) dodatkowe.findViewById(R.id.przypomnieniaLayout);
+		
+		dataOtwButton.setOnClickListener(this);
+		terminWazButton.setOnClickListener(this);
+		
+		dataOtwButton.setText(currentDate);
+		
+		przypAdapter = new AdapterAddPrzypomnienia(getActivity(), 1, getFragmentManager(), getId()); // adapter od przypomnien
+		dbAdapter = new AdapterDB(getActivity());		
+		View item = przypAdapter.getView(0, null, null);
+		przypLayout.addView(item);			
+	}
+	
+	private void showDodatkowe() {
+		utilities.expandLinearLayout(dodatkowe);
+		dodatkoweButton.setVisibility(View.GONE);
+	}
+				
 	private Product prepareDataToStore() {	
 		
 		Product product = new Product();
@@ -169,18 +182,23 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 			String notifHour = przypomnienie.get(PRZYP_HOUR);
 			long date = 0;
 			
-			if(!boxVal.equals(""))
+			if(boxVal.equals(""))
 			{
+				przypomnienia.remove(i);
+			} else {
+				
 				try {
 					date = utilities.parsePrzypmnienieToDate(boxVal, spinnerVal, terminWaznosci, notifHour);
 				} catch (ParseException e) {
 					Log.i("preparePrzyp", "parese " + i + "error");
 					date = 0;
 				}
+				
+				String przypDate = String.valueOf(date);
+				przypomnienie.put(PRZYP_DATE, przypDate);
 			}
 			
-			String przypDate = String.valueOf(date);
-			przypomnienie.put(PRZYP_DATE, przypDate);		
+					
 		}
 		
 		
@@ -193,7 +211,7 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 				
 			@Override
 			protected void onPreExecute() {
-				progressDialog =progressDialog.show(getActivity(), "Dodajê", "Dodawanie do bazy");
+				progressDialog =ProgressDialog.show(getActivity(), "DodajÄ™", "Dodawanie do bazy");
 			}
 
 			@Override
@@ -207,7 +225,7 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 				//TODO zrobic okienko jesli niepowodzenie
 				terminWazIsSet = false;
 				progressDialog.dismiss();
-				((MainActivity) getActivity()).selectFragment(2); // prze³¹cza a ekran listy produktów
+				((MainActivity) getActivity()).selectFragment(2); // przeï¿½ï¿½cza a ekran listy produktï¿½w
 			}
 		}.execute();
 	}
@@ -217,17 +235,17 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		Product product = prepareDataToStore();
 		dbAdapter.open();
 
-		//TODO sprawdza w bazie czy jest ju¿ taki produkt
-		//jeœli tak - proponuje inn¹ nazwê
+		//TODO sprawdza w bazie czy jest juï¿½ taki produkt
+		//jeï¿½li tak - proponuje innï¿½ nazwï¿½
 		
 		boolean storeStatus = dbAdapter.insertProduct(product);
 		dbAdapter.close();
 		
-		return storeStatus; //jeœli zapisze do poprawnie
+		return storeStatus; //jeï¿½li zapisze do poprawnie
 	}
 	
 	public void setDataFromScan(String code, String codeFormat) {	
-		barcodeImage.setImageBitmap(encodeCodeToBitmap(code, codeFormat));	
+		barcodeImage.setImageBitmap(utilities.encodeCodeToBitmap(code, codeFormat, getActivity()));	
 	}
 	
 	public void setRowPrzypomnienia(int count) {
@@ -244,7 +262,7 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 	}
 	
 	private String getKategoria() {
-		String[] kategorieArray = getResources().getStringArray(R.array.array_temp_kategorie); // TODO tymczasowe rozwi¹zanie
+		String[] kategorieArray = getResources().getStringArray(R.array.array_temp_kategorie); // TODO tymczasowe rozwiï¿½zanie
 		int chosenKategoriaPos = kategorieSpinner.getSelectedItemPosition();
 		
 		String chosenKategoria = kategorieArray[chosenKategoriaPos];
@@ -271,16 +289,5 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		
 		return peroid;
 	}
-	
-	private String getCurrentDate() {
-		String dateFormat = "dd/MM/yyyy";
-		String currentDate = "";
 		
-	    DateFormat formatter = new SimpleDateFormat(dateFormat);
-	    Calendar calendar = Calendar.getInstance();
-	    currentDate = formatter.format(calendar.getTime());
-	    
-	    return currentDate;
-	}
-
 }
