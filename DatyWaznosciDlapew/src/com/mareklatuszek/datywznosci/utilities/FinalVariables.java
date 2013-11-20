@@ -49,5 +49,12 @@ public interface FinalVariables {
 	public static final String PRZYP_SPINNER = "przypSpinner";
 	public static final String PRZYP_DATE = "przypDate";
 	public static final String PRZYP_HOUR = "przypHour";
+	
+	//wartości z array_date w array resources
+	public static final String SPINNER_DATE_DAY = "Dzień"; 
+	public static final String SPINNER_DATE_MONTH = "Miesiąc"; 
+	public static final String SPINNER_DATE_YEAR = "Rok"; 
+	
+	public static final int CAMERA_RQ_CODE = 100;
 
 }

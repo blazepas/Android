@@ -3,6 +3,7 @@ package com.mareklatuszek.datywaznosci;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -13,9 +14,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragment;
 import com.mareklatuszek.datywznosci.utilities.CommonUtilities;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 
 public class FragmentProdukt extends SherlockFragment {
 	
@@ -36,11 +41,35 @@ public class FragmentProdukt extends SherlockFragment {
 		Bundle extras = getArguments();
 		product = (Product) extras.getSerializable("product");	
 		
+        setHasOptionsMenu(true);
+		
 		initPodstawowe();
 		initDodatkowe();
 		
 		return rootView;
 	}
+	
+	@Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+      inflater.inflate(R.menu.items, menu);
+
+      super.onCreateOptionsMenu(menu, inflater);
+    }
+        
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) 
+    {
+       switch (item.getItemId()) {
+          case R.id.edit:
+        	switchToEditFragment(product);
+            break;
+          case R.id.share:
+          	sendEmail();
+            break;
+       }
+       return true;
+    }
 	
 	private void initPodstawowe() {
 		
@@ -96,6 +125,25 @@ public class FragmentProdukt extends SherlockFragment {
 		{
 			View item = adapterPrzyp.getView((i), null, null);
 			przypomnieniaLayout.addView(item);
+		}
+	}
+	
+	private void switchToEditFragment(Product product) {
+		((MainActivity) getActivity()).selectFragmentToEditProduct(product);
+	}
+	
+	private void sendEmail() {
+		String json = utilities.getJsonFromProduct(product);
+
+		Intent i = new Intent(Intent.ACTION_SEND);
+		i.setType("message/rfc822");
+		i.putExtra(Intent.EXTRA_EMAIL  , new String[]{"marek.lat@gmail.com"});
+		i.putExtra(Intent.EXTRA_SUBJECT, "Śmiało wysyłać, dam znać czy działa");
+		i.putExtra(Intent.EXTRA_TEXT   , json);
+		try {
+		    startActivity(Intent.createChooser(i, "Wysyłanie..."));
+		} catch (android.content.ActivityNotFoundException ex) {
+		    Toast.makeText(getActivity(), "Brak klientów email", Toast.LENGTH_SHORT).show();
 		}
 	}
 

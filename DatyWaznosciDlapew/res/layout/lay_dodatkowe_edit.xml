@@ -87,7 +87,6 @@
                 android:layout_width="86dp"
                 android:layout_height="match_parent"
                 android:layout_weight="0.28"
-                android:entries="@array/array_temp_kategorie"
                 android:prompt="@string/default_kategorie_box_text" />
 
             <Button
@@ -114,25 +113,24 @@
             android:gravity="center_vertical"
             android:orientation="horizontal" >
 
-            <EditText
-                android:id="@+id/editText4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <ImageView
+                android:id="@+id/obrazekImage"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginTop="10dp"
                 android:layout_weight="1"
+                android:src="@drawable/abs__ab_bottom_solid_dark_holo" />
+
+            <EditText
+                android:id="@+id/opisTxtBox"
+                android:layout_width="159dp"
+                android:layout_height="wrap_content"
                 android:ems="10"
                 android:inputType="textMultiLine"
                 android:text="Opis..." >
 
                 <requestFocus />
             </EditText>
-
-            <ImageView
-                android:id="@+id/imageView1"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_marginTop="10dp"
-                android:layout_weight="1"
-                android:src="@drawable/abs__ab_bottom_solid_dark_holo" />
         </LinearLayout>
     </LinearLayout>
 

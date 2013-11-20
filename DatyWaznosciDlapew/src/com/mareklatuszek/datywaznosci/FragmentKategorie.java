@@ -86,7 +86,7 @@ public class FragmentKategorie extends SherlockFragment implements OnClickListen
 		boolean status = adapterDb.insertCategory(category);
 		adapterDb.close();
 		if (status) {
-			categories.add(category);
+			categories.add(0, category);
 		}
 		refreshCategories();
 		return status;

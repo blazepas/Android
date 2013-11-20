@@ -9,18 +9,31 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.app.Activity;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.PowerManager;
+import android.provider.MediaStore;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 
 import com.google.zxing.WriterException;
+import com.mareklatuszek.datywaznosci.Product;
 import com.mareklatuszek.datywaznosci.R;
 
 public class CommonUtilities implements FinalVariables {
@@ -87,6 +100,75 @@ public class CommonUtilities implements FinalVariables {
 		return millis;
 	}
 	
+	public String parseDateToOkres(String date) {
+		Calendar currCal = Calendar.getInstance();
+		Calendar endCal = Calendar.getInstance();
+		currCal.set(Calendar.HOUR_OF_DAY, 13);
+		long currentTime = currCal.getTimeInMillis();
+		long endTime = 0;
+		try {
+			endTime = parseDate(date);
+			endCal.setTimeInMillis(endTime);
+			endCal.set(Calendar.HOUR_OF_DAY, 14);
+			endTime = endCal.getTimeInMillis();
+			
+			long difference = endTime - currentTime;
+			long diffDay = difference / 86400000L;
+			long diffMonth = difference / 2592000000L;
+			long diffYear = difference / 31536000000L;
+			
+			if(diffYear >= 1L) {
+				int i = (int) diffYear;
+				String okres = i + ":" + SPINNER_DATE_YEAR;
+				return okres;
+
+			} else if (diffMonth >= 1L) {
+				int i = (int) diffMonth;
+				String okres = i + ":" + SPINNER_DATE_MONTH;
+				return okres;
+
+			} else if (diffDay >= 1L) {
+				int i = (int) diffDay;
+				String okres = i + ":" + SPINNER_DATE_DAY;
+				return okres;
+			} else {
+				return "";
+			}
+			
+		} catch (ParseException e) {
+			Log.i("utils", "parseDateToOkres");
+			return "";
+		}		
+	}
+	
+	public String parseOkresToDate(String okres) {
+		Calendar cal = Calendar.getInstance();
+		String box = getTextFromOkresWaz(okres);
+		String okresDate = "";
+		int val = 0;
+		
+		if (!box.equals("")) {
+			val = Integer.parseInt(box);
+		} else {
+			return "";
+		}
+		
+		String format = getSpinnerItemFromOkresWaz(okres);		
+		
+		if(format.contains(SPINNER_DATE_DAY)) {
+			cal.add(Calendar.DAY_OF_YEAR, val);
+		} else if (format.contains(SPINNER_DATE_MONTH)) {
+			cal.add(Calendar.MONTH, val);
+		} else if (format.contains(SPINNER_DATE_YEAR)) {
+			cal.add(Calendar.YEAR, val);
+		}
+		
+		long okresInMillis = cal.getTimeInMillis();
+		okresDate = parseMillisToDate(okresInMillis);
+		
+		return okresDate;
+	}
+	
 	public String dateToWords(long startTimeInMillis)
 	{
 		String time = "";
@@ -95,7 +177,7 @@ public class CommonUtilities implements FinalVariables {
 		long difference = startTimeInSec - currentTimeInSec;
 		
 		if(difference < 3600) {
-			time = "za godzin�";
+			time = "za godzinę";
 			return time;
 		} else if (difference >= 3600 & difference < 14400) {
 			time = "za " + (difference/3600) + " godziny";
@@ -170,6 +252,18 @@ public class CommonUtilities implements FinalVariables {
 	    return currentDate;
 	}
 	
+	public String parseMillisToDate(long timeInMillis) {
+		String dateFormat = "dd/MM/yyyy";
+		String date = "";
+		
+	    DateFormat formatter = new SimpleDateFormat(dateFormat);
+	    Calendar calendar = Calendar.getInstance();
+	    calendar.setTimeInMillis(timeInMillis);
+	    date = formatter.format(calendar.getTime());
+	    
+	    return date;
+	}
+	
 	@SuppressWarnings("deprecation")
 	public void expandLinearLayout(final LinearLayout v) {
 	    v.measure(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
@@ -180,7 +274,7 @@ public class CommonUtilities implements FinalVariables {
 	    {
 	        @Override
 	        protected void applyTransformation(float interpolatedTime, Transformation t) {
-	        	int width = LinearLayout.LayoutParams.WRAP_CONTENT;
+	        	int width = LinearLayout.LayoutParams.FILL_PARENT;
 	        	int height = LinearLayout.LayoutParams.WRAP_CONTENT;
 	        	LayoutParams params = new LinearLayout.LayoutParams(width, height);// rozmiary
 	        	
@@ -201,7 +295,7 @@ public class CommonUtilities implements FinalVariables {
 	public Bitmap encodeCodeToBitmap(String code, String codeFormat, FragmentActivity mActivity)
 	{
 		//konwersja zeskanowanego kodu na obrazek, na podstawie kodu i jego formatu
-		
+				
 	    int qrCodeDimention = 150; //rozmiar obrazka
 
 	    QRCodeEncoder qrCodeEncoder = new QRCodeEncoder(code, null, Contents.Type.TEXT, codeFormat, qrCodeDimention);
@@ -216,4 +310,75 @@ public class CommonUtilities implements FinalVariables {
 	    }	
 	}
 	
+	public int getPosInSpinner(String category, Spinner spinner) {
+		
+		int spinnSize = spinner.getCount();
+		
+		for (int i = 0; i < spinnSize; i++) {
+			String item = (String) spinner.getItemAtPosition(i);
+			if (item.contains(category)) {
+				return i;
+			}
+		}
+		
+		return 0;
+	}
+	
+	public String getTextFromOkresWaz(String okres) {
+		String box = "";
+		Pattern pattern = Pattern.compile(":");
+		
+		Matcher matcher = pattern.matcher(okres);
+		if (matcher.find()) {
+			box = okres.substring(0, matcher.start());
+		}
+		
+		return box;
+	}
+	
+	public String getSpinnerItemFromOkresWaz(String okres) {
+		String spinn = "";	
+		Pattern pattern = Pattern.compile(":");
+		
+		Matcher matcher = pattern.matcher(okres);
+		if (matcher.find()) {
+			spinn = okres.substring(matcher.end());
+		}
+				
+		return spinn;
+	}
+	
+	public String getJsonFromProduct(Product product) {
+		String json = "";
+		try {
+			String nazwa = product.getNazwa();
+			String okres = product.getOkresWaznosci();
+			String code = product.getCode();
+			String codeFormat = product.getCodeFormat();
+			String dataOtw = product.getDataOtwarcia();
+			String terminWaz = product.getTerminWaznosci();
+			String kategoria = product.getKategoria();
+			String opis = product.getOpis();
+			String image = product.getImage();
+			JSONArray przypoimnienia = new JSONArray(product.getPrzypomnieniaToDB());
+			
+			JSONObject jObj = new JSONObject();
+			jObj.put(DB_NAZWA, nazwa);
+			jObj.put(DB_OKRES_WAZNOSCI, okres);
+			jObj.put(DB_CODE, code);
+			jObj.put(DB_CODE_FORMAT, codeFormat);
+			jObj.put(DB_DATA_OTWARCIA, dataOtw);
+			jObj.put(DB_TERMIN_WAZNOSCI, terminWaz);
+			jObj.put(DB_KATEGORIA, kategoria);
+			jObj.put(DB_OPIS, opis);
+			jObj.put(DB_OBRAZEK, image);
+			jObj.put(DB_PRZYPOMNIENIA, przypoimnienia);
+		
+			json = jObj.toString();
+		} catch (JSONException e) {
+			Log.i("utils", "getJson");
+		}
+		return json;
+	}
+		
 }

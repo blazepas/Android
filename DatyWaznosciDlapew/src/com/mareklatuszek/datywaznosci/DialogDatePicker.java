@@ -2,6 +2,8 @@ package com.mareklatuszek.datywaznosci;
 
 import java.io.ObjectInputStream.GetField;
 
+import com.mareklatuszek.datywznosci.utilities.CommonUtilities;
+
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
@@ -10,16 +12,24 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.EditText;
+import android.widget.Spinner;
 
 public class DialogDatePicker extends Dialog implements android.view.View.OnClickListener {
 	
 	View viewToSetDate;
+	EditText okresWazTextBox;
+	Spinner okresWazSpinner;
 	DatePicker datePicker;
 	Button okButton, anulujButton;
+	
+	CommonUtilities utilities = new CommonUtilities();
 
-	public DialogDatePicker(Context context, View viewToSetDate) {
+	public DialogDatePicker(Context context, View viewToSetDate, EditText okresWazTextBox, Spinner okresWazSpinner) {
 		super(context);
 		this.viewToSetDate = viewToSetDate;
+		this.okresWazTextBox = okresWazTextBox;
+		this.okresWazSpinner = okresWazSpinner;
 	}
 
 	@Override
@@ -61,6 +71,7 @@ public class DialogDatePicker extends Dialog implements android.view.View.OnClic
 			break;
 		case R.id.terminWazButton:
 			((Button) viewToSetDate).setText(choosenDate);
+			setOkresWaz(choosenDate);
 			break;
 		}
 		
@@ -70,6 +81,16 @@ public class DialogDatePicker extends Dialog implements android.view.View.OnClic
 		String choosenDate = "";
 		choosenDate = datePicker.getDayOfMonth() + "/" + (datePicker.getMonth() + 1) + "/" + datePicker.getYear();
 		return choosenDate;
+	}
+	
+	private void setOkresWaz(String choosenDate) {
+		String okres = utilities.parseDateToOkres(choosenDate);
+		String box = utilities.getTextFromOkresWaz(okres);
+		String spinnItem = utilities.getSpinnerItemFromOkresWaz(okres);
+		int spinnPos = utilities.getPosInSpinner(spinnItem, okresWazSpinner);
+		
+		okresWazTextBox.setText(box);
+		okresWazSpinner.setSelection(spinnPos);	
 	}
 		
 }

@@ -2,8 +2,10 @@ package com.mareklatuszek.datywaznosci;
 
 import jim.h.common.android.lib.zxing.integrator.IntentIntegrator;
 import jim.h.common.android.lib.zxing.integrator.IntentResult;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
@@ -18,9 +20,10 @@ import android.widget.ListView;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.MenuItem;
+import com.mareklatuszek.datywznosci.utilities.FinalVariables;
 
 
-public class MainActivity extends SherlockFragmentActivity {
+public class MainActivity extends SherlockFragmentActivity implements FinalVariables {
 
 	DrawerLayout mDrawerLayout;
 	ListView mDrawerList;
@@ -32,12 +35,14 @@ public class MainActivity extends SherlockFragmentActivity {
 	int[] icon;
 	public static int currentFragmentPos = 2;
 	public static int currentFragmentId;
+	public static Uri imageUri;
 	
 	Fragment fragmentDodaj = new FragmentDodaj();
 	Fragment fragmentProdukty = new FragmentProdukty();
 	Fragment fragmentKategorie = new FragmentKategorie();
 	Fragment fragmentPrzypomnienia = new FragmentPrzypomnienia();
 	Fragment fragmentProdukt = new FragmentProdukt();
+	Fragment fragmentEdytuj = new FragmentEdytuj();
 	
 	private CharSequence mDrawerTitle;
 	private CharSequence mTitle;
@@ -151,6 +156,10 @@ public class MainActivity extends SherlockFragmentActivity {
 			ft.replace(R.id.content_frame, fragmentProdukt);
 			ft.commit();
 			return;
+		case 6:
+			ft.replace(R.id.content_frame, fragmentEdytuj);
+			ft.commit();
+			return;
 		}
 		ft.commit();
 		mDrawerList.setItemChecked(position, true);
@@ -191,14 +200,16 @@ public class MainActivity extends SherlockFragmentActivity {
         } else {
         	//TODO wy�wietli� informacj� o nieudanym skanowaniu
         }
+        
+        if ( requestCode == CAMERA_RQ_CODE) { //jesli zrobionozdjecie
+        	setPictureInFragmentDodaj();
+        }
        
 	}
 	
 	@Override
 	public void onAttachFragment(Fragment fragment) {
-	    // TODO Auto-generated method stub
 	    super.onAttachFragment(fragment);
-
 	    currentFragmentId = fragment.getId();
 	}
 	
@@ -209,21 +220,28 @@ public class MainActivity extends SherlockFragmentActivity {
 	private void selectFragmentToStoreCode(String code, String codeFormat) {
 		//TODO sprawdzi� czy w kodzie s� jakie� dane i je przekaza�
 		Log.i("kod", code);
-	
-		Bundle data = new Bundle();
-        data.putString("scanResultCode", code);
-        data.putString("scanResultCodeFormat", codeFormat);
-  
+       
         if (currentFragmentPos == 1) {
         	FragmentManager fragmentManager = getSupportFragmentManager();
         	FragmentDodaj actualFragment = (FragmentDodaj) fragmentManager.findFragmentById(currentFragmentId);
         	actualFragment.setDataFromScan(code, codeFormat);
+
         } else {
+        	Bundle data = new Bundle();
+            data.putString("scanResultCode", code);
+            data.putString("scanResultCodeFormat", codeFormat);
+            
         	fragmentDodaj.setArguments(data);
             selectFragment(1);
-        }
-        
-		
+        }		
+	}
+	
+	private void setPictureInFragmentDodaj() {
+		Log.i("picture", "taken");
+	       
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentDodaj actualFragment = (FragmentDodaj) fragmentManager.findFragmentById(currentFragmentId);
+        actualFragment.setCameraResult();      
 	}
 	
 	public void selectFragmentToShowProduct(Product product) {
@@ -232,6 +250,14 @@ public class MainActivity extends SherlockFragmentActivity {
 
         fragmentProdukt.setArguments(data);
         selectFragment(5);		
+	}
+	
+	public void selectFragmentToEditProduct(Product product) {
+		Bundle data = new Bundle();
+        data.putSerializable("product", product);
+
+        fragmentEdytuj.setArguments(data);
+        selectFragment(6);		
 	}
 	
 	

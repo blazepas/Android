@@ -29,11 +29,17 @@ public class FragmentProdukty extends SherlockFragment {
 		
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		super.onCreateView(inflater, container, savedInstanceState);
 		rootView = inflater.inflate(R.layout.fragment_produkty, container, false);
 		
 		initList();
 		
 		return rootView;
+	}
+	
+	public void onResume() {
+		super.onResume();
+		
 	}
 	
 	private void initList() {

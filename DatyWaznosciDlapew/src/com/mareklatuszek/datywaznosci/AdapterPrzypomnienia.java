@@ -39,7 +39,6 @@ public class AdapterPrzypomnienia extends BaseAdapter implements FinalVariables 
 
 	@Override
 	public Object getItem(int position) {
-		// TODO Auto-generated method stub
 		return przypomnienia.get(position);
 	}
 

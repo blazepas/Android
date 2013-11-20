@@ -52,11 +52,9 @@ public class AdapterDB implements FinalVariables {
 	
 	public boolean updateProduct(Product product) {
 		ContentValues updateProductVal = generateProductContentVal(product);
+		String code = product.getCode();
+		String where = DB_CODE + " = " + code;
 		
-	    //TODO wyszukuje w bazie danego produktu
-		//ustalic co jest id
-		String where = ""; //TODO w zaleznoœci co jest id
-	
 	    return db.update(DB_PRODUCT_TABLE, updateProductVal, where, null) > 0;
 	}
 	
@@ -70,13 +68,13 @@ public class AdapterDB implements FinalVariables {
 		ContentValues updateProductVal = new ContentValues();
 		updateProductVal.put(DB_KATEGORIA, categoryNew);	
 		String whereProd = DB_KATEGORIA + " = " + categoryOld;
-		boolean productStatus = db.update(DB_PRODUCT_TABLE, updateProductVal, whereProd, null) > 0; //aktualizacja kategori w tebeli produktów
+		boolean productStatus = db.update(DB_PRODUCT_TABLE, updateProductVal, whereProd, null) > 0; //aktualizacja kategori w tebeli produktï¿½w
 	
 	    return categoryStatus & productStatus;
 	}
 	
 	public boolean deleteProduct(Product product){
-	    String where = ""; //TODO w zaleznoœci co jest id
+	    String where = ""; //TODO w zaleznoï¿½ci co jest id
 	    return db.delete(DB_PRODUCT_TABLE, where, null) > 0;
 	}
 	
@@ -85,9 +83,9 @@ public class AdapterDB implements FinalVariables {
 	    boolean caategoryStatus = db.delete(DB_CATEGORIES_TABLE, whereCat, new String[]{categoryToDelete}) > 0;
 	    
 		ContentValues updateProductVal = new ContentValues();
-		updateProductVal.put(DB_KATEGORIA, "");	//ustawia pust¹ wartoœæ w kolumnie kategoria
+		updateProductVal.put(DB_KATEGORIA, "");	//ustawia pustï¿½ wartoï¿½ï¿½ w kolumnie kategoria
 		String whereProd = DB_KATEGORIA + " = '" + categoryToDelete + "'";
-		boolean productStatus = db.update(DB_PRODUCT_TABLE, updateProductVal, whereProd, null) > 0; //aktualizacja kategori w tebeli produktów
+		boolean productStatus = db.update(DB_PRODUCT_TABLE, updateProductVal, whereProd, null) > 0; //aktualizacja kategori w tebeli produktï¿½w
 	    
 		Log.i("delCat", categoryToDelete);
 		

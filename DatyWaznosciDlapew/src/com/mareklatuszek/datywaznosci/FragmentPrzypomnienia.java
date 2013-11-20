@@ -11,19 +11,22 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
 import com.actionbarsherlock.app.SherlockFragment;
 import com.mareklatuszek.datywznosci.utilities.CommonUtilities;
 import com.mareklatuszek.datywznosci.utilities.FinalVariables;
 
-public class FragmentPrzypomnienia extends SherlockFragment implements FinalVariables{
+public class FragmentPrzypomnienia extends SherlockFragment implements FinalVariables, OnItemClickListener{
 	
 	View rootView;
 	ListView listPow;
 	AdapterDB adapterDb;
 	AdapterPrzypomnienia adapterPrzyp;
 	ArrayList<HashMap<String, String>> dataToAdpter = new ArrayList<HashMap<String,String>>();
+	ArrayList<Product> products = new ArrayList<Product>();
 	CommonUtilities utiliteis = new CommonUtilities();	
 	
 	@Override
@@ -36,6 +39,24 @@ public class FragmentPrzypomnienia extends SherlockFragment implements FinalVari
 		return rootView;
 	}
 	
+
+	@Override
+	public void onItemClick(AdapterView<?> arg0, View arg1, int pos, long arg3) {
+		HashMap<String, String> przypomnienie = (HashMap<String, String>) adapterPrzyp.getItem(pos);
+		String przypomnienieCode = przypomnienie.get(DB_CODE);
+		
+		for (int i = 0; i < products.size(); i++) {
+			Product product = products.get(i);
+			String productCode = product.getCode();
+			
+			if (przypomnienieCode.contains(productCode)) {				
+				
+				DialogPrzypomnienie dialog = new DialogPrzypomnienie(getActivity(), product);
+				dialog.show();
+			}
+		}		
+	}
+	
 	private void initList() {
 		
 		new AsyncTask<Void, Void, Void>() {
@@ -46,8 +67,7 @@ public class FragmentPrzypomnienia extends SherlockFragment implements FinalVari
 			}
 
 			@Override
-			protected Void doInBackground(Void... params) {
-				ArrayList<Product> products = new ArrayList<Product>();
+			protected Void doInBackground(Void... params) {				
 				adapterDb.open();
 				products = adapterDb.getAllProducts();
 				adapterDb.close();
@@ -59,6 +79,7 @@ public class FragmentPrzypomnienia extends SherlockFragment implements FinalVari
 			@Override
 			protected void onPostExecute(Void v) {
 				listPow.setAdapter(adapterPrzyp);
+				listPow.setOnItemClickListener(FragmentPrzypomnienia.this);
 			}
 		}.execute();
 		
@@ -79,12 +100,14 @@ public class FragmentPrzypomnienia extends SherlockFragment implements FinalVari
 				String dataOtw = product.getDataOtwarcia();
 				String terminWaz = product.getTerminWaznosci();
 				String przypDate = przypomnienia.get(a).get(PRZYP_DATE);
+				String code = product.getCode();
 				
 				HashMap<String, String> przypomnienie = new HashMap<String, String>(); // przypomnienie jako oddzielny byt
 				przypomnienie.put(DB_NAZWA, nazwa);
 				przypomnienie.put(DB_DATA_OTWARCIA, dataOtw);
 				przypomnienie.put(DB_TERMIN_WAZNOSCI, terminWaz);
 				przypomnienie.put(PRZYP_DATE, przypDate);
+				przypomnienie.put(DB_CODE, code);
 				
 				przypomnieniaAll.add(przypomnienie);
 				
@@ -93,6 +116,8 @@ public class FragmentPrzypomnienia extends SherlockFragment implements FinalVari
 		return przypomnieniaAll;
 		
 	}
+
+	
 	
 	
 

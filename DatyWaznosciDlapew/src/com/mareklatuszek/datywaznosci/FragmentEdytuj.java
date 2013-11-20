@@ -56,7 +56,7 @@ import com.mareklatuszek.datywznosci.utilities.Contents;
 import com.mareklatuszek.datywznosci.utilities.FinalVariables;
 import com.mareklatuszek.datywznosci.utilities.QRCodeEncoder;
 
-public class FragmentDodaj extends SherlockFragment implements OnClickListener, OnKeyListener, OnItemSelectedListener, FinalVariables {
+public class FragmentEdytuj extends SherlockFragment implements OnClickListener, OnKeyListener, OnItemSelectedListener, FinalVariables {
 	
 	public static boolean terminWazIsSet = false;
 	boolean takePictureStat = false;
@@ -85,7 +85,13 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		code = tempgetCode();//TODO
 	
 		if(savedInstanceState == null) {
+			Bundle extras = getArguments();
+			Product product = (Product) extras.getSerializable("product");
 			initPodstawowe();
+			initDodatkowe();
+			setViewsFromProduct(product);
+			showDodatkowe();
+			
 		} else {
 			boolean dodatkoweStatus = savedInstanceState.getBoolean("dodatkowe");
 			initPodstawowe();
@@ -137,11 +143,7 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
         	dialogDatePicker.show();
 			break;
 		case R.id.zapiszButton:
-			if (terminWazIsSet) {
-				saveData();
-			} else {
-				// okienko, �e nale�y poda� termin wa�no�ci
-			}			
+			saveData();			
 			break;
 		case R.id.dodatkoweButton:
 			initDodatkowe();
@@ -190,12 +192,14 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		zapiszButton = (Button) rootView.findViewById(R.id.zapiszButton);
 		dodatkoweButton = (Button) rootView.findViewById(R.id.dodatkoweButton);
 		
-		Bundle extras = getArguments(); // dane przes�ane do fragmentu
-		if (extras != null) {
-			code = extras.getString("scanResultCode");
-			codeFormat = extras.getString("scanResultCodeFormat");
+		Bundle extras = getArguments();
+		code = extras.getString("scanResultCode");
+		codeFormat = extras.getString("scanResultCodeFormat");
+		if (code != null) {
 			setDataFromScan(code, codeFormat); 
 		}
+			
+
 		
 		barcodeImage.setOnClickListener(this);
 		zapiszButton.setOnClickListener(this);	
@@ -322,7 +326,7 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 				
 			@Override
 			protected void onPreExecute() {
-				progressDialog =ProgressDialog.show(getActivity(), "Dodaję", "Dodawanie do bazy");
+				progressDialog =ProgressDialog.show(getActivity(), "Aktualizuję", "Dodawanie do bazy");
 			}
 
 			@Override
@@ -348,7 +352,7 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		//TODO sprawdza w bazie czy jest ju� taki produkt
 		//je�li tak - proponuje inn� nazw�
 		
-		boolean storeStatus = dbAdapter.insertProduct(product);
+		boolean storeStatus = dbAdapter.updateProduct(product);
 		dbAdapter.close();
 		
 		return storeStatus; //je�li zapisze do poprawnie
@@ -480,11 +484,7 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 	}
 	
 	private String getTerminWaznosci() {
-		if (terminWazIsSet) {
-			return terminWazButton.getText().toString();
-		} else {
-			return "";
-		}
+		return terminWazButton.getText().toString();
 	}
 	
 	private ArrayList<HashMap<String, String>> getPrzypomnienia() {
