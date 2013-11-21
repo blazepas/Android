@@ -1,11 +1,23 @@
 package com.mareklatuszek.datywaznosci;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore.Images;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +44,8 @@ public class FragmentProdukt extends SherlockFragment {
 	LinearLayout layDodatkoweShow, dodatkowe, przypomnieniaLayout;
 	TextView nazwaTxt, okresTxt, dataOtwTxt, terminWazTxt, kategoriaTxt, opisTxt;
 	ImageView barcodeImage, obrazekImage;
+	
+	Bitmap codeBmp;
 	
 		
 	@Override
@@ -81,7 +95,7 @@ public class FragmentProdukt extends SherlockFragment {
 		String okres = product.getOkresWaznosci();
 		String code = product.getCode();
 		String codeFormat = product.getCodeFormat();
-		Bitmap codeBmp = utilities.encodeCodeToBitmap(code, codeFormat, getActivity());
+		codeBmp = utilities.encodeCodeToBitmap(code, codeFormat, getActivity());
 		
 		nazwaTxt.setText(nazwa);
 		okresTxt.setText(okres);
@@ -133,18 +147,43 @@ public class FragmentProdukt extends SherlockFragment {
 	}
 	
 	private void sendEmail() {
-		String json = utilities.getJsonFromProduct(product);
+		Bitmap bitmap = codeBmp;
+		Uri u = null;
+		
+		try {
+			File mFile = savebitmap(bitmap);
+			u = Uri.fromFile(mFile);
+		} catch (IOException e) {
+			Log.i("sendEmail", "save file error");
+		}
+		//TODO jesli nie ma kardy sd 
 
 		Intent i = new Intent(Intent.ACTION_SEND);
-		i.setType("message/rfc822");
+		i.setType("application/image");
 		i.putExtra(Intent.EXTRA_EMAIL  , new String[]{"marek.lat@gmail.com"});
-		i.putExtra(Intent.EXTRA_SUBJECT, "Śmiało wysyłać, dam znać czy działa");
-		i.putExtra(Intent.EXTRA_TEXT   , json);
+		i.putExtra(Intent.EXTRA_SUBJECT, "Test");
+		i.putExtra(Intent.EXTRA_TEXT   , "W załączniku przesyłam kod, który po zeskanowaniu programem TPP doda go do bazy danych");
+		i.putExtra(Intent.EXTRA_STREAM, u);
 		try {
 		    startActivity(Intent.createChooser(i, "Wysyłanie..."));
 		} catch (android.content.ActivityNotFoundException ex) {
-		    Toast.makeText(getActivity(), "Brak klientów email", Toast.LENGTH_SHORT).show();
+		    Toast.makeText(getActivity(), "Brak klienta email", Toast.LENGTH_SHORT).show();
 		}
 	}
+	
+	private File savebitmap(Bitmap bmp) throws IOException {
+		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+		bmp.compress(Bitmap.CompressFormat.JPEG, 40, bytes);
 
+		//you can create a new file name "test.jpg" in sdcard folder.
+		File f = new File(Environment.getExternalStorageDirectory() + File.separator + "code.jpg");
+		f.createNewFile();
+		//write the bytes in file
+		FileOutputStream fo = new FileOutputStream(f);
+		fo.write(bytes.toByteArray());
+
+		// remember close de FileOutput
+		fo.close();
+		return f;
+	}
 }

@@ -1,5 +1,8 @@
 package com.mareklatuszek.datywznosci.utilities;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -9,6 +12,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -20,7 +24,10 @@ import android.app.Activity;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Environment;
 import android.os.PowerManager;
 import android.provider.MediaStore;
 import android.support.v4.app.FragmentActivity;
@@ -29,6 +36,7 @@ import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 
@@ -167,6 +175,35 @@ public class CommonUtilities implements FinalVariables {
 		okresDate = parseMillisToDate(okresInMillis);
 		
 		return okresDate;
+	}
+	
+	public Product parseCodeToProduct(String code){
+		Product product = new Product();
+		
+		try {
+			JSONObject jObj = new JSONObject(code);
+			
+			String nazwa = jObj.getString(DB_NAZWA);
+			String dataOtwarcia = jObj.getString(DB_DATA_OTWARCIA);
+			String kategoria = jObj.getString(DB_KATEGORIA);
+			String okresWaznosci = jObj.getString(DB_OKRES_WAZNOSCI);
+			String opis = jObj.getString(DB_OPIS);
+			String przypomnieniaJson = jObj.getString(DB_PRZYPOMNIENIA);
+			String terminWaznosci = jObj.getString(DB_TERMIN_WAZNOSCI);
+			
+			product.setCodeFormat("QR_CODE");
+			product.setNazwa(nazwa);
+			product.setDataOtwarcia(dataOtwarcia);			
+			product.setKategoria(kategoria);		
+			product.setOkresWaznosci(okresWaznosci);		
+			product.setOpis(opis);
+			product.setPrzypomnieniaFromDB(przypomnieniaJson);
+			product.setTerminWaznosci(terminWaznosci);
+			
+			return product;
+		} catch (JSONException e) {
+			return product;
+		}			
 	}
 	
 	public String dateToWords(long startTimeInMillis)
@@ -353,7 +390,6 @@ public class CommonUtilities implements FinalVariables {
 		try {
 			String nazwa = product.getNazwa();
 			String okres = product.getOkresWaznosci();
-			String code = product.getCode();
 			String codeFormat = product.getCodeFormat();
 			String dataOtw = product.getDataOtwarcia();
 			String terminWaz = product.getTerminWaznosci();
@@ -365,20 +401,42 @@ public class CommonUtilities implements FinalVariables {
 			JSONObject jObj = new JSONObject();
 			jObj.put(DB_NAZWA, nazwa);
 			jObj.put(DB_OKRES_WAZNOSCI, okres);
-			jObj.put(DB_CODE, code);
 			jObj.put(DB_CODE_FORMAT, codeFormat);
 			jObj.put(DB_DATA_OTWARCIA, dataOtw);
 			jObj.put(DB_TERMIN_WAZNOSCI, terminWaz);
 			jObj.put(DB_KATEGORIA, kategoria);
 			jObj.put(DB_OPIS, opis);
-			jObj.put(DB_OBRAZEK, image);
 			jObj.put(DB_PRZYPOMNIENIA, przypoimnienia);
 		
 			json = jObj.toString();
 		} catch (JSONException e) {
-			Log.i("utils", "getJson");
+			Log.i("utils", "getJsonFromProduct");
 		}
 		return json;
 	}
-		
+	
+	public boolean validateCode(String code, String codeFormat) {
+		if(codeFormat.equals("QR_CODE")){
+			try {
+				Product product = new Product();
+				String productJson = getJsonFromProduct(product);
+				
+				JSONObject jObjCode = new JSONObject(code);
+				JSONObject jObjEmpty = new JSONObject(productJson);
+				JSONArray emptyNames = jObjEmpty.names();
+							
+				for (int i = 0; i < emptyNames.length(); i++) {
+					if (!jObjCode.has(emptyNames.getString(i))) {
+						return false;
+					}
+				}
+				return true;
+			} catch (JSONException e) {
+				Log.i("Utils", "code is not product");
+				return false;
+			}	
+		} else {
+			return false;
+		}
+	}
 }

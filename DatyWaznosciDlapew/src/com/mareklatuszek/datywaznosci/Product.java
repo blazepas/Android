@@ -33,7 +33,7 @@ public class Product implements FinalVariables, Serializable {
 		this.terminWaznosci = "";
 		this.kategoria = "";
 		this.code = "";
-		this.codeFormat = "";
+		this.codeFormat = "QR_CODE";
 		this.image = "";
 		this.opis = "";
 		this.przypomnienia = new ArrayList<HashMap<String,String>>();

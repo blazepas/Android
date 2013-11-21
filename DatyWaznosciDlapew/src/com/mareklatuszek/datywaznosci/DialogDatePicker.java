@@ -52,7 +52,6 @@ public class DialogDatePicker extends Dialog implements android.view.View.OnClic
 		switch (v.getId()) {
 		case R.id.okButton:
 			setChosenDate();
-			FragmentDodaj.terminWazIsSet = true;
 			break;
 		case R.id.cancelButton:
 			break;

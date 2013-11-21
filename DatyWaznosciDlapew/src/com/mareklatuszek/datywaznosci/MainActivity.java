@@ -42,7 +42,7 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
 	Fragment fragmentKategorie = new FragmentKategorie();
 	Fragment fragmentPrzypomnienia = new FragmentPrzypomnienia();
 	Fragment fragmentProdukt = new FragmentProdukt();
-	Fragment fragmentEdytuj = new FragmentEdytuj();
+	Fragment fragmentEdytuj;
 	
 	private CharSequence mDrawerTitle;
 	private CharSequence mTitle;
@@ -214,12 +214,17 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
 	}
 	
 	public void startScanner() {
+		if (currentFragmentPos != 1) {
+            selectFragment(1);
+        }	
+		
 		IntentIntegrator.initiateScan(MainActivity.this);
 	}
 	
 	private void selectFragmentToStoreCode(String code, String codeFormat) {
 		//TODO sprawdzi� czy w kodzie s� jakie� dane i je przekaza�
 		Log.i("kod", code);
+		Log.i("fromat kodu", codeFormat);
        
         if (currentFragmentPos == 1) {
         	FragmentManager fragmentManager = getSupportFragmentManager();
@@ -244,6 +249,13 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
         actualFragment.setCameraResult();      
 	}
 	
+	public void setGeneratedCodeInFragmentDodaj(String code, String codeFormat) {
+	       
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentDodaj actualFragment = (FragmentDodaj) fragmentManager.findFragmentById(currentFragmentId);
+        actualFragment.saveProductFromDialogGeneruj(code, codeFormat);     
+	}
+	
 	public void selectFragmentToShowProduct(Product product) {
 		Bundle data = new Bundle();
         data.putSerializable("product", product);
@@ -255,9 +267,15 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
 	public void selectFragmentToEditProduct(Product product) {
 		Bundle data = new Bundle();
         data.putSerializable("product", product);
-
+        fragmentEdytuj = new FragmentEdytuj();
         fragmentEdytuj.setArguments(data);
         selectFragment(6);		
+	}
+	
+	public void removeFragmentEdytuj() {
+		
+		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+		ft.remove(fragmentEdytuj).commit();
 	}
 	
 	

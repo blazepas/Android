@@ -51,6 +51,7 @@ import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragment;
 import com.google.zxing.WriterException;
+import com.mareklatuszek.datywznosci.utilities.BitmapLoader;
 import com.mareklatuszek.datywznosci.utilities.CommonUtilities;
 import com.mareklatuszek.datywznosci.utilities.Contents;
 import com.mareklatuszek.datywznosci.utilities.FinalVariables;
@@ -58,8 +59,9 @@ import com.mareklatuszek.datywznosci.utilities.QRCodeEncoder;
 
 public class FragmentDodaj extends SherlockFragment implements OnClickListener, OnKeyListener, OnItemSelectedListener, FinalVariables {
 	
-	public static boolean terminWazIsSet = false;
 	boolean takePictureStat = false;
+	boolean dodatkoweIsShown = false;
+	int tempSpinnOkresPos = 0;
 	String currentDate = "";
 	String code = "";
 	String codeFormat = "";
@@ -82,44 +84,69 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		currentDate = utilities.getCurrentDate();
 		dbAdapter = new AdapterDB(getActivity());
 		
-		code = tempgetCode();//TODO
-	
+		initPodstawowe();
+		initDodatkowe();
+		
 		if(savedInstanceState == null) {
-			initPodstawowe();
-		} else {
-			boolean dodatkoweStatus = savedInstanceState.getBoolean("dodatkowe");
-			initPodstawowe();
-			Product product = (Product) savedInstanceState.getSerializable("product");			
-			if (dodatkoweStatus) {
-				initDodatkowe();
-				
-				Bitmap bmp = savedInstanceState.getParcelable("image");
-				obrazekImage.setImageBitmap(bmp);
-				
+			Bundle extras = getArguments();
+		
+			if (extras != null) {//TODO
+				Product bundleProduct = (Product) extras.getSerializable("product");
+				setViewsFromProduct(bundleProduct);
 				showDodatkowe();
 			}
-			setViewsFromProduct(product);
+			
+		} else {
+			Product savedStateProduct = (Product) savedInstanceState.getSerializable("product");
+			boolean ifDodatkoweExpand = savedInstanceState.getBoolean("dodatkowe");
+			tempSpinnOkresPos = savedInstanceState.getInt("tempSpinnOkresPos");
+			
+			setViewsFromProduct(savedStateProduct);
+			
+			if (ifDodatkoweExpand) { 
+				showDodatkowe();
+			}
 		}
 		
+		
+//	
+//		if(savedInstanceState == null) {
+//			initPodstawowe();
+//		} else {
+//			boolean dodatkoweStatus = savedInstanceState.getBoolean("dodatkowe");
+//			initPodstawowe();
+//			Product product = (Product) savedInstanceState.getSerializable("product");			
+//			if (dodatkoweStatus) {
+//				initDodatkowe();
+//				
+//				Bitmap bmp = savedInstanceState.getParcelable("image");
+//				obrazekImage.setImageBitmap(bmp);
+//				
+//				showDodatkowe();
+//			}
+//			setViewsFromProduct(product);
+//		}
+//		
 		return rootView;
 	}
 	
 	@Override
 	public void onSaveInstanceState(Bundle bundle) {
 		super.onSaveInstanceState(bundle);
-	 
-		Product product = prepareDataToStore();
+
+		Product productToSave = prepareDataToStore();
 		
-		if (dodatkowe != null) { //tylko dla obrazka
-			Bitmap bitmap = getBitmapFromObrazek();
-			bundle.putParcelable("image", bitmap);
+		if (dodatkoweIsShown) { 
+//			Bitmap bitmap = getBitmapFromObrazek();
+//			bundle.putParcelable("image", bitmap);
 			bundle.putBoolean("dodatkowe", true);
 
 		} else {
 			bundle.putBoolean("dodatkowe", false);
 		}
 		
-	    bundle.putSerializable("product", product);     
+		bundle.putInt("tempSpinnOkresPos", tempSpinnOkresPos);
+	    bundle.putSerializable("product", productToSave);     
 	}
 	 	
 	@Override
@@ -137,14 +164,9 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
         	dialogDatePicker.show();
 			break;
 		case R.id.zapiszButton:
-			if (terminWazIsSet) {
-				saveData();
-			} else {
-				// okienko, �e nale�y poda� termin wa�no�ci
-			}			
+			zapisz();
 			break;
 		case R.id.dodatkoweButton:
-			initDodatkowe();
 			showDodatkowe();
 			break;	
 		case R.id.obrazekImage:
@@ -162,9 +184,7 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 	public boolean onKey(View v, int keyCode, KeyEvent event) {
 		switch (v.getId()) {
 		case R.id.okresWazTextBox:
-			if (dodatkowe != null) {
-				setTerminWaz();
-			}
+			setTerminWaz();
 			break;
 		}
 		return false;
@@ -172,15 +192,17 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 	
 	@Override
 	public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-		if (dodatkowe != null) {
+		if (arg2 != tempSpinnOkresPos)
+		{
 			setTerminWaz();
 		}
+		tempSpinnOkresPos = arg2;
 	}
 
 	@Override
 	public void onNothingSelected(AdapterView<?> arg0) {
 	}
-			
+				
 	private void initPodstawowe() {		
 		podstawowe = (LinearLayout) rootView.findViewById(R.id.podstawowe);
 		barcodeImage = (ImageView) rootView.findViewById(R.id.barcodeImage);
@@ -190,7 +212,7 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		zapiszButton = (Button) rootView.findViewById(R.id.zapiszButton);
 		dodatkoweButton = (Button) rootView.findViewById(R.id.dodatkoweButton);
 		
-		Bundle extras = getArguments(); // dane przes�ane do fragmentu
+		Bundle extras = getArguments(); // TODO jesli zeskanuje
 		if (extras != null) {
 			code = extras.getString("scanResultCode");
 			codeFormat = extras.getString("scanResultCodeFormat");
@@ -202,6 +224,7 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		dodatkoweButton.setOnClickListener(this);
 		okresWazTextBox.setOnKeyListener(this);
 		okresWazSpinner.setOnItemSelectedListener(this);
+
 	}
 	
 	private void initDodatkowe() {		
@@ -259,20 +282,21 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		kategorie.add("Brak kategorii");
 		Collections.reverse(kategorie);
 		dbAdapter.close();
-		
+	
 		ArrayAdapter<String> spinnerAdapter;
 		spinnerAdapter= new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, kategorie);
 		kategorieSpinner.setAdapter(spinnerAdapter);
 	}
 			
 	private void showDodatkowe() {
+		dodatkoweIsShown = true;
 		utilities.expandLinearLayout(dodatkowe);
 		dodatkoweButton.setVisibility(View.GONE);
 	}
 		
 	public void takePhoto() {
         Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
-        File photo = new File(Environment.getExternalStorageDirectory(),  "Pic.jpg");
+        File photo = new File(Environment.getExternalStorageDirectory(),  "TPP" + (System.currentTimeMillis()/1000) + ".jpg");
         intent.putExtra(MediaStore.EXTRA_OUTPUT,
                 Uri.fromFile(photo));
         MainActivity.imageUri = Uri.fromFile(photo);
@@ -289,29 +313,28 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		String typKodu = codeFormat;
 		
 		product.setNazwa(nazwa);
-		product.setOkresWaznosci(okresWaznosci);
-			
+		product.setOkresWaznosci(okresWaznosci);			
 		product.setCode(kod);
 		product.setCodeFormat(typKodu);
 		
-		if (dodatkowe != null) {
-			String dataOtwarcia = dataOtwButton.getText().toString();			
-			String terminWaznosci = getTerminWaznosci();
-			String kategoria = getKategoria();
-			String obrazek = ""; //TODO
-			String opis = opisTxtBox.getText().toString();
-			ArrayList<HashMap<String, String>> przypomnienia = getPrzypomnienia();
-			
-			product.setDataOtwarcia(dataOtwarcia);	
-			product.setTerminWaznosci(terminWaznosci);
-			product.setKategoria(kategoria);
-			product.setImage(obrazek);
-			product.setOpis(opis);
-			product.setPrzypomnienia(przypomnienia);
-		} else {
-			product.setDataOtwarcia(currentDate);
-			product.setTerminWaznosci(utilities.parseOkresToDate(okresWaznosci));
-		}
+
+		String dataOtwarcia = dataOtwButton.getText().toString();			
+		String terminWaznosci = getTerminWaznosci();
+		String kategoria = getKategoria();
+//		String obrazek = getRealPathFromURI(MainActivity.imageUri);//TODO
+		String obrazek = "";
+		String opis = opisTxtBox.getText().toString();
+		ArrayList<HashMap<String, String>> przypomnienia = getPrzypomnienia();
+		
+		product.setDataOtwarcia(dataOtwarcia);	
+		product.setTerminWaznosci(terminWaznosci);//TODO niemoze byc pusty
+		product.setKategoria(kategoria);
+		product.setImage(obrazek);
+		product.setOpis(opis);
+		product.setPrzypomnienia(przypomnienia);
+
+//		product.setTerminWaznosci(utilities.parseOkresToDate(okresWaznosci));	
+
 	
 		return product;
 	}
@@ -334,11 +357,17 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 			@Override
 			protected void onPostExecute(Void v) {
 				//TODO zrobic okienko jesli niepowodzenie
-				terminWazIsSet = false;
 				progressDialog.dismiss();
 				((MainActivity) getActivity()).selectFragment(2); // prze��cza a ekran listy produkt�w
 			}
 		}.execute();
+	}
+	
+	public void saveProductFromDialogGeneruj(String code, String codeFormat) {
+		this.code = code;
+		this.codeFormat = codeFormat;
+		
+		saveData();
 	}
 	
 	private boolean storeAllToDatabase() {
@@ -355,45 +384,46 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 	}
 	
 	private void setViewsFromProduct(Product product) {
-		if (dodatkowe != null) {	
-			String dataOtwarcia = product.getDataOtwarcia();			
-			String terminWaznosci = product.getTerminWaznosci();
-			String kategoria = product.getKategoria();
-			int kategoriaId = utilities.getPosInSpinner(kategoria, kategorieSpinner);
-			Log.i("setViews", "katId"+kategoriaId);
-			String obrazek = ""; //TODO
-			String opis = product.getOpis();
-			ArrayList<HashMap<String, String>> przypomnienia = product.getPrzypomnienia();
-			
-			dataOtwButton.setText(dataOtwarcia);
-			terminWazButton.setText(terminWaznosci);
-			kategorieSpinner.setSelection(kategoriaId);
-//			product.setImage(obrazek); TODO
-			opisTxtBox.setText(opis);
-			setPrzypomnienia(przypomnienia);
-		}
-		
+	
 		String nazwa = product.getNazwa();
 		String okresWaznosci = product.getOkresWaznosci();
 		String kod = product.getCode();
 		String typKodu = product.getCodeFormat();
-		this.code = kod;
-		this.codeFormat = typKodu;
 		String okresText = utilities.getTextFromOkresWaz(okresWaznosci);
 		String okresSpinnVal = utilities.getSpinnerItemFromOkresWaz(okresWaznosci);
 		int okresSpinPos = utilities.getPosInSpinner(okresSpinnVal, okresWazSpinner);
 		
 		nazwaTextBox.setText(nazwa);
 		okresWazTextBox.setText(okresText);
-		okresWazSpinner.setSelection(okresSpinPos);;
-		setDataFromScan(kod, typKodu);				
+		okresWazSpinner.setSelection(okresSpinPos);
+		if (!kod.equals("")) {
+			setCodeImage(kod, typKodu);
+		}		
+		
+		String dataOtwarcia = product.getDataOtwarcia();			
+		String terminWaznosci = product.getTerminWaznosci();
+		String kategoria = product.getKategoria();
+		int kategoriaId = utilities.getPosInSpinner(kategoria, kategorieSpinner);
+		String imagePath = product.getImage();
+		Bitmap imageBmp = BitmapLoader.loadBitmap(imagePath, 100, 100);
+		String opis = product.getOpis();
+		ArrayList<HashMap<String, String>> przypomnienia = product.getPrzypomnienia();
+		
+		dataOtwButton.setText(dataOtwarcia);
+		terminWazButton.setText(terminWaznosci);
+		kategorieSpinner.setSelection(kategoriaId);
+		obrazekImage.setImageBitmap(imageBmp);
+		opisTxtBox.setText(opis);
+		setPrzypomnienia(przypomnienia);	
 	}
 	
 	private void setPrzypomnienia(ArrayList<HashMap<String, String>> przypomnienia) { //TODO naprawić, dubluje sie
 		
 		int przypCount = przypomnienia.size();
 		
-		przypLayout.removeAllViews();
+		if (przypCount > 0) {
+			przypLayout.removeAllViews();
+		}
 		
 		for(int i = 0; i < przypCount; i++) {
 			
@@ -410,6 +440,8 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 			Spinner przypSpinner = (Spinner) row.findViewById(R.id.przypSpinner);
 			Button przypButton = (Button) row.findViewById(R.id.przypButton);
 						
+
+			
 			przypTextBox.setText(boxTxt);
 			przypSpinner.setSelection(spinnerPos);
 					
@@ -445,10 +477,23 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 	}
 	
 	public void setDataFromScan(String code, String codeFormat) {
+		if (utilities.validateCode(code, codeFormat)) { //jeśli kod zawiera produkt
+			Product product = utilities.parseCodeToProduct(code);
+			product.setCode(code);
+			product.setCodeFormat(codeFormat);
+			setViewsFromProduct(product);
+			Log.i("Validate", "true");
+		} else {
+			Log.i("Validate", "false");
+			setCodeImage(code, codeFormat);
+		}	
+	}
+	
+	private void setCodeImage(String code, String codeFormat) {
 		this.code = code;
 		this.codeFormat = codeFormat;
 		Bitmap bmp = utilities.encodeCodeToBitmap(code, codeFormat, getActivity());
-		barcodeImage.setImageBitmap(bmp);	
+		barcodeImage.setImageBitmap(bmp);
 	}
 		
 	public void setCameraResult() { 
@@ -457,8 +502,7 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
         ContentResolver cr = getActivity().getContentResolver();
         Bitmap bitmap;
         try {
-             bitmap = android.provider.MediaStore.Images.Media
-             .getBitmap(cr, selectedImage);
+        	bitmap = BitmapLoader.loadBitmap(getRealPathFromURI(selectedImage), 100, 100);
 
             obrazekImage.setImageBitmap(bitmap);
             Toast.makeText(getActivity(), selectedImage.toString(),
@@ -480,11 +524,8 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 	}
 	
 	private String getTerminWaznosci() {
-		if (terminWazIsSet) {
-			return terminWazButton.getText().toString();
-		} else {
-			return "";
-		}
+
+		return terminWazButton.getText().toString();
 	}
 	
 	private ArrayList<HashMap<String, String>> getPrzypomnienia() {
@@ -499,23 +540,26 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 			Spinner przypSpinner = (Spinner) row.findViewById(R.id.przypSpinner);
 			
 			String boxTxt = przypTextBox.getText().toString();
-			String spinnerPos = String.valueOf(przypSpinner.getSelectedItemPosition());
-			String przypHour = "14";//TODO
-			String terminWaz = terminWazButton.getText().toString();
-			String przypDate = "0";
-			try {
-				long dateInMillis = utilities.parsePrzypmnienieToDate(boxTxt, spinnerPos, terminWaz, przypHour);
-				przypDate = String.valueOf(dateInMillis);
-			} catch (ParseException e) {
-				Log.i("getPrzypomnienia", "parse to date error");
-			}
 			
-			przypomnienie.put(PRZYP_TEXT_BOX, boxTxt);
-			przypomnienie.put(PRZYP_SPINNER, spinnerPos);
-			przypomnienie.put(PRZYP_HOUR, przypHour);
-			przypomnienie.put(PRZYP_DATE, przypDate);
-			
-			przypomnienia.add(przypomnienie);
+			if (!boxTxt.equals("")) {
+				String spinnerPos = String.valueOf(przypSpinner.getSelectedItemPosition());
+				String przypHour = "14";//TODO
+				String terminWaz = terminWazButton.getText().toString();
+				String przypDate = "0";
+				try {
+					long dateInMillis = utilities.parsePrzypmnienieToDate(boxTxt, spinnerPos, terminWaz, przypHour);
+					przypDate = String.valueOf(dateInMillis);
+				} catch (ParseException e) {
+					Log.i("getPrzypomnienia", "parse to date error");
+				}
+				
+				przypomnienie.put(PRZYP_TEXT_BOX, boxTxt);
+				przypomnienie.put(PRZYP_SPINNER, spinnerPos);
+				przypomnienie.put(PRZYP_HOUR, przypHour);
+				przypomnienie.put(PRZYP_DATE, przypDate);
+				
+				przypomnienia.add(przypomnienie);
+			}			
 		}
 		
 		return przypomnienia;
@@ -554,8 +598,9 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 	private void initPrzypomnienia() {
 		final LayoutInflater inflater = getActivity().getLayoutInflater();
 		LinearLayout row = (LinearLayout) inflater.inflate(R.layout.listview_add_powiadomienia, null);
-		Button przycisk = (Button) row.findViewById(R.id.przypButton);
-		przycisk.setOnClickListener(new OnClickListener() {
+		Button button = (Button) row.findViewById(R.id.przypButton);
+		
+		button.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
@@ -566,5 +611,40 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 			}
 		});
 		przypLayout.addView(row);
+	}
+	
+	private String getRealPathFromURI(Uri contentUri) {
+	    String[] proj = { MediaStore.Images.Media.DATA };
+	    Cursor cursor = getActivity().managedQuery(contentUri, proj, null, null, null);
+	    if (cursor == null) {
+	      return contentUri.getPath();
+	    }
+	    int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+	    cursor.moveToFirst();
+	    return cursor.getString(column_index);
+	}
+	
+	private Bitmap getBitmapFromPath(String path) {
+		File imgFile = new  File(path);
+//		if(imgFile.exists()){ 
+
+		    Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+		    return myBitmap;
+//		}
+	}
+	
+	private void zapisz() {
+		if (!code.equals("")) {
+			saveData();
+		} else {
+			String nazwa = nazwaTextBox.getText().toString();
+			String termin = terminWazButton.getText().toString();
+			if (nazwa.equals("") || termin.equals("") || termin.equals("Wprowadź datę")) {
+				Toast.makeText(getActivity(), "Należy podać nazwę i okres ważności", 1500).show();
+			} else {
+				DialogGeneruj dialogGen = new DialogGeneruj(getActivity(), prepareDataToStore());
+				dialogGen.show();	
+			}
+		}	
 	}
 }
