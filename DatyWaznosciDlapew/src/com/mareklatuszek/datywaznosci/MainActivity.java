@@ -50,6 +50,8 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		imageUri = Uri.parse("");
+		
 		// Layout wysuwanego menu
 		setContentView(R.layout.drawer_main);
 
