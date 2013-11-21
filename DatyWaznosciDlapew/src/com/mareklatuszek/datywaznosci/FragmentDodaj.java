@@ -321,8 +321,7 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		String dataOtwarcia = dataOtwButton.getText().toString();			
 		String terminWaznosci = getTerminWaznosci();
 		String kategoria = getKategoria();
-//		String obrazek = getRealPathFromURI(MainActivity.imageUri);//TODO
-		String obrazek = "";
+		String obrazek = getRealPathFromURI(MainActivity.imageUri);
 		String opis = opisTxtBox.getText().toString();
 		ArrayList<HashMap<String, String>> przypomnienia = getPrzypomnienia();
 		
