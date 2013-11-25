@@ -71,9 +71,7 @@ public class AdapterPrzypomnienia extends BaseAdapter implements FinalVariables 
         pozostaloPow.setText(pozostaloText);
         terminWazPow.setText(terminWaz);
         progressPow.setProgress(progress);
-       
-        Log.i("adapter", position+"");
-        
+               
 		return vi;
 	}
 	

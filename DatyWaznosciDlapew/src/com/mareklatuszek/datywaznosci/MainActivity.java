@@ -15,13 +15,14 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.MenuItem;
 import com.mareklatuszek.datywznosci.utilities.FinalVariables;
-
 
 public class MainActivity extends SherlockFragmentActivity implements FinalVariables {
 
@@ -29,13 +30,15 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
 	ListView mDrawerList;
 	ActionBarDrawerToggle mDrawerToggle;
 	AdapterMenu mMenuAdapter;
+	AdapterDB adapterDb;
 	
 	String[] title;
 	String[] subtitle;
 	int[] icon;
 	public static int currentFragmentPos = 2;
 	public static int currentFragmentId;
-	public static Uri imageUri;
+	public static Uri imageUri = new Uri.Builder().build();
+	public static boolean notification = false;
 	
 	Fragment fragmentDodaj = new FragmentDodaj();
 	Fragment fragmentProdukty = new FragmentProdukty();
@@ -46,11 +49,34 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
 	
 	private CharSequence mDrawerTitle;
 	private CharSequence mTitle;
+	
+    @Override   
+    public void onResume()
+    {
+    	super.onResume();
+    	
+    	if(notification)
+    	{
+    		
+    		String productCode = getIntent().getStringExtra("productCode");
+            String timeInMillis = getIntent().getStringExtra("timeInMillis");
+            notification = false;
+            if (productCode != null & timeInMillis != null) {
+            	
+        		onNotification(productCode, timeInMillis);
+            } else {
+            	Log.i("dupa", "blada");
+            }
+    	}
+    	
+    }
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		imageUri = Uri.parse("");
+		this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+		adapterDb = new AdapterDB(this);
+		
 		
 		// Layout wysuwanego menu
 		setContentView(R.layout.drawer_main);
@@ -191,28 +217,49 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
 	
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
-        if (scanResult != null) {
-        	String code = scanResult.getContents();
-        	String codeFormat = scanResult.getFormatName();
-        	if (code != null & codeFormat != null) {
-        		selectFragmentToStoreCode(code, codeFormat);
-        	}
-        	
-        } else {
-        	//TODO wy�wietli� informacj� o nieudanym skanowaniu
-        }
-        
-        if ( requestCode == CAMERA_RQ_CODE) { //jesli zrobionozdjecie
-        	setPictureInFragmentDodaj();
-        }
-       
+     
+		if (resultCode == RESULT_OK) {
+			if (requestCode == CAMERA_ADD_RQ_CODE) {
+				imageUri = intent.getData();
+				setPictureInFragmentDodaj();
+			} else if (requestCode == GALLERY_ADD_RQ_CODE) {
+				imageUri = intent.getData();
+				setPictureInFragmentDodaj();
+			} else if (requestCode == CAMERA_EDIT_RQ_CODE) {
+				imageUri = intent.getData();
+				setPictureInFragmentEdytuj();
+			} else if (requestCode == GALLERY_EDIT_RQ_CODE) {
+				imageUri = intent.getData();
+				setPictureInFragmentEdytuj();
+	        } else {
+	        	IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
+		        if (scanResult != null) {
+		        	String code = scanResult.getContents();
+		        	String codeFormat = scanResult.getFormatName();
+		        	if(code != null & codeFormat != null) {
+		        		selectFragmentToStoreCode(code, codeFormat);  
+		        	}     	       	
+		        }
+	        }
+		}
+		
+		
 	}
 	
 	@Override
 	public void onAttachFragment(Fragment fragment) {
 	    super.onAttachFragment(fragment);
 	    currentFragmentId = fragment.getId();
+	}
+	
+	private void onNotification(String productId, String alarmTime) {	
+		adapterDb.open();
+		Product product = adapterDb.getProduct(productId);
+		adapterDb.close();
+		
+		DialogPrzypomnienie dialogPrzypomnienie = new DialogPrzypomnienie(this, product);
+		dialogPrzypomnienie.show();
+		removePrzypomnienie(productId, alarmTime);
 	}
 	
 	public void startScanner() {
@@ -251,13 +298,14 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
         actualFragment.setCameraResult();      
 	}
 	
-	public void setGeneratedCodeInFragmentDodaj(String code, String codeFormat) {
+	private void setPictureInFragmentEdytuj() {
+		Log.i("picture", "taken");
 	       
         FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentDodaj actualFragment = (FragmentDodaj) fragmentManager.findFragmentById(currentFragmentId);
-        actualFragment.saveProductFromDialogGeneruj(code, codeFormat);     
+        FragmentEdytuj actualFragment = (FragmentEdytuj) fragmentManager.findFragmentById(currentFragmentId);
+        actualFragment.setCameraResult();      
 	}
-	
+		
 	public void selectFragmentToShowProduct(Product product) {
 		Bundle data = new Bundle();
         data.putSerializable("product", product);
@@ -280,5 +328,17 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
 		ft.remove(fragmentEdytuj).commit();
 	}
 	
+	private void removePrzypomnienie(String productId, String alarmTime) {
+		adapterDb.open();
+		boolean removeStatus = adapterDb.deletePrzypomnienie(productId, alarmTime);
+		adapterDb.close();	
+	}
+	
+	private boolean chcekIfCodeIsInDB(String code) {
+		adapterDb.open();
+		boolean status = adapterDb.chckIfProductIsInDB(code);
+		adapterDb.close();
+		return status;
+	}
 	
 }

@@ -1,8 +1,9 @@
 package com.mareklatuszek.datywznosci.utilities;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.OutputStream;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -11,8 +12,8 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -20,25 +21,24 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.app.Activity;
-import android.database.Cursor;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Environment;
-import android.os.PowerManager;
-import android.provider.MediaStore;
 import android.support.v4.app.FragmentActivity;
+import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.google.zxing.WriterException;
 import com.mareklatuszek.datywaznosci.Product;
@@ -81,7 +81,7 @@ public class CommonUtilities implements FinalVariables {
 			if (dateFormatVal == 0) { //jesli dzien (kolejnosc z resource arrays "array_date" - trzyma� si� tej kolejnosci!)
 				notifTime.add(Calendar.DAY_OF_YEAR, -dateVal);
 			} else if (dateFormatVal == 1) { //jesli miesi�c
-				notifTime.add(Calendar.MONTH, -dateVal);
+				notifTime.add(Calendar.MONTH, -dateVal );
 			} else if (dateFormatVal == 2) { //jesli rok
 				notifTime.add(Calendar.YEAR, -dateVal);
 			}
@@ -92,6 +92,8 @@ public class CommonUtilities implements FinalVariables {
 				int hour = Integer.parseInt(notifHour);// format to 0-23
 				notifTime.add(Calendar.HOUR_OF_DAY, hour);
 			}
+			
+			notifTime.add(Calendar.MINUTE, 19);
 			
 			long przypomnienieDate = notifTime.getTimeInMillis();
 			
@@ -343,8 +345,14 @@ public class CommonUtilities implements FinalVariables {
 	    } catch (WriterException e) {
 	    	//w razie niepowodzenia - domy�lna grafika
 	    	Bitmap bitmap= BitmapFactory.decodeResource(mActivity.getResources(), R.drawable.zxinglib_icon); 
+	    	Toast.makeText(mActivity, "Błąd skanowania lub niepoprawny kod", 2000).show();
 	        return bitmap;
-	    }	
+	    } catch (IllegalArgumentException e) {
+	    	//w razie niepowodzenia - domy�lna grafika
+	    	Bitmap bitmap= BitmapFactory.decodeResource(mActivity.getResources(), R.drawable.zxinglib_icon); 
+	    	Toast.makeText(mActivity, "Błąd skanowania lub niepoprawny kod", 2000).show();
+	        return bitmap;
+	    }
 	}
 	
 	public int getPosInSpinner(String category, Spinner spinner) {
@@ -415,6 +423,37 @@ public class CommonUtilities implements FinalVariables {
 		return json;
 	}
 	
+	public String getProductsTableToShare(ArrayList<Product> products) {
+		
+		String table = "<br />" +
+				"Nazwa  " + " &nbsp " +
+				"Data otwarcia" + " &nbsp " +
+				"Termin ważności" + " &nbsp " +
+				"Kategoria" + " &nbsp " +
+			"<br />";
+			
+		for (int i = 0; i < products.size(); i++) {
+			Product product = products.get(i);
+			
+			String nazwa = product.getNazwa();
+			String dataOtw = product.getDataOtwarcia();
+		    String terminWaz = product.getTerminWaznosci();
+		    String kategoria = product.getKategoria();
+		    
+		    String row =
+					"<br />" +
+						nazwa + " &nbsp " +
+						dataOtw + " &nbsp " +
+						terminWaz + " &nbsp " +
+						kategoria + " &nbsp " +
+					"<br />";
+		    
+		    table = table + row;
+		}
+		
+		return table;
+	}
+	
 	public boolean validateCode(String code, String codeFormat) {
 		if(codeFormat.equals("QR_CODE")){
 			try {
@@ -424,7 +463,7 @@ public class CommonUtilities implements FinalVariables {
 				JSONObject jObjCode = new JSONObject(code);
 				JSONObject jObjEmpty = new JSONObject(productJson);
 				JSONArray emptyNames = jObjEmpty.names();
-							
+
 				for (int i = 0; i < emptyNames.length(); i++) {
 					if (!jObjCode.has(emptyNames.getString(i))) {
 						return false;
@@ -439,4 +478,173 @@ public class CommonUtilities implements FinalVariables {
 			return false;
 		}
 	}
+	
+	public void sendEmail(String productJson, FragmentActivity mActivity) {			
+		try {
+			Bitmap bitmap = encodeCodeToBitmap(productJson, "QR_CODE", mActivity);
+			Uri u = null;
+			
+			File mFile = savebitmap(bitmap);
+			u = Uri.fromFile(mFile);
+			
+			//TODO jesli nie ma kardy sd 
+
+			Intent i = new Intent(Intent.ACTION_SEND);
+			i.setType("application/image");
+			i.putExtra(Intent.EXTRA_EMAIL  , new String[]{"marek.lat@gmail.com"});
+			i.putExtra(Intent.EXTRA_SUBJECT, "Test");
+			i.putExtra(Intent.EXTRA_TEXT   , "W załączniku przesyłam kod, który po zeskanowaniu programem TPP zostanie dodany do bazy");
+			i.putExtra(Intent.EXTRA_STREAM, u);
+			
+			mActivity.startActivity(Intent.createChooser(i, "Wysyłanie..."));
+			
+			
+		} catch (IOException e) {
+			Log.i("sendEmail", "save file error");
+			Toast.makeText(mActivity, "Brak karty SD", Toast.LENGTH_SHORT).show();
+		} catch (android.content.ActivityNotFoundException ex) {
+		    Toast.makeText(mActivity, "Brak klienta email", Toast.LENGTH_SHORT).show();
+		}			
+	}
+	
+	public void sendEmailWithProductList(FragmentActivity mActivity, String table) {			
+		try {
+
+			Intent i = new Intent(Intent.ACTION_SEND);
+			i.setType("text/html");
+			i.putExtra(Intent.EXTRA_EMAIL  , new String[]{"marek.lat@gmail.com"});
+			i.putExtra(Intent.EXTRA_SUBJECT, "Lista produktów z programu TPP");
+			i.putExtra(Intent.EXTRA_TEXT   , Html.fromHtml(table));
+			
+			mActivity.startActivity(Intent.createChooser(i, "Wysyłanie..."));
+			
+		} catch (android.content.ActivityNotFoundException ex) {
+		    Toast.makeText(mActivity, "Brak klienta email", Toast.LENGTH_SHORT).show();
+		}			
+	}
+	
+	public File savebitmap(Bitmap bmp) throws IOException {
+		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+		bmp.compress(Bitmap.CompressFormat.JPEG, 40, bytes);
+
+		File f = new File(Environment.getExternalStorageDirectory() + File.separator + "code.jpg");
+		f.createNewFile();
+
+		FileOutputStream fo = new FileOutputStream(f);
+		fo.write(bytes.toByteArray());
+
+		fo.close();
+		return f;
+	}
+	
+	public void startAlarms(ArrayList<HashMap<String, String>> przypomnienia, String nazwa, String productCode, FragmentActivity mActivity) {
+		for (int i = 0; i < przypomnienia.size(); i++) {
+			HashMap<String, String> przypomnienie = przypomnienia.get(i);
+			String time = przypomnienie.get(PRZYP_DATE);
+			startAlarm(time, nazwa, productCode, mActivity);
+		}
+	}
+	
+	public void cancelAlarms(ArrayList<HashMap<String, String>> przypomnienia, String productCode, FragmentActivity mActivity) {
+		for (int i = 0; i < przypomnienia.size(); i++) {
+			HashMap<String, String> przypomnienie = przypomnienia.get(i);
+			String time = przypomnienie.get(PRZYP_DATE);
+			cancelAlarm(time, productCode, mActivity);
+		}
+	}
+	
+	public void startAlarm(String alarmTimeInMillis, String nazwa, String productCode, FragmentActivity mActivity) {
+		long alarmTime = Long.parseLong(alarmTimeInMillis);	
+	    AlarmManager alarmManager = (AlarmManager) mActivity.getSystemService(mActivity.ALARM_SERVICE);
+	    
+	    Calendar cal = new GregorianCalendar();
+	    cal.setTimeInMillis(alarmTime);
+	    
+	    long when = cal.getTimeInMillis(); // czas powiadomienia
+	    int intentId = productCode.hashCode();
+	    Intent intent = new Intent(mActivity, ReminderService.class);
+	    intent.putExtra("message", nazwa);
+	    intent.putExtra("productCode", productCode);
+	    intent.putExtra("timeInMillis", alarmTimeInMillis);
+	    PendingIntent pendingIntent = PendingIntent.getService(mActivity, intentId, intent, 0);
+	    alarmManager.set(AlarmManager.RTC_WAKEUP, when, pendingIntent);
+	            
+	    Log.i("Alarm ustawiony", drukujCzas(cal));
+          
+	}
+	
+	public void cancelAlarm(String alarmTimeInMillis, String productCode, FragmentActivity mActivity) {
+		long alarmTime = Long.parseLong(alarmTimeInMillis);		
+	    AlarmManager alarmManager = (AlarmManager) mActivity.getSystemService(mActivity.ALARM_SERVICE);
+	    
+	    Calendar cal = new GregorianCalendar();
+	    cal.setTimeInMillis(alarmTime);
+	    
+	    long when = cal.getTimeInMillis();
+	    int intentId = productCode.hashCode();
+	    Intent intent = new Intent(mActivity, ReminderService.class);
+	    PendingIntent pendingIntent = PendingIntent.getService(mActivity, intentId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+	    alarmManager.cancel(pendingIntent);
+	            
+	    Log.i("Alarm usuniety", drukujCzas(cal));
+        
+	}
+	
+	public String drukujCzas(Calendar kalendarz) {
+		
+		String data=""+kalendarz.get(Calendar.DAY_OF_MONTH)+":"+(kalendarz.get(Calendar.MONTH)+1)+":"+kalendarz.get(Calendar.YEAR);
+	    String time=""+kalendarz.get(Calendar.HOUR_OF_DAY)+":"+kalendarz.get(Calendar.MINUTE)+":"+kalendarz.get(Calendar.SECOND);
+		
+		return data + " - " + time;
+	}
+	
+	public ArrayList<HashMap<String, String>> removePrzypomnienie(ArrayList<HashMap<String, String>> przypomnienia, String timeInMillis) {
+	
+		for (int i = 0; i < przypomnienia.size(); i++) {
+			HashMap<String, String> przypomnienie = przypomnienia.get(i);
+			String tempPrzyp = przypomnienie.get(PRZYP_DATE);
+			if (tempPrzyp.equals(timeInMillis)) {
+				przypomnienia.remove(i);
+			}
+		}
+		
+		return przypomnienia;
+	}
+	
+	public void TESTstartAlarm(FragmentActivity mActivity) {
+		AlarmManager alarmManager = (AlarmManager) mActivity.getSystemService(mActivity.ALARM_SERVICE);
+	    
+	    Calendar cal = new GregorianCalendar();
+	    cal.set(Calendar.YEAR, 2013);
+	    cal.set(Calendar.MONTH, 11 - 1); // miesi�ce s� numerowane od 0-11
+	    cal.set(Calendar.DAY_OF_MONTH, 24);
+	    cal.set(Calendar.HOUR_OF_DAY, 15);
+	    cal.set(Calendar.MINUTE, 33);
+	    cal.set(Calendar.SECOND, 0);
+	    cal.set(Calendar.MILLISECOND, 0);
+	    
+	    long when = cal.getTimeInMillis(); // czas powiadomienia
+	    Intent intent = new Intent(mActivity, ReminderService.class);
+	    PendingIntent pendingIntent = PendingIntent.getService(mActivity, (int) when, intent, 0);
+	    alarmManager.set(AlarmManager.RTC_WAKEUP, when, pendingIntent);
+	            
+	            
+	    Log.i("Alarm ustawiony", when+"");
+          
+	}
+	
+	private boolean appInstalledOrNot(String uri, FragmentActivity mActivity)
+    {
+        PackageManager pm = mActivity.getPackageManager();
+        boolean app_installed = false;
+        try {
+               pm.getPackageInfo(uri, PackageManager.GET_ACTIVITIES);
+               app_installed = true;
+        }
+        catch (PackageManager.NameNotFoundException e)
+        {
+               app_installed = false;
+        }
+        return app_installed ;
+}
 }

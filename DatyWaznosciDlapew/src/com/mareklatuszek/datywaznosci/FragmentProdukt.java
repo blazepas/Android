@@ -9,6 +9,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -20,6 +21,7 @@ import android.provider.MediaStore.Images;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 
 
@@ -29,12 +31,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragment;
+import com.mareklatuszek.datywznosci.utilities.BitmapLoader;
 import com.mareklatuszek.datywznosci.utilities.CommonUtilities;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 
-public class FragmentProdukt extends SherlockFragment {
+public class FragmentProdukt extends SherlockFragment implements OnClickListener {
 	
 	private Product product = new Product();
 	CommonUtilities utilities = new CommonUtilities();
@@ -46,11 +49,14 @@ public class FragmentProdukt extends SherlockFragment {
 	ImageView barcodeImage, obrazekImage;
 	
 	Bitmap codeBmp;
+	Bitmap imageBmp;
 	
 		
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		rootView = inflater.inflate(R.layout.fragment_produkt, container, false);
+		
+		getSherlockActivity().getSupportActionBar().setTitle("Podgląd produktu");
 				
 		Bundle extras = getArguments();
 		product = (Product) extras.getSerializable("product");	
@@ -79,11 +85,26 @@ public class FragmentProdukt extends SherlockFragment {
         	switchToEditFragment(product);
             break;
           case R.id.share:
-          	sendEmail();
+        	String productJson = utilities.getJsonFromProduct(product);
+          	utilities.sendEmail(productJson, getActivity());
             break;
        }
        return true;
     }
+    
+    @Override
+	public void onClick(View v) {
+		switch (v.getId()) {
+		case R.id.barcodeImage:
+			DialogObrazek showBarcode = new DialogObrazek(getActivity(), codeBmp);
+			showBarcode.show();
+			break;
+		case R.id.obrazekImage:
+			DialogObrazek showImage = new DialogObrazek(getActivity(), imageBmp);
+			showImage.show();
+			break;
+		}
+	}
 	
 	private void initPodstawowe() {
 		
@@ -100,6 +121,7 @@ public class FragmentProdukt extends SherlockFragment {
 		nazwaTxt.setText(nazwa);
 		okresTxt.setText(okres);
 		barcodeImage.setImageBitmap(codeBmp);
+		barcodeImage.setOnClickListener(this);
 		
 	}
 	
@@ -120,6 +142,14 @@ public class FragmentProdukt extends SherlockFragment {
 		String terminWaz = product.getTerminWaznosci();
 		String kategoria = product.getKategoria();
 		String opis = product.getOpis();
+		String image = product.getImage();
+		
+		if (!image.equals("")) {
+			String imagePath = product.getImage();
+			imageBmp = BitmapLoader.loadBitmap(imagePath, 100, 100);
+			obrazekImage.setImageBitmap(imageBmp);
+			obrazekImage.setOnClickListener(this);
+		}
 		
 		
 		dataOtwTxt.setText(dataOtw);
@@ -146,42 +176,4 @@ public class FragmentProdukt extends SherlockFragment {
 		((MainActivity) getActivity()).selectFragmentToEditProduct(product);
 	}
 	
-	private void sendEmail() {
-		Bitmap bitmap = codeBmp;
-		Uri u = null;
-		
-		try {
-			File mFile = savebitmap(bitmap);
-			u = Uri.fromFile(mFile);
-		} catch (IOException e) {
-			Log.i("sendEmail", "save file error");
-		}
-		//TODO jesli nie ma kardy sd 
-
-		Intent i = new Intent(Intent.ACTION_SEND);
-		i.setType("application/image");
-		i.putExtra(Intent.EXTRA_EMAIL  , new String[]{"marek.lat@gmail.com"});
-		i.putExtra(Intent.EXTRA_SUBJECT, "Test");
-		i.putExtra(Intent.EXTRA_TEXT   , "W załączniku przesyłam kod, który po zeskanowaniu programem TPP doda go do bazy danych");
-		i.putExtra(Intent.EXTRA_STREAM, u);
-		try {
-		    startActivity(Intent.createChooser(i, "Wysyłanie..."));
-		} catch (android.content.ActivityNotFoundException ex) {
-		    Toast.makeText(getActivity(), "Brak klienta email", Toast.LENGTH_SHORT).show();
-		}
-	}
-	
-	private File savebitmap(Bitmap bmp) throws IOException {
-		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-		bmp.compress(Bitmap.CompressFormat.JPEG, 40, bytes);
-
-		File f = new File(Environment.getExternalStorageDirectory() + File.separator + "code.jpg");
-		f.createNewFile();
-
-		FileOutputStream fo = new FileOutputStream(f);
-		fo.write(bytes.toByteArray());
-
-		fo.close();
-		return f;
-	}
 }

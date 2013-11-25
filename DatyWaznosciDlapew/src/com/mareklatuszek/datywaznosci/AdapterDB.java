@@ -3,6 +3,7 @@ package com.mareklatuszek.datywaznosci;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import com.mareklatuszek.datywznosci.utilities.CommonUtilities;
 import com.mareklatuszek.datywznosci.utilities.FinalVariables;
 
 import android.app.Activity;
@@ -16,6 +17,7 @@ public class AdapterDB implements FinalVariables {
 	private SQLiteDatabase db;
 	private Activity mActivity;
 	private HelperDB dbHelper;
+	private CommonUtilities utilities = new CommonUtilities();
 	
 	public AdapterDB(Activity mActivity) {
 	    this.mActivity = mActivity;
@@ -50,10 +52,9 @@ public class AdapterDB implements FinalVariables {
 	    return db.insert(DB_CATEGORIES_TABLE, null, newCategoryVal) > 0;
 	}
 	
-	public boolean updateProduct(Product product) {
+	public boolean updateProduct(Product product, String oldCode) {
 		ContentValues updateProductVal = generateProductContentVal(product);
-		String code = product.getCode();
-		String where = DB_CODE + " = " + code;
+		String where = DB_CODE + " = " + "'" + oldCode + "'";
 		
 	    return db.update(DB_PRODUCT_TABLE, updateProductVal, where, null) > 0;
 	}
@@ -74,7 +75,8 @@ public class AdapterDB implements FinalVariables {
 	}
 	
 	public boolean deleteProduct(Product product){
-	    String where = ""; //TODO w zalezno�ci co jest id
+		String code = product.getCode();
+	    String where = DB_CODE + "=" + "'" + code + "'";
 	    return db.delete(DB_PRODUCT_TABLE, where, null) > 0;
 	}
 	
@@ -90,6 +92,19 @@ public class AdapterDB implements FinalVariables {
 		Log.i("delCat", categoryToDelete);
 		
 	    return caategoryStatus & productStatus;
+	}
+	
+	public boolean deletePrzypomnienie(String productCode, String alarmTimeInMillis){
+		Product product = getProduct(productCode);
+		ArrayList<HashMap<String, String>> przypomnienia = product.getPrzypomnienia();
+		
+		przypomnienia = utilities.removePrzypomnienie(przypomnienia, alarmTimeInMillis);
+		product.setPrzypomnienia(przypomnienia);
+		
+		ContentValues updateProductVal = generateProductContentVal(product);
+		String where = DB_CODE + " = " + "'" + productCode + "'";
+		
+	    return db.update(DB_PRODUCT_TABLE, updateProductVal, where, null) > 0;
 	}
 	
 	@SuppressWarnings("deprecation")
@@ -163,10 +178,10 @@ public class AdapterDB implements FinalVariables {
 		return categoriesList;
 	}
 	 
-	public Product getProduct(long id) {
+	public Product getProduct(String codeId) {
 		Product product = new Product();
 		
-	    String where = KEY_ID + "=" + id;
+	    String where = DB_CODE + "=" + "'" + codeId + "'";
 	    Cursor cursor = db.query(DB_PRODUCT_TABLE, null, where, null, null, null, null);
 	    
 	    if(cursor != null && cursor.moveToFirst()) {
@@ -194,25 +209,49 @@ public class AdapterDB implements FinalVariables {
 			
 	    }
 	    
-	    
 	    return product;
 	}
 	
-//	public String[] getCategoryIdsInProductsTable(String category) {
-//		String where = DB_KATEGORIA + "=?";
-//		Cursor cursor = db.query(DB_PRODUCT_TABLE,
-//		mActivity.startManagingCursor(cursor);
-//		
-//		int columnCategory =  cursor.getColumnIndex(DB_KATEGORIA);
-//
-//		
-//		while(cursor.moveToNext()) {
-//			String category = cursor.getString(columnCategory);		
-//			categoriesList.add(category);
-//		}
-//		
-//		mActivity.stopManagingCursor(cursor);
-//	}
+	public boolean chckIfCategoryIsSetInProducts(String category) {
+		
+		Cursor cursor = db.query(DB_PRODUCT_TABLE, null, null, null, null, null, null);
+		mActivity.startManagingCursor(cursor);
+		
+		int columnKategoria =  cursor.getColumnIndex(DB_KATEGORIA);
+		
+		while(cursor.moveToNext()) {
+			
+			String kategoria = cursor.getString(columnKategoria);
+			if (kategoria.equals(category)) {
+				mActivity.stopManagingCursor(cursor);
+				return true;
+			}
+		}
+		
+		mActivity.stopManagingCursor(cursor);
+		return false;
+	}
+	
+	public boolean chckIfProductIsInDB(String code) {
+		
+		String where = DB_CODE + "=" + "'" + code + "'";
+	    Cursor cursor = db.query(DB_PRODUCT_TABLE, null, where, null, null, null, null);
+		mActivity.startManagingCursor(cursor);
+		
+		int columnCode =  cursor.getColumnIndex(DB_CODE);
+		
+		while(cursor.moveToNext()) {
+			
+			String codeDb = cursor.getString(columnCode);
+			if (codeDb.equals(code)) {
+				mActivity.stopManagingCursor(cursor);
+				return true;
+			}
+		}
+		
+		mActivity.stopManagingCursor(cursor);
+		return false;
+	}
 	
 	private ContentValues generateProductContentVal(Product product) {
 		ContentValues newProductVal = new ContentValues();

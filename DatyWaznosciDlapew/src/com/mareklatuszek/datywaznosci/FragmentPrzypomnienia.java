@@ -7,19 +7,23 @@ import java.util.HashMap;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.PopupMenu;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
+import android.widget.PopupMenu.OnMenuItemClickListener;
 import android.widget.ListView;
 
 import com.actionbarsherlock.app.SherlockFragment;
 import com.mareklatuszek.datywznosci.utilities.CommonUtilities;
 import com.mareklatuszek.datywznosci.utilities.FinalVariables;
 
-public class FragmentPrzypomnienia extends SherlockFragment implements FinalVariables, OnItemClickListener{
+public class FragmentPrzypomnienia extends SherlockFragment implements FinalVariables, OnItemClickListener, OnItemLongClickListener{
 	
 	View rootView;
 	ListView listPow;
@@ -34,11 +38,12 @@ public class FragmentPrzypomnienia extends SherlockFragment implements FinalVari
 		rootView = inflater.inflate(R.layout.fragment_przypomnienia, container, false);
 		adapterDb = new AdapterDB(getActivity());
 		
+		getSherlockActivity().getSupportActionBar().setTitle("Przypomnienia");
+		
 		initList();
 		
 		return rootView;
-	}
-	
+	}	
 
 	@Override
 	public void onItemClick(AdapterView<?> arg0, View arg1, int pos, long arg3) {
@@ -53,8 +58,42 @@ public class FragmentPrzypomnienia extends SherlockFragment implements FinalVari
 				
 				DialogPrzypomnienie dialog = new DialogPrzypomnienie(getActivity(), product);
 				dialog.show();
+				
+				break; // pokazyje tylko ten jeden produkt
 			}
 		}		
+	}
+	
+	@Override
+	public boolean onItemLongClick(AdapterView<?> arg0, View v, final int pos, long arg3) {
+		Vibrator vibe = (Vibrator) getActivity().getSystemService(getActivity().VIBRATOR_SERVICE);
+		vibe.vibrate(25);
+		
+        PopupMenu popup = new PopupMenu(getActivity(), v);
+        popup.getMenuInflater().inflate(R.menu.popup, popup.getMenu());
+        popup.setOnMenuItemClickListener(new OnMenuItemClickListener() {
+
+            @Override
+            public boolean onMenuItemClick(android.view.MenuItem item) {
+            	Product product = products.get(pos);
+            	switch (item.getItemId()) {
+            	case R.id.udostepnijPopup:
+
+            		break;
+            	case R.id.edytujPopup:
+ 
+            		break;
+            	case R.id.usunPopup:
+            		removePrzypomnienie(pos);
+            		break;
+            	}
+            	           	
+                return true;
+            }
+        });
+
+        popup.show();
+		return false;
 	}
 	
 	private void initList() {
@@ -80,6 +119,7 @@ public class FragmentPrzypomnienia extends SherlockFragment implements FinalVari
 			protected void onPostExecute(Void v) {
 				listPow.setAdapter(adapterPrzyp);
 				listPow.setOnItemClickListener(FragmentPrzypomnienia.this);
+				listPow.setOnItemLongClickListener(FragmentPrzypomnienia.this);
 			}
 		}.execute();
 		
@@ -93,7 +133,6 @@ public class FragmentPrzypomnienia extends SherlockFragment implements FinalVari
 			
 			Product product = products.get(i);
 			ArrayList<HashMap<String,String>> przypomnienia = product.getPrzypomnienia(); //przypomnienia przypisane do produktu
-			Log.i("fill", przypomnienia.size()+"");
 			
 			for(int a = 0; a < przypomnienia.size(); a++) {
 				String nazwa = product.getNazwa();
@@ -109,16 +148,25 @@ public class FragmentPrzypomnienia extends SherlockFragment implements FinalVari
 				przypomnienie.put(PRZYP_DATE, przypDate);
 				przypomnienie.put(DB_CODE, code);
 				
-				przypomnieniaAll.add(przypomnienie);
-				
+				przypomnieniaAll.add(przypomnienie);				
 			}
 		}
 		return przypomnieniaAll;
 		
 	}
 
-	
-	
-	
-
+	private void removePrzypomnienie(int pos) {
+		HashMap<String, String> przypomnienie = (HashMap<String, String>) adapterPrzyp.getItem(pos);
+		String alarmTime = przypomnienie.get(PRZYP_DATE);
+		String productId = przypomnienie.get(DB_CODE);
+		
+		adapterDb.open();
+		boolean removeStatus = adapterDb.deletePrzypomnienie(productId, alarmTime);
+		adapterDb.close();
+		
+		if (removeStatus) {
+			utiliteis.cancelAlarm(alarmTime, productId, getActivity());
+			initList();
+		}
+	}
 }

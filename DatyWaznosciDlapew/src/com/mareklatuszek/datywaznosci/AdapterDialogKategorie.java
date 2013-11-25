@@ -15,12 +15,16 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class AdapterDialogKategorie extends BaseAdapter {
 	
 	private AdapterDB adapterDb;
 	private Activity mActivity;
 	private LayoutInflater inflater=null;
+	FragmentManager fragmentManager; 
+	int fragmentId;
+	int fragPos;
 
 	ArrayList<String> categories = new ArrayList<String>();
 	CommonUtilities utilites = new CommonUtilities();
@@ -28,9 +32,12 @@ public class AdapterDialogKategorie extends BaseAdapter {
 	TextView catNameTxtKat;
 	Button usunButtonKat;
 	
-	public AdapterDialogKategorie(Activity mActivity, ArrayList<String> categories) {
+	public AdapterDialogKategorie(Activity mActivity, ArrayList<String> categories, FragmentManager fragmentManager, int fragmentId) {
 		this.mActivity = mActivity;
 		this.categories = categories;
+		this.fragmentManager = fragmentManager;
+		this.fragmentId = fragmentId;
+		fragPos = MainActivity.currentFragmentPos;
 		inflater = (LayoutInflater)mActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		adapterDb = new AdapterDB(mActivity);
 	}
@@ -79,7 +86,7 @@ public class AdapterDialogKategorie extends BaseAdapter {
 		return categories;
 	}
 	
-	public boolean removeCategory(String category) {
+	public boolean removeCategory(String category) {		
 		adapterDb.open();
 		categories.remove(category);
 		boolean status = adapterDb.deleteCategory(category);
@@ -88,6 +95,18 @@ public class AdapterDialogKategorie extends BaseAdapter {
 			categories.remove(category);
 		}
 		this.notifyDataSetChanged();
+		
+		switch (fragPos) {
+		case 1:
+			FragmentDodaj fragmentDodaj = (FragmentDodaj) fragmentManager.findFragmentById(fragmentId);
+			fragmentDodaj.refreshKategorieSpinner(category);
+			break;
+		case 6:
+			FragmentEdytuj fragmentEdytuj = (FragmentEdytuj) fragmentManager.findFragmentById(fragmentId);
+			fragmentEdytuj.refreshKategorieSpinner(category);
+			break;
+		}
+		
 		return status;
 	}
 }

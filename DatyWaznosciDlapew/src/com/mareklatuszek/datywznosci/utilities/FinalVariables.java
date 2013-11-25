@@ -55,6 +55,9 @@ public interface FinalVariables {
 	public static final String SPINNER_DATE_MONTH = "Miesiąc"; 
 	public static final String SPINNER_DATE_YEAR = "Rok"; 
 	
-	public static final int CAMERA_RQ_CODE = 100;
+	public static final int CAMERA_ADD_RQ_CODE = 100;
+	public static final int CAMERA_EDIT_RQ_CODE = 200;
+	public static final int GALLERY_ADD_RQ_CODE = 300;
+	public static final int GALLERY_EDIT_RQ_CODE = 400;
 
 }

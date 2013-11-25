@@ -7,6 +7,7 @@ import com.mareklatuszek.datywznosci.utilities.CommonUtilities;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -14,22 +15,24 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 public class DialogDatePicker extends Dialog implements android.view.View.OnClickListener {
 	
 	View viewToSetDate;
-	EditText okresWazTextBox;
-	Spinner okresWazSpinner;
 	DatePicker datePicker;
 	Button okButton, anulujButton;
-	
+	FragmentManager fragmentManager; 
+	int fragmentId;
+	int fragPos;
 	CommonUtilities utilities = new CommonUtilities();
 
-	public DialogDatePicker(Context context, View viewToSetDate, EditText okresWazTextBox, Spinner okresWazSpinner) {
+	public DialogDatePicker(Context context, View viewToSetDate, FragmentManager fragmentManager, int fragmentId) {
 		super(context);
 		this.viewToSetDate = viewToSetDate;
-		this.okresWazTextBox = okresWazTextBox;
-		this.okresWazSpinner = okresWazSpinner;
+		this.fragmentManager = fragmentManager;
+		this.fragmentId = fragmentId;
+		fragPos = MainActivity.currentFragmentPos;
 	}
 
 	@Override
@@ -68,7 +71,7 @@ public class DialogDatePicker extends Dialog implements android.view.View.OnClic
 		case R.id.dataOtwButton:
 			((Button) viewToSetDate).setText(choosenDate);
 			break;
-		case R.id.terminWazButton:
+		case R.id.terminWazButton:		
 			((Button) viewToSetDate).setText(choosenDate);
 			setOkresWaz(choosenDate);
 			break;
@@ -81,15 +84,21 @@ public class DialogDatePicker extends Dialog implements android.view.View.OnClic
 		choosenDate = datePicker.getDayOfMonth() + "/" + (datePicker.getMonth() + 1) + "/" + datePicker.getYear();
 		return choosenDate;
 	}
-	
-	private void setOkresWaz(String choosenDate) {
-		String okres = utilities.parseDateToOkres(choosenDate);
-		String box = utilities.getTextFromOkresWaz(okres);
-		String spinnItem = utilities.getSpinnerItemFromOkresWaz(okres);
-		int spinnPos = utilities.getPosInSpinner(spinnItem, okresWazSpinner);
 		
-		okresWazTextBox.setText(box);
-		okresWazSpinner.setSelection(spinnPos);	
+	private void setOkresWaz(String choosenDate) {
+		switch (fragPos) {
+		case 1:
+			FragmentDodaj fragmentDodaj = (FragmentDodaj) fragmentManager.findFragmentById(fragmentId);
+	    	fragmentDodaj.setOkresWaz(choosenDate);
+			break;
+		case 6:
+			FragmentEdytuj fragmentEdytuj = (FragmentEdytuj) fragmentManager.findFragmentById(fragmentId);
+			fragmentEdytuj.setOkresWaz(choosenDate);
+			break;
+		default:
+			Toast.makeText(getOwnerActivity(), "Nie zapisano daty!", 2000).show();
+		}
+		
 	}
 		
 }

@@ -207,9 +207,7 @@ public class Product implements FinalVariables, Serializable {
 				
 				przypomnienia.add(przypomnienie);
 			}
-			
-			Log.i("json to przyp", przypomnienia+"");
-			
+						
 		} catch (JSONException e) {
 			Log.i("json to przyp", "set err");
 		}

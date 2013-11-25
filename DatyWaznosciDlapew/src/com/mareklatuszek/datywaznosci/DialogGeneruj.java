@@ -13,6 +13,7 @@ import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,6 +33,9 @@ public class DialogGeneruj extends Dialog implements android.view.View.OnClickLi
 	
 	FragmentActivity mActivity;
 	Product product;
+	FragmentManager fragmentManager; 
+	int fragmentId;
+	int fragPos;
 	CommonUtilities utilities = new CommonUtilities();
 	AdapterDialogGeneruj adapterPozostale;
 	
@@ -43,10 +47,13 @@ public class DialogGeneruj extends Dialog implements android.view.View.OnClickLi
 	private String code;
 
 
-	public DialogGeneruj(FragmentActivity mActivity, Product product) {
+	public DialogGeneruj(FragmentActivity mActivity, Product product, FragmentManager fragmentManager, int fragmentId) {
 		super(mActivity);
 		this.mActivity = mActivity;
 		this.product = product;
+		this.fragmentManager = fragmentManager;
+		this.fragmentId = fragmentId;
+		fragPos = MainActivity.currentFragmentPos;
 	}
 
 	@Override
@@ -57,13 +64,13 @@ public class DialogGeneruj extends Dialog implements android.view.View.OnClickLi
 		
 		initPodstawowe();
 		initPozostałe();
-
 	}
 	
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.okButton:
+			dismiss();
 			saveProduct();
 			break;
 		case R.id.cancelButton:
@@ -142,8 +149,19 @@ public class DialogGeneruj extends Dialog implements android.view.View.OnClickLi
 	}
 	
 	private void saveProduct() {
-		((MainActivity) mActivity).setGeneratedCodeInFragmentDodaj(code, codeFormat);
+		switch (fragPos) {
+		case 1:
+			FragmentDodaj fragmentDodaj = (FragmentDodaj) fragmentManager.findFragmentById(fragmentId);
+			fragmentDodaj.saveProductFromDialogGeneruj(code, codeFormat);
+			break;
+		case 6:
+			FragmentEdytuj fragmentEdytuj = (FragmentEdytuj) fragmentManager.findFragmentById(fragmentId);
+			fragmentEdytuj.saveProductFromDialogGeneruj(code, codeFormat);
+			break;
+		default:
+			Toast.makeText(mActivity, "Nie wygenerowano kodu!", 2000).show();
+		}
+		
 	}
 	
-		
 }

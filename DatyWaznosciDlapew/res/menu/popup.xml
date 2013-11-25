@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item android:id="@+id/udostepnijPopup"
+          android:visible="true" 
+          android:title="Udostępnij" 
+          android:enabled="true">       
+    </item>
+    
+    <item android:id="@+id/edytujPopup"
+          android:visible="true" 
+          android:title="Edytuj" 
+          android:enabled="true">       
+    </item>
+    
+    <item android:id="@+id/usunPopup"
+          android:visible="true" 
+          android:title="Usuń" 
+          android:enabled="true">       
+    </item>
+</menu>

@@ -4,19 +4,25 @@ import java.util.ArrayList;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.PopupMenu;
 import android.widget.Toast;
+import android.widget.PopupMenu.OnMenuItemClickListener;
 
 import com.actionbarsherlock.app.SherlockFragment;
 
-public class FragmentKategorie extends SherlockFragment implements OnClickListener{
+public class FragmentKategorie extends SherlockFragment implements OnClickListener, OnItemLongClickListener{
 	
 	AdapterDB adapterDb;
 	AdapterKategorie adapterCat;
@@ -31,6 +37,8 @@ public class FragmentKategorie extends SherlockFragment implements OnClickListen
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		rootView = inflater.inflate(R.layout.fragment_kategorie, container, false);
 		
+		getSherlockActivity().getSupportActionBar().setTitle("Kategorie");
+		
 		categoryTxtBoxKat = (EditText) rootView.findViewById(R.id.categoryTxtBoxKat);
 		dodajButtonKat = (Button) rootView.findViewById(R.id.dodajButtonKat);
 		dodajButtonKat.setOnClickListener(this);
@@ -44,15 +52,53 @@ public class FragmentKategorie extends SherlockFragment implements OnClickListen
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.dodajButtonKat:
-			String category = categoryTxtBoxKat.getText().toString();
-			if (category.equals("")) {
-				Toast.makeText(getActivity(), "Proszę podać nazwę kategorii", 2000).show();
-			} else {
-				addCategory(category);
-			}
+			add();
 			break;
 		}
+	}
+	
+	@Override
+	public boolean onItemLongClick(AdapterView<?> arg0, final View v, final int pos, long arg3) {
+		Vibrator vibe = (Vibrator) getActivity().getSystemService(getActivity().VIBRATOR_SERVICE);
+		vibe.vibrate(25);
 		
+//        PopupMenu popup = new PopupMenu(getActivity(), v);
+//        popup.getMenuInflater().inflate(R.menu.popupCategories, popup.getMenu());
+//        popup.setOnMenuItemClickListener(new OnMenuItemClickListener() {
+//
+//            @Override
+//            public boolean onMenuItemClick(android.view.MenuItem item) {
+//            	String category = categories.get(pos);
+//            	switch (item.getItemId()) {
+//            	case R.id.edytujPopup:
+//            		editCategory(category);
+//            		break;
+//            	case R.id.usunPopup:
+//            		removeCategory(category);
+//            		break;
+//            	}
+//            	           	
+//                return true;
+//            }
+//        });
+//
+//        popup.show();
+		
+		return false;
+	}
+	
+	private void add() {
+		String category = categoryTxtBoxKat.getText().toString();
+		if (category.equals("")) {
+			Toast.makeText(getActivity(), "Proszę podać nazwę kategorii", 2000).show();
+		} else {
+			if (categories.contains(category)) {
+				Toast.makeText(getActivity(), "Podana kategoria jest już w bazie", 2000).show();
+			} else {
+				addCategory(category);
+				categoryTxtBoxKat.setText("");
+			}	
+		}	
 	}
 	
 	private void initList() {
@@ -105,11 +151,12 @@ public class FragmentKategorie extends SherlockFragment implements OnClickListen
 		return status;
 	}
 	
+//	private edit(String category) {
+//		//TODO dialog
+//	}
+	
 	public void refreshCategories() {
 		adapterCat.notifyDataSetChanged();
-		//TODO odswierzanie we fragmencie Dodaj
 	}
-
-	
 
 }

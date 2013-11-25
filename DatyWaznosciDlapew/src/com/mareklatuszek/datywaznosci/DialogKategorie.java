@@ -8,6 +8,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,13 +22,14 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-public class DialogKategorie extends Dialog implements android.view.View.OnClickListener {
-	
+public class DialogKategorie extends Dialog implements android.view.View.OnClickListener {	
 	
 	AdapterDB adapterDb;
 	AdapterDialogKategorie adapterCat;
 	ArrayList<String> categories = new ArrayList<String>();
 	Activity mActivity;
+	FragmentManager fragmentManager; 
+	int fragmentId;
 	
 	View viewToSetKat;
 	LinearLayout kategorieRoot;
@@ -35,12 +37,14 @@ public class DialogKategorie extends Dialog implements android.view.View.OnClick
 	EditText categoryTxtBoxKat;
 	Button dodajButtonKat;
 	ListView categoryList;
-	Button okButton, anulujButton;
+	Button okButton;
 
-	public DialogKategorie(Activity mActivity, View viewToSetKat) {
+	public DialogKategorie(Activity mActivity, View viewToSetKat, FragmentManager fragmentManager, int fragmentId) {
 		super(mActivity);
 		this.viewToSetKat = viewToSetKat;
 		this.mActivity = mActivity;
+		this.fragmentManager = fragmentManager;
+		this.fragmentId = fragmentId;
 	}
 
 	@Override
@@ -51,10 +55,8 @@ public class DialogKategorie extends Dialog implements android.view.View.OnClick
 
 		kategorieRoot = (LinearLayout) findViewById(R.id.kategorieRoot);
 		okButton = (Button) findViewById(R.id.okButton);
-		anulujButton = (Button) findViewById(R.id.cancelButton);
 		
 		okButton.setOnClickListener(this);
-		anulujButton.setOnClickListener(this);
 		
 		initKategorieLay();
 	}
@@ -63,15 +65,26 @@ public class DialogKategorie extends Dialog implements android.view.View.OnClick
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.dodajButtonKat:
-			String category = categoryTxtBoxKat.getText().toString();
-			if (category.equals("")) {
-				Toast.makeText(getContext(), "Proszę podać nazwę kategorii", 2000).show();
+			add();
+			break;
+		case R.id.okButton:
+			dismiss();
+			break;	
+		}		
+	}
+	
+	private void add() {
+		String category = categoryTxtBoxKat.getText().toString();
+		if (category.equals("")) {
+			Toast.makeText(mActivity, "Proszę podać nazwę kategorii", 2000).show();
+		} else {
+			if (categories.contains(category)) {
+				Toast.makeText(mActivity, "Podana kategoria jest już w bazie", 2000).show();
 			} else {
 				addCategory(category);
-			}
-			break;
-		}
-		
+				categoryTxtBoxKat.setText("");
+			}	
+		}	
 	}
 	
 	private void initKategorieLay() {
@@ -106,7 +119,7 @@ public class DialogKategorie extends Dialog implements android.view.View.OnClick
 			
 			@Override
 			protected void onPostExecute(Void v) {
-				adapterCat = new AdapterDialogKategorie(mActivity, categories);
+				adapterCat = new AdapterDialogKategorie(mActivity, categories, fragmentManager, fragmentId);
 				categoryList.setAdapter(adapterCat);
 			}
 		}.execute();

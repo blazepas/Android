@@ -1,5 +1,8 @@
 package com.mareklatuszek.datywznosci.utilities;
 
+import java.util.HashMap;
+
+import com.mareklatuszek.datywaznosci.AdapterDB;
 import com.mareklatuszek.datywaznosci.MainActivity;
 import com.mareklatuszek.datywaznosci.R;
 
@@ -9,8 +12,10 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
+import android.util.Log;
 
-public class ReminderService extends IntentService {
+public class ReminderService extends IntentService implements FinalVariables {
     private static final int NOTIF_ID = 1;
 
     public ReminderService(){
@@ -21,13 +26,25 @@ public class ReminderService extends IntentService {
       protected void onHandleIntent(Intent intent) {
         NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         long when = System.currentTimeMillis();         // notification time
-        Notification notification = new Notification(R.drawable.ic_launcher, "reminder", when);
+        MainActivity.notification = true;
+        
+        String message = intent.getStringExtra("message");
+		String productCode = intent.getStringExtra("productCode");
+        String timeInMillis = intent.getStringExtra("timeInMillis");
+        int intentId = 0;
+        
+        Notification notification = new Notification(R.drawable.ic_launcher, "TPP", when);
         notification.defaults |= Notification.DEFAULT_SOUND;
         notification.flags |= notification.FLAG_AUTO_CANCEL;
+        
         Intent notificationIntent = new Intent(this, MainActivity.class);
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent , 0);
-        notification.setLatestEventInfo(getApplicationContext(), "Test", "Testowy", contentIntent);
+        notificationIntent.putExtra("productCode", productCode);
+        notificationIntent.putExtra("timeInMillis", timeInMillis);
+        PendingIntent contentIntent = PendingIntent.getActivity(this, intentId, notificationIntent , 0);
+       
+        notification.setLatestEventInfo(getApplicationContext(), "Test", message, contentIntent);
         nm.notify(NOTIF_ID, notification);
+        
     }
 
 }
