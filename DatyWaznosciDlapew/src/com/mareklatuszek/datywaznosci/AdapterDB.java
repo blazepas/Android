@@ -124,6 +124,7 @@ public class AdapterDB implements FinalVariables {
 		int columnImage =  cursor.getColumnIndex(DB_OBRAZEK);
 		int columnOpis =  cursor.getColumnIndex(DB_OPIS);
 		int columnPrzypomnienia =  cursor.getColumnIndex(DB_PRZYPOMNIENIA);
+		int columnDataZuzycia =  cursor.getColumnIndex(DB_DATA_ZUZYCIA);
 		
 		while(cursor.moveToNext()) {
 			Product product = new Product();
@@ -138,6 +139,7 @@ public class AdapterDB implements FinalVariables {
 			String image = cursor.getString(columnImage);
 			String opis = cursor.getString(columnOpis);
 			String przypomnienia = cursor.getString(columnPrzypomnienia);
+			String dataZuz = cursor.getString(columnDataZuzycia);
 	        
 			product.setNazwa(nazwa);
 			product.setDataOtwarcia(dataOtwarcia);
@@ -149,6 +151,7 @@ public class AdapterDB implements FinalVariables {
 			product.setImage(image);
 			product.setOpis(opis);
 			product.setPrzypomnieniaFromDB((przypomnienia));
+			product.setDataZuzycia(dataZuz);
 			
 			productList.add(product);
 		}
@@ -195,6 +198,7 @@ public class AdapterDB implements FinalVariables {
 			String image = cursor.getString(cursor.getColumnIndex(DB_OBRAZEK));
 			String opis = cursor.getString(cursor.getColumnIndex(DB_OPIS));
 			String przypomnienia = cursor.getString(cursor.getColumnIndex(DB_PRZYPOMNIENIA));
+			String dataZuzycia = cursor.getString(cursor.getColumnIndex(DB_DATA_ZUZYCIA));
 	        
 			product.setNazwa(nazwa);
 			product.setDataOtwarcia(dataOtwarcia);
@@ -206,6 +210,7 @@ public class AdapterDB implements FinalVariables {
 			product.setImage(image);
 			product.setOpis(opis);
 			product.setPrzypomnieniaFromDB(przypomnienia);
+			product.setDataZuzycia(dataZuzycia);
 			
 	    }
 	    
@@ -266,6 +271,7 @@ public class AdapterDB implements FinalVariables {
 		String image = product.getImage();
 		String opis = product.getOpis();
 		String przypomnienia = product.getPrzypomnieniaToDB();
+		String dataZuzycia = product.getDataZuzycia();
 		
 		Log.i("DBPrzypomnienia", przypomnienia);
 	    
@@ -279,6 +285,7 @@ public class AdapterDB implements FinalVariables {
 		newProductVal.put(DB_OBRAZEK, image);
 		newProductVal.put(DB_OPIS, opis);
 		newProductVal.put(DB_PRZYPOMNIENIA, przypomnienia);
+		newProductVal.put(DB_DATA_ZUZYCIA, dataZuzycia);
 		
 		return newProductVal;
 	}

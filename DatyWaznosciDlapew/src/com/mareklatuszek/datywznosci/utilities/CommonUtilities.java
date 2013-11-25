@@ -192,6 +192,7 @@ public class CommonUtilities implements FinalVariables {
 			String opis = jObj.getString(DB_OPIS);
 			String przypomnieniaJson = jObj.getString(DB_PRZYPOMNIENIA);
 			String terminWaznosci = jObj.getString(DB_TERMIN_WAZNOSCI);
+			String dataZuz = jObj.getString(DB_DATA_ZUZYCIA);
 			
 			product.setCodeFormat("QR_CODE");
 			product.setNazwa(nazwa);
@@ -201,6 +202,7 @@ public class CommonUtilities implements FinalVariables {
 			product.setOpis(opis);
 			product.setPrzypomnieniaFromDB(przypomnieniaJson);
 			product.setTerminWaznosci(terminWaznosci);
+			product.setDataZuzycia(dataZuz);
 			
 			return product;
 		} catch (JSONException e) {
@@ -403,7 +405,8 @@ public class CommonUtilities implements FinalVariables {
 			String terminWaz = product.getTerminWaznosci();
 			String kategoria = product.getKategoria();
 			String opis = product.getOpis();
-			String image = product.getImage();
+			String dataZuz = product.getDataZuzycia();
+			
 			JSONArray przypoimnienia = new JSONArray(product.getPrzypomnieniaToDB());
 			
 			JSONObject jObj = new JSONObject();
@@ -415,6 +418,7 @@ public class CommonUtilities implements FinalVariables {
 			jObj.put(DB_KATEGORIA, kategoria);
 			jObj.put(DB_OPIS, opis);
 			jObj.put(DB_PRZYPOMNIENIA, przypoimnienia);
+			jObj.put(DB_DATA_ZUZYCIA, dataZuz);
 		
 			json = jObj.toString();
 		} catch (JSONException e) {

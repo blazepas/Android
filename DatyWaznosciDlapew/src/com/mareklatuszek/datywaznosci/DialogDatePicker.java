@@ -75,6 +75,9 @@ public class DialogDatePicker extends Dialog implements android.view.View.OnClic
 			((Button) viewToSetDate).setText(choosenDate);
 			setOkresWaz(choosenDate);
 			break;
+		case R.id.dataZuzButton:		
+			((Button) viewToSetDate).setText(choosenDate);
+			break;
 		}
 		
 	}

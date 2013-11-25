@@ -24,6 +24,7 @@ public class Product implements FinalVariables, Serializable {
 	private String codeFormat;
 	private String image;
 	private String opis;
+	private String dataZuz;
 	private ArrayList<HashMap<String, String>> przypomnienia;
 	
 	public Product() {		
@@ -36,6 +37,7 @@ public class Product implements FinalVariables, Serializable {
 		this.codeFormat = "QR_CODE";
 		this.image = "";
 		this.opis = "";
+		this.dataZuz ="";
 		this.przypomnienia = new ArrayList<HashMap<String,String>>();
 	}
 	
@@ -73,6 +75,10 @@ public class Product implements FinalVariables, Serializable {
 	
 	public String getOpis() {
 		return opis;
+	}
+	
+	public String getDataZuzycia() {
+		return dataZuz;
 	}
 	
 	public ArrayList<HashMap<String, String>> getPrzypomnienia() {
@@ -178,6 +184,10 @@ public class Product implements FinalVariables, Serializable {
 	
 	public void setOpis(String opis) {
 		this.opis = opis;
+	}
+	
+	public void setDataZuzycia(String dataZuz) {
+		this.dataZuz = dataZuz;
 	}
 	
 	public void setPrzypomnienia(ArrayList<HashMap<String, String>> przypomnienia) {

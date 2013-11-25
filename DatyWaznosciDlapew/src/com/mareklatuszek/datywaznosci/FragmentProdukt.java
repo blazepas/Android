@@ -45,7 +45,7 @@ public class FragmentProdukt extends SherlockFragment implements OnClickListener
 	
 	View rootView;
 	LinearLayout layDodatkoweShow, dodatkowe, przypomnieniaLayout;
-	TextView nazwaTxt, okresTxt, dataOtwTxt, terminWazTxt, kategoriaTxt, opisTxt;
+	TextView nazwaTxt, okresTxt, dataOtwTxt, terminWazTxt, kategoriaTxt, opisTxt, dataZuzTxt;
 	ImageView barcodeImage, obrazekImage;
 	
 	Bitmap codeBmp;
@@ -137,12 +137,14 @@ public class FragmentProdukt extends SherlockFragment implements OnClickListener
 		opisTxt = (TextView) dodatkowe.findViewById(R.id.opisTxt);
 		przypomnieniaLayout = (LinearLayout) dodatkowe.findViewById(R.id.przypomnieniaLayout);
 		obrazekImage = (ImageView) dodatkowe.findViewById(R.id.obrazekImage);
+		dataZuzTxt = (TextView) dodatkowe.findViewById(R.id.dataZuzTxt);
 		
 		String dataOtw = product.getDataOtwarcia();
 		String terminWaz = product.getTerminWaznosci();
 		String kategoria = product.getKategoria();
 		String opis = product.getOpis();
 		String image = product.getImage();
+		String dataZuz = product.getDataZuzycia();
 		
 		if (!image.equals("")) {
 			String imagePath = product.getImage();
@@ -156,6 +158,7 @@ public class FragmentProdukt extends SherlockFragment implements OnClickListener
 		terminWazTxt.setText(terminWaz);
 		kategoriaTxt.setText(kategoria);
 		opisTxt.setText(opis);
+		dataZuzTxt.setText(dataZuz);
 		initPrzypomnienia();
 		
 	}

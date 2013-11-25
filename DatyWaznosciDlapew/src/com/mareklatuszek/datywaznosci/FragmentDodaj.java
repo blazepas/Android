@@ -79,7 +79,7 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 	
 	View rootView;
 	ImageView barcodeImage, obrazekImage;
-	Button dataOtwButton, terminWazButton, zapiszButton, dodatkoweButton, kategorieButton;
+	Button dataOtwButton, terminWazButton, zapiszButton, dodatkoweButton, kategorieButton, dataZuzButton;
 	EditText nazwaTextBox, okresWazTextBox, opisTxtBox;
 	Spinner okresWazSpinner, kategorieSpinner;
 	LinearLayout podstawowe, dodatkowe, przypLayout, latDodatkoweEdit;
@@ -152,6 +152,9 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		case R.id.terminWazButton:
         	dialogDatePicker.show();
 			break;
+		case R.id.dataZuzButton:
+			dialogDatePicker.show();
+			break;
 		case R.id.zapiszButton:
 			zapisz();
 			break;
@@ -217,11 +220,13 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		opisTxtBox = (EditText) dodatkowe.findViewById(R.id.opisTxtBox);
 		obrazekImage = (ImageView) dodatkowe.findViewById(R.id.obrazekImage);
 		przypLayout = (LinearLayout) dodatkowe.findViewById(R.id.przypomnieniaLayout);
+		dataZuzButton = (Button) dodatkowe.findViewById(R.id.dataZuzButton);
 		
 		dataOtwButton.setOnClickListener(this);
 		terminWazButton.setOnClickListener(this);
 		kategorieButton.setOnClickListener(this);
 		obrazekImage.setOnClickListener(this);
+		dataZuzButton.setOnClickListener(this);
 		
 		dataOtwButton.setText(currentDate);
 		
@@ -265,26 +270,27 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		Product product = new Product();
 		
 		String nazwa = nazwaTextBox.getText().toString();
-		String okresWaznosci = getPeriodFromBoxAndSpinner(okresWazTextBox, okresWazSpinner);//TODO
+		String okresWaznosci = getPeriodFromBoxAndSpinner(okresWazTextBox, okresWazSpinner);
 		String kod = code;
 		String typKodu = codeFormat;
 		
 		product.setNazwa(nazwa);
 		product.setOkresWaznosci(okresWaznosci);			
 		product.setCode(kod);
-		product.setCodeFormat(typKodu);
-		
+		product.setCodeFormat(typKodu);		
 
 		String dataOtwarcia = dataOtwButton.getText().toString();			
 		String terminWaznosci = getTerminWaznosci();
 		String kategoria = getKategoria();
+		String dataZuz = dataZuzButton.getText().toString();
 		String obrazek = getRealPathFromURI(MainActivity.imageUri);
 		String opis = opisTxtBox.getText().toString();
 		ArrayList<HashMap<String, String>> przypomnienia = getPrzypomnienia();
 		
 		product.setDataOtwarcia(dataOtwarcia);	
-		product.setTerminWaznosci(terminWaznosci);//TODO niemoze byc pusty
+		product.setTerminWaznosci(terminWaznosci);
 		product.setKategoria(kategoria);
+		product.setDataZuzycia(dataZuz);
 		product.setImage(obrazek);
 		product.setOpis(opis);
 		product.setPrzypomnienia(przypomnienia);
@@ -361,6 +367,7 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		String terminWaznosci = product.getTerminWaznosci();
 		String kategoria = product.getKategoria();
 		int kategoriaId = utilities.getPosInSpinner(kategoria, kategorieSpinner);
+		String dataZuz = product.getDataZuzycia();
 		String imagePath = product.getImage();
 		Bitmap imageBmp = BitmapLoader.loadBitmap(imagePath, 100, 100);
 		String opis = product.getOpis();
@@ -372,6 +379,7 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		obrazekImage.setImageBitmap(imageBmp);
 		opisTxtBox.setText(opis);
 		setPrzypomnienia(przypomnienia);	
+		dataZuzButton.setText(dataZuz);
 	}
 	
 	private void setPrzypomnienia(ArrayList<HashMap<String, String>> przypomnienia) { //TODO naprawić, dubluje sie

@@ -21,6 +21,7 @@ public interface FinalVariables {
 	public static final String DB_OBRAZEK = "obrazek";
 	public static final String DB_OPIS = "opis";
 	public static final String DB_PRZYPOMNIENIA = "przypomnienia";
+	public static final String DB_DATA_ZUZYCIA = "dataZuz";
 	
 	public static final String DB_CAT_CATEGORY = "cat_category";
 	
@@ -37,7 +38,8 @@ public interface FinalVariables {
             DB_CODE_FORMAT + " " + CELL_DEFAULT + ", " +
             DB_OBRAZEK + " " + CELL_DEFAULT + ", " +
             DB_OPIS + " " + CELL_DEFAULT + ", " +
-            DB_PRZYPOMNIENIA + " " + CELL_DEFAULT +
+            DB_PRZYPOMNIENIA + " " + CELL_DEFAULT + ", " +
+            DB_DATA_ZUZYCIA + " " + CELL_DEFAULT +
             ");";
 	
 	public static final String DB_CREATE_CATEGORIES_TABLE = "CREATE TABLE " + DB_CATEGORIES_TABLE + "( " +
