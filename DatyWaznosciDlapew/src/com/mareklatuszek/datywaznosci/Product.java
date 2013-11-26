@@ -12,9 +12,9 @@ import android.util.Log;
 
 import com.mareklatuszek.datywznosci.utilities.FinalVariables;
 
-@SuppressWarnings("serial")
 public class Product implements FinalVariables, Serializable {
 	
+	private static final long serialVersionUID = 1L;
 	private String nazwa;
 	private String dataOtwarcia;
 	private String okresWaznosci;
@@ -221,8 +221,7 @@ public class Product implements FinalVariables, Serializable {
 		} catch (JSONException e) {
 			Log.i("json to przyp", "set err");
 		}
-		
-		
+
 		this.przypomnienia = przypomnienia;
 	}
 

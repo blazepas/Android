@@ -8,11 +8,27 @@
           android:showAsAction="ifRoom|withText">       
     </item>
     
+    <item android:id="@+id/edit2"
+          android:icon="@drawable/settings" 
+          android:visible="true" 
+          android:title="Edytuj" 
+          android:enabled="true"
+          android:showAsAction="never">       
+    </item>
+    
     <item android:id="@+id/share"
           android:icon="@drawable/share" 
           android:visible="true" 
           android:title="Udostępnij" 
           android:enabled="true"
           android:showAsAction="ifRoom|withText">       
+    </item>
+    
+    <item android:id="@+id/share2"
+          android:icon="@drawable/share" 
+          android:visible="true" 
+          android:title="Udostępnij" 
+          android:enabled="true"
+          android:showAsAction="never">       
     </item>
 </menu>

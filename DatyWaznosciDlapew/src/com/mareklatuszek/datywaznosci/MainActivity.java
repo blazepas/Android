@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -24,6 +25,7 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.MenuItem;
 import com.mareklatuszek.datywznosci.utilities.FinalVariables;
 
+
 public class MainActivity extends SherlockFragmentActivity implements FinalVariables {
 
 	DrawerLayout mDrawerLayout;
@@ -35,6 +37,7 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
 	String[] title;
 	String[] subtitle;
 	int[] icon;
+	boolean backIsDoublePressed = false;
 	public static int currentFragmentPos = 2;
 	public static int currentFragmentId;
 	public static Uri imageUri = new Uri.Builder().build();
@@ -65,7 +68,7 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
             	
         		onNotification(productCode, timeInMillis);
             } else {
-            	Log.i("dupa", "blada");
+            	//TODO
             }
     	}
     	
@@ -76,8 +79,7 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
 		super.onCreate(savedInstanceState);
 		this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 		adapterDb = new AdapterDB(this);
-		
-		
+				
 		// Layout wysuwanego menu
 		setContentView(R.layout.drawer_main);
 
@@ -117,12 +119,10 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
 		mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.drawable.ic_drawer, R.string.drawer_open, R.string.drawer_close) {
 
 			public void onDrawerClosed(View view) {
-				// TODO Auto-generated method stub
 				super.onDrawerClosed(view);
 			}
 
 			public void onDrawerOpened(View drawerView) {
-				// TODO Auto-generated method stub
 				getSupportActionBar().setTitle(mDrawerTitle);
 				super.onDrawerOpened(drawerView);
 			}
@@ -153,7 +153,7 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
 	private class DrawerItemClickListener implements
 			ListView.OnItemClickListener {
 		@Override
-		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {		
 			selectFragment(position);
 		}
 	}
@@ -163,12 +163,12 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
 		currentFragmentPos = position;
 
 		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-		// Locate Position
 		switch (position) {
 		case 0:
 			startScanner();
 			break;
 		case 1:
+			fragmentDodaj = new FragmentDodaj();
 			ft.replace(R.id.content_frame, fragmentDodaj);
 			break;
 		case 2:
@@ -216,8 +216,8 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
 	}
 	
 	@Override
-	public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-     
+	public void onActivityResult(int requestCode, int resultCode, Intent intent) {   
+		mDrawerLayout.closeDrawer(mDrawerList);
 		if (resultCode == RESULT_OK) {
 			if (requestCode == CAMERA_ADD_RQ_CODE) {
 				imageUri = intent.getData();
@@ -252,6 +252,23 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
 	    currentFragmentId = fragment.getId();
 	}
 	
+	@Override
+    public void onBackPressed() {
+        if (backIsDoublePressed) {
+            super.onBackPressed();
+            return;
+        }
+        backIsDoublePressed = true;
+        Toast.makeText(this, "Naciśnij wstecz drugi raz aby wyjść", 1500).show();
+        new Handler().postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+             backIsDoublePressed = false;   
+            }
+        }, 2000);
+    } 
+	
 	private void onNotification(String productId, String alarmTime) {	
 		adapterDb.open();
 		Product product = adapterDb.getProduct(productId);
@@ -259,22 +276,21 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
 		
 		DialogPrzypomnienie dialogPrzypomnienie = new DialogPrzypomnienie(this, product);
 		dialogPrzypomnienie.show();
-		removePrzypomnienie(productId, alarmTime);
+		
+//		removePrzypomnienie(productId, alarmTime);
 	}
 	
 	public void startScanner() {
 		if (currentFragmentPos != 1) {
             selectFragment(1);
-        }	
-		
+        }		
 		IntentIntegrator.initiateScan(MainActivity.this);
 	}
 	
 	private void selectFragmentToStoreCode(String code, String codeFormat) {
-		//TODO sprawdzi� czy w kodzie s� jakie� dane i je przekaza�
 		Log.i("kod", code);
 		Log.i("fromat kodu", codeFormat);
-       
+		       
         if (currentFragmentPos == 1) {
         	FragmentManager fragmentManager = getSupportFragmentManager();
         	FragmentDodaj actualFragment = (FragmentDodaj) fragmentManager.findFragmentById(currentFragmentId);

@@ -6,5 +6,6 @@
     <string name="drawer_open">Open</string>
     <string name="drawer_close">Close</string>
     <string name="default_kategorie_box_text">Wybierz</string>
+    <string name="crash_toast_text">Wysyłanie logów</string>
 
 </resources>

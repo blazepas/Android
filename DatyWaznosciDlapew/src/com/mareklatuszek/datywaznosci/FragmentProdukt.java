@@ -82,9 +82,11 @@ public class FragmentProdukt extends SherlockFragment implements OnClickListener
     {
        switch (item.getItemId()) {
           case R.id.edit:
+          case R.id.edit2:
         	switchToEditFragment(product);
             break;
           case R.id.share:
+          case R.id.share2:
         	String productJson = utilities.getJsonFromProduct(product);
           	utilities.sendEmail(productJson, getActivity());
             break;

@@ -86,15 +86,17 @@ public class CommonUtilities implements FinalVariables {
 				notifTime.add(Calendar.YEAR, -dateVal);
 			}
 			
-			if (notifHour.equals("")) {
+			if (notifHour.equals("")) { //format np 14:0
 				notifTime.add(Calendar.HOUR_OF_DAY, 14);
 			} else {
-				int hour = Integer.parseInt(notifHour);// format to 0-23
-				notifTime.add(Calendar.HOUR_OF_DAY, hour);
+				String hour = getFirstValue(notifHour);
+				String min = getSecondValue(notifHour);
+				int h = Integer.parseInt(hour);// format to 0-23
+				int m = Integer.parseInt(min);// format to 0-23
+				notifTime.add(Calendar.HOUR_OF_DAY, h);
+				notifTime.add(Calendar.MINUTE, m);
 			}
-			
-			notifTime.add(Calendar.MINUTE, 19);
-			
+						
 			long przypomnienieDate = notifTime.getTimeInMillis();
 			
 			return przypomnienieDate;
@@ -153,7 +155,7 @@ public class CommonUtilities implements FinalVariables {
 	
 	public String parseOkresToDate(String okres) {
 		Calendar cal = Calendar.getInstance();
-		String box = getTextFromOkresWaz(okres);
+		String box = getFirstValue(okres);
 		String okresDate = "";
 		int val = 0;
 		
@@ -163,7 +165,7 @@ public class CommonUtilities implements FinalVariables {
 			return "";
 		}
 		
-		String format = getSpinnerItemFromOkresWaz(okres);		
+		String format = getSecondValue(okres);		
 		
 		if(format.contains(SPINNER_DATE_DAY)) {
 			cal.add(Calendar.DAY_OF_YEAR, val);
@@ -217,7 +219,10 @@ public class CommonUtilities implements FinalVariables {
 		long currentTimeInSec = (int) (System.currentTimeMillis() / 1000L);
 		long difference = startTimeInSec - currentTimeInSec;
 		
-		if(difference < 3600) {
+		if (difference < 0) {
+			time = "Powiadomino";
+			return time;
+		} else if (0 < difference & difference < 3600) {
 			time = "za godzinę";
 			return time;
 		} else if (difference >= 3600 & difference < 14400) {
@@ -371,7 +376,7 @@ public class CommonUtilities implements FinalVariables {
 		return 0;
 	}
 	
-	public String getTextFromOkresWaz(String okres) {
+	public String getFirstValue(String okres) {
 		String box = "";
 		Pattern pattern = Pattern.compile(":");
 		
@@ -383,7 +388,7 @@ public class CommonUtilities implements FinalVariables {
 		return box;
 	}
 	
-	public String getSpinnerItemFromOkresWaz(String okres) {
+	public String getSecondValue(String okres) {
 		String spinn = "";	
 		Pattern pattern = Pattern.compile(":");
 		
@@ -567,7 +572,7 @@ public class CommonUtilities implements FinalVariables {
 	    long when = cal.getTimeInMillis(); // czas powiadomienia
 	    int intentId = productCode.hashCode();
 	    Intent intent = new Intent(mActivity, ReminderService.class);
-	    intent.putExtra("message", nazwa);
+	    intent.putExtra("message", "Przypomnienie o koncu ważności produktu: " + nazwa);
 	    intent.putExtra("productCode", productCode);
 	    intent.putExtra("timeInMillis", alarmTimeInMillis);
 	    PendingIntent pendingIntent = PendingIntent.getService(mActivity, intentId, intent, 0);

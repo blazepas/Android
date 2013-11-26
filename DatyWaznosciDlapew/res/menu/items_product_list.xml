@@ -7,4 +7,12 @@
           android:enabled="true"
           android:showAsAction="ifRoom|withText">       
     </item>
+    
+    <item android:id="@+id/share2"
+          android:icon="@drawable/share" 
+          android:visible="true" 
+          android:title="Udostępnij listę" 
+          android:enabled="true"
+          android:showAsAction="never">       
+    </item>
 </menu>

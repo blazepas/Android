@@ -228,6 +228,7 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		obrazekImage.setOnClickListener(this);
 		dataZuzButton.setOnClickListener(this);
 		
+//		initObrazek();
 		dataOtwButton.setText(currentDate);
 		
 		initKategorie();
@@ -245,6 +246,16 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 	
 		spinnerAdapter= new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, kategorie);
 		kategorieSpinner.setAdapter(spinnerAdapter);
+	}
+	
+	private void initObrazek() {
+		if(MainActivity.imageUri.toString().equals("")) {
+			Log.i("uri", "null");
+		} else {
+			String path = getRealPathFromURI(MainActivity.imageUri);
+			Bitmap bm = BitmapLoader.loadBitmap(path, 100, 100);
+			obrazekImage.setImageBitmap(bm);
+		}
 	}
 			
 	private void showDodatkowe() {
@@ -352,8 +363,8 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		String okresWaznosci = product.getOkresWaznosci();
 		String kod = product.getCode();
 		String typKodu = product.getCodeFormat();
-		String okresText = utilities.getTextFromOkresWaz(okresWaznosci);
-		String okresSpinnVal = utilities.getSpinnerItemFromOkresWaz(okresWaznosci);
+		String okresText = utilities.getFirstValue(okresWaznosci);
+		String okresSpinnVal = utilities.getSecondValue(okresWaznosci);
 		int okresSpinPos = utilities.getPosInSpinner(okresSpinnVal, okresWazSpinner);
 		
 		nazwaTextBox.setText(nazwa);
@@ -404,11 +415,11 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 			EditText przypTextBox = (EditText) row.findViewById(R.id.przypTextBox);
 			Spinner przypSpinner = (Spinner) row.findViewById(R.id.przypSpinner);
 			Button przypButton = (Button) row.findViewById(R.id.przypButton);
-						
-
+			Button godzButton = (Button) row.findViewById(R.id.godzButton);
 			
 			przypTextBox.setText(boxTxt);
 			przypSpinner.setSelection(spinnerPos);
+			godzButton.setText(przypHour);
 					
 //			EditText temp = new EditText(getActivity());
 //			LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(54, LayoutParams.WRAP_CONTENT, 1);
@@ -508,8 +519,8 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		okresWazTextBox.setOnKeyListener(null);
 		
 		String okres = utilities.parseDateToOkres(choosenDate);
-		String box = utilities.getTextFromOkresWaz(okres);
-		String spinnItem = utilities.getSpinnerItemFromOkresWaz(okres);
+		String box = utilities.getFirstValue(okres);
+		String spinnItem = utilities.getSecondValue(okres);
 		int spinnPos = utilities.getPosInSpinner(spinnItem, okresWazSpinner);
 		
 		okresWazTextBox.setText(box);
@@ -544,11 +555,13 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 			
 			EditText przypTextBox = (EditText) row.findViewById(R.id.przypTextBox);
 			Spinner przypSpinner = (Spinner) row.findViewById(R.id.przypSpinner);
+			Button godzButton = (Button) row.findViewById(R.id.godzButton);
+			
 			String boxTxt = przypTextBox.getText().toString();
 			
 			if (boxTxt.length() != 0 & !boxTxt.equals("0")) {
 				String spinnerPos = String.valueOf(przypSpinner.getSelectedItemPosition());
-				String przypHour = "20";//TODO
+				String przypHour = godzButton.getText().toString();
 				String terminWaz = terminWazButton.getText().toString();
 				String przypDate = "0";
 				try {
@@ -608,9 +621,19 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 	private void initPrzypomnienia() {
 		final LayoutInflater inflater = getActivity().getLayoutInflater();
 		LinearLayout row = (LinearLayout) inflater.inflate(R.layout.listview_add_powiadomienia, null);
-		Button button = (Button) row.findViewById(R.id.przypButton);
+		Button przypButton = (Button) row.findViewById(R.id.przypButton);
+		Button godzButton = (Button) row.findViewById(R.id.godzButton);
 		
-		button.setOnClickListener(new OnClickListener() {
+		godzButton.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				DialogTimePicker dialogTimePicker = new DialogTimePicker(getActivity(), v);
+				dialogTimePicker.show();				
+			}
+		});
+		
+		przypButton.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
@@ -639,10 +662,14 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		String termin = terminWazButton.getText().toString();
 		
 		if (code.equals("") || nazwa.equals("") || termin.equals("") || termin.equals("Wprowadź datę")) {
+						
 			if (nazwa.equals("") || termin.equals("") || termin.equals("Wprowadź datę")) {
 				Toast.makeText(getActivity(), "Należy podać nazwę i okres ważności", 1500).show();
 			} else {
-				DialogGeneruj dialogGen = new DialogGeneruj(getActivity(), prepareDataToStore(), getFragmentManager(), getId());
+				
+				Product product = prepareDataToStore();
+				
+				DialogGeneruj dialogGen = new DialogGeneruj(getActivity(),product , getFragmentManager(), getId());
 				dialogGen.show();	
 			}
 		} else {
@@ -657,8 +684,8 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 	
 	private void showChoiceDialog(final String code, final String codeFormat) {
 		AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
-		dialog.setMessage("Produkt o takim kodzie znajduje się już w bazie. Możesz przejść do edycji lub do podglądu");
-		dialog.setPositiveButton("Edytuj",new DialogInterface.OnClickListener() {
+		dialog.setMessage("Produkt o takim kodzie znajduje się już w bazie. Możesz kontynuować dodawanie lub przejść do podglądu");
+		dialog.setPositiveButton("Kontynuuj",new DialogInterface.OnClickListener() {
 
 			@Override
 			public void onClick(DialogInterface dialog, int which) {

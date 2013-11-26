@@ -105,8 +105,6 @@ public class FragmentProdukty extends SherlockFragment implements OnItemLongClic
 	                    }
 					});
 				}
-				
-				
 			}
 		}.execute();
 	}
@@ -129,6 +127,7 @@ public class FragmentProdukty extends SherlockFragment implements OnItemLongClic
     {
        switch (item.getItemId()) {
           case R.id.share:
+          case R.id.share2:
           	shareAllProducts();
             break;
        }
