@@ -25,7 +25,7 @@
 			android:windowSoftInputMode="stateAlwaysHidden" />
         
         <service 
-            android:name="com.mareklatuszek.datywznosci.utilities.ReminderService" >
+            android:name="com.mareklatuszek.utilities.ReminderService" >
         </service>
         
     </application>

@@ -17,8 +17,8 @@ import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.mareklatuszek.datywznosci.utilities.BitmapLoader;
-import com.mareklatuszek.datywznosci.utilities.CommonUtilities;
+import com.mareklatuszek.utilities.BitmapLoader;
+import com.mareklatuszek.utilities.CommonUtilities;
 
 public class FragmentProdukt extends SherlockFragment implements OnClickListener {
 	

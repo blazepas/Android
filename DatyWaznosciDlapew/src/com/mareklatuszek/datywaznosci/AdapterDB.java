@@ -10,8 +10,8 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-import com.mareklatuszek.datywznosci.utilities.CommonUtilities;
-import com.mareklatuszek.datywznosci.utilities.FinalVariables;
+import com.mareklatuszek.utilities.CommonUtilities;
+import com.mareklatuszek.utilities.FinalVariables;
 
 public class AdapterDB implements FinalVariables {
 	private SQLiteDatabase db;

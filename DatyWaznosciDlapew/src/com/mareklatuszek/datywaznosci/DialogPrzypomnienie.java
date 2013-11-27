@@ -11,7 +11,7 @@ import android.view.Window;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.mareklatuszek.datywznosci.utilities.CommonUtilities;
+import com.mareklatuszek.utilities.CommonUtilities;
 
 public class DialogPrzypomnienie extends Dialog implements android.view.View.OnClickListener {
 	

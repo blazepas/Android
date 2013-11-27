@@ -22,7 +22,7 @@ import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.MenuItem;
-import com.mareklatuszek.datywznosci.utilities.FinalVariables;
+import com.mareklatuszek.utilities.FinalVariables;
 
 
 public class MainActivity extends SherlockFragmentActivity implements FinalVariables {

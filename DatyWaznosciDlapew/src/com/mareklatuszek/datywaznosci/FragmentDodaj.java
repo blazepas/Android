@@ -36,9 +36,9 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragment;
-import com.mareklatuszek.datywznosci.utilities.BitmapLoader;
-import com.mareklatuszek.datywznosci.utilities.CommonUtilities;
-import com.mareklatuszek.datywznosci.utilities.FinalVariables;
+import com.mareklatuszek.utilities.BitmapLoader;
+import com.mareklatuszek.utilities.CommonUtilities;
+import com.mareklatuszek.utilities.FinalVariables;
 
 public class FragmentDodaj extends SherlockFragment implements OnClickListener, OnKeyListener, FinalVariables {
 	

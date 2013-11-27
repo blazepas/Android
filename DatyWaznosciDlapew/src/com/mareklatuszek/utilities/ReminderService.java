@@ -1,4 +1,4 @@
-package com.mareklatuszek.datywznosci.utilities;
+package com.mareklatuszek.utilities;
 
 import android.app.IntentService;
 import android.app.Notification;

@@ -1,4 +1,4 @@
-package com.mareklatuszek.datywznosci.utilities;
+package com.mareklatuszek.utilities;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;

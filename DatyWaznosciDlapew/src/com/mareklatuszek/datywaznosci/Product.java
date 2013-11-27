@@ -10,7 +10,7 @@ import org.json.JSONObject;
 
 import android.util.Log;
 
-import com.mareklatuszek.datywznosci.utilities.FinalVariables;
+import com.mareklatuszek.utilities.FinalVariables;
 
 public class Product implements FinalVariables, Serializable {
 	

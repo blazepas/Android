@@ -1,4 +1,4 @@
-package com.mareklatuszek.datywznosci.utilities;
+package com.mareklatuszek.utilities;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;

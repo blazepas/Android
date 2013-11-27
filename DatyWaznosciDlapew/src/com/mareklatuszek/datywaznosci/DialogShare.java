@@ -10,7 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.mareklatuszek.datywznosci.utilities.CommonUtilities;
+import com.mareklatuszek.utilities.CommonUtilities;
 
 public class DialogShare extends Dialog implements android.view.View.OnClickListener {
 	CommonUtilities utilities = new CommonUtilities();

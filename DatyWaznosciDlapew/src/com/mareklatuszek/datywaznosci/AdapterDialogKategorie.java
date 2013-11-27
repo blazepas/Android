@@ -13,7 +13,7 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.mareklatuszek.datywznosci.utilities.CommonUtilities;
+import com.mareklatuszek.utilities.CommonUtilities;
 
 public class AdapterDialogKategorie extends BaseAdapter {
 	

@@ -17,8 +17,8 @@ import android.widget.PopupMenu;
 import android.widget.PopupMenu.OnMenuItemClickListener;
 
 import com.actionbarsherlock.app.SherlockFragment;
-import com.mareklatuszek.datywznosci.utilities.CommonUtilities;
-import com.mareklatuszek.datywznosci.utilities.FinalVariables;
+import com.mareklatuszek.utilities.CommonUtilities;
+import com.mareklatuszek.utilities.FinalVariables;
 
 public class FragmentPrzypomnienia extends SherlockFragment implements FinalVariables, OnItemClickListener, OnItemLongClickListener{
 	

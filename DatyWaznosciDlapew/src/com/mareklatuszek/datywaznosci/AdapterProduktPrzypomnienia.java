@@ -11,8 +11,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.mareklatuszek.datywznosci.utilities.CommonUtilities;
-import com.mareklatuszek.datywznosci.utilities.FinalVariables;
+import com.mareklatuszek.utilities.CommonUtilities;
+import com.mareklatuszek.utilities.FinalVariables;
 
 public class AdapterProduktPrzypomnienia extends BaseAdapter implements FinalVariables {
 	

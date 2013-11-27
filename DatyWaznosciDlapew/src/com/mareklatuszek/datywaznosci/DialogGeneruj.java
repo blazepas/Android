@@ -16,7 +16,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.mareklatuszek.datywznosci.utilities.CommonUtilities;
+import com.mareklatuszek.utilities.CommonUtilities;
 
 public class DialogGeneruj extends Dialog implements android.view.View.OnClickListener {
 	

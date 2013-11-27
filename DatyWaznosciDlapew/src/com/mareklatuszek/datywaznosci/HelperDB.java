@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import com.mareklatuszek.datywznosci.utilities.FinalVariables;
+import com.mareklatuszek.utilities.FinalVariables;
 
 class HelperDB extends SQLiteOpenHelper implements FinalVariables {
     public HelperDB(Context context, String name, CursorFactory factory, int version) {

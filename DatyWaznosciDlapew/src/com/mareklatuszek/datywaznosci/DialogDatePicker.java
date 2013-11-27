@@ -10,7 +10,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.Toast;
 
-import com.mareklatuszek.datywznosci.utilities.CommonUtilities;
+import com.mareklatuszek.utilities.CommonUtilities;
 
 public class DialogDatePicker extends Dialog implements android.view.View.OnClickListener {
 	

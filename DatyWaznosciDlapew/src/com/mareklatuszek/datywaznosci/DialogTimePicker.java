@@ -8,7 +8,7 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.TimePicker;
 
-import com.mareklatuszek.datywznosci.utilities.CommonUtilities;
+import com.mareklatuszek.utilities.CommonUtilities;
 
 public class DialogTimePicker extends Dialog implements android.view.View.OnClickListener {
 	
