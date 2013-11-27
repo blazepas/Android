@@ -1,41 +1,24 @@
 package com.mareklatuszek.datywaznosci;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import android.app.Dialog;
-import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore.Images;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-
-
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragment;
-import com.mareklatuszek.datywznosci.utilities.BitmapLoader;
-import com.mareklatuszek.datywznosci.utilities.CommonUtilities;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.mareklatuszek.datywznosci.utilities.BitmapLoader;
+import com.mareklatuszek.datywznosci.utilities.CommonUtilities;
 
 public class FragmentProdukt extends SherlockFragment implements OnClickListener {
 	
@@ -45,7 +28,7 @@ public class FragmentProdukt extends SherlockFragment implements OnClickListener
 	
 	View rootView;
 	LinearLayout layDodatkoweShow, dodatkowe, przypomnieniaLayout;
-	TextView nazwaTxt, okresTxt, dataOtwTxt, terminWazTxt, kategoriaTxt, opisTxt, dataZuzTxt;
+	TextView nazwaTxt, okresTxt, dataOtwTxt, terminWazTxt, kategoriaTxt, opisTxt, dataZuzTxt, isScannedTxt;
 	ImageView barcodeImage, obrazekImage;
 	
 	Bitmap codeBmp;
@@ -112,6 +95,7 @@ public class FragmentProdukt extends SherlockFragment implements OnClickListener
 		
 		nazwaTxt = (TextView) rootView.findViewById(R.id.nazwaTxt);
 		okresTxt = (TextView) rootView.findViewById(R.id.okresTxt);
+		isScannedTxt = (TextView) rootView.findViewById(R.id.isScannedTxt);
 		barcodeImage = (ImageView) rootView.findViewById(R.id.barcodeImage);
 		
 		String nazwa = product.getNazwa();
@@ -124,6 +108,9 @@ public class FragmentProdukt extends SherlockFragment implements OnClickListener
 		okresTxt.setText(okres);
 		barcodeImage.setImageBitmap(codeBmp);
 		barcodeImage.setOnClickListener(this);
+		if (!product.getIsScanned()) {
+			isScannedTxt.setVisibility(View.GONE);
+		}
 		
 	}
 	

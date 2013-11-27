@@ -2,7 +2,7 @@ package com.mareklatuszek.datywznosci.utilities;
 
 public interface FinalVariables {
 
-	public static final int DB_VERSION = 1;
+	public static final int DB_VERSION = 2;
 	public static final String DB_DEBUG_TAG = "Product database"; 
 	public static final String DB_NAME = "database.db";
 	public static final String DB_PRODUCT_TABLE = "product";
@@ -22,6 +22,7 @@ public interface FinalVariables {
 	public static final String DB_OPIS = "opis";
 	public static final String DB_PRZYPOMNIENIA = "przypomnienia";
 	public static final String DB_DATA_ZUZYCIA = "dataZuz";
+	public static final String DB_IS_SCANNED = "isScanned";
 	
 	public static final String DB_CAT_CATEGORY = "cat_category";
 	
@@ -39,6 +40,7 @@ public interface FinalVariables {
             DB_OBRAZEK + " " + CELL_DEFAULT + ", " +
             DB_OPIS + " " + CELL_DEFAULT + ", " +
             DB_PRZYPOMNIENIA + " " + CELL_DEFAULT + ", " +
+            DB_IS_SCANNED + " " + CELL_DEFAULT + ", " +
             DB_DATA_ZUZYCIA + " " + CELL_DEFAULT +
             ");";
 	

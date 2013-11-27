@@ -1,22 +1,14 @@
 package com.mareklatuszek.datywaznosci;
 
-import java.io.ObjectInputStream.GetField;
-
-import com.mareklatuszek.datywznosci.utilities.CommonUtilities;
-
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
-import android.widget.DatePicker;
-import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.TimePicker;
-import android.widget.Toast;
+
+import com.mareklatuszek.datywznosci.utilities.CommonUtilities;
 
 public class DialogTimePicker extends Dialog implements android.view.View.OnClickListener {
 	

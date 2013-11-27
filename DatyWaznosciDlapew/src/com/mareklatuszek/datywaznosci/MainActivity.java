@@ -2,7 +2,6 @@ package com.mareklatuszek.datywaznosci;
 
 import jim.h.common.android.lib.zxing.integrator.IntentIntegrator;
 import jim.h.common.android.lib.zxing.integrator.IntentResult;
-import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.net.Uri;
@@ -253,20 +252,33 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
 	}
 	
 	@Override
-    public void onBackPressed() {
-        if (backIsDoublePressed) {
-            super.onBackPressed();
-            return;
-        }
-        backIsDoublePressed = true;
-        Toast.makeText(this, "Naciśnij wstecz drugi raz aby wyjść", 1500).show();
-        new Handler().postDelayed(new Runnable() {
+    public void onBackPressed() {		
+		if (currentFragmentPos == 6) { // jesli fragment edytuj			
+			Bundle extras = fragmentEdytuj.getArguments();
+			
+			if (extras != null) {
+				Product product = (Product) extras.getSerializable("product");
+				selectFragmentToShowProduct(product);
+			}			
+		} else if (currentFragmentPos == 5) { //jesli fragment produkt			
+			selectFragment(2);			
+		} else {
+			
+	        if (backIsDoublePressed) {
+	            super.onBackPressed();
+	            return;
+	        }
+	        
+	        backIsDoublePressed = true;
+	        Toast.makeText(this, "Naciśnij wstecz drugi raz aby wyjść", 1500).show();
+	        new Handler().postDelayed(new Runnable() {
 
-            @Override
-            public void run() {
-             backIsDoublePressed = false;   
-            }
-        }, 2000);
+	            @Override
+	            public void run() {
+	             backIsDoublePressed = false;   
+	            }
+	        }, 2000);
+		}
     } 
 	
 	private void onNotification(String productId, String alarmTime) {	

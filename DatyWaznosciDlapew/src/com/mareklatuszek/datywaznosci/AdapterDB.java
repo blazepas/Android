@@ -3,15 +3,15 @@ package com.mareklatuszek.datywaznosci;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import com.mareklatuszek.datywznosci.utilities.CommonUtilities;
-import com.mareklatuszek.datywznosci.utilities.FinalVariables;
-
 import android.app.Activity;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
+
+import com.mareklatuszek.datywznosci.utilities.CommonUtilities;
+import com.mareklatuszek.datywznosci.utilities.FinalVariables;
 
 public class AdapterDB implements FinalVariables {
 	private SQLiteDatabase db;
@@ -125,6 +125,7 @@ public class AdapterDB implements FinalVariables {
 		int columnOpis =  cursor.getColumnIndex(DB_OPIS);
 		int columnPrzypomnienia =  cursor.getColumnIndex(DB_PRZYPOMNIENIA);
 		int columnDataZuzycia =  cursor.getColumnIndex(DB_DATA_ZUZYCIA);
+		int columnIsScanned =  cursor.getColumnIndex(DB_IS_SCANNED);
 		
 		while(cursor.moveToNext()) {
 			Product product = new Product();
@@ -140,6 +141,7 @@ public class AdapterDB implements FinalVariables {
 			String opis = cursor.getString(columnOpis);
 			String przypomnienia = cursor.getString(columnPrzypomnienia);
 			String dataZuz = cursor.getString(columnDataZuzycia);
+			String isScanned = cursor.getString(columnIsScanned);
 	        
 			product.setNazwa(nazwa);
 			product.setDataOtwarcia(dataOtwarcia);
@@ -152,6 +154,7 @@ public class AdapterDB implements FinalVariables {
 			product.setOpis(opis);
 			product.setPrzypomnieniaFromDB((przypomnienia));
 			product.setDataZuzycia(dataZuz);
+			product.setIsScanned(isScanned);
 			
 			productList.add(product);
 		}
@@ -199,6 +202,7 @@ public class AdapterDB implements FinalVariables {
 			String opis = cursor.getString(cursor.getColumnIndex(DB_OPIS));
 			String przypomnienia = cursor.getString(cursor.getColumnIndex(DB_PRZYPOMNIENIA));
 			String dataZuzycia = cursor.getString(cursor.getColumnIndex(DB_DATA_ZUZYCIA));
+			String isScanned = cursor.getString(cursor.getColumnIndex(DB_IS_SCANNED));
 	        
 			product.setNazwa(nazwa);
 			product.setDataOtwarcia(dataOtwarcia);
@@ -211,6 +215,7 @@ public class AdapterDB implements FinalVariables {
 			product.setOpis(opis);
 			product.setPrzypomnieniaFromDB(przypomnienia);
 			product.setDataZuzycia(dataZuzycia);
+			product.setIsScanned(isScanned);
 			
 	    }
 	    
@@ -272,6 +277,7 @@ public class AdapterDB implements FinalVariables {
 		String opis = product.getOpis();
 		String przypomnienia = product.getPrzypomnieniaToDB();
 		String dataZuzycia = product.getDataZuzycia();
+		String isScanned = product.getIsScannedToDB();
 		
 		Log.i("DBPrzypomnienia", przypomnienia);
 	    
@@ -286,6 +292,7 @@ public class AdapterDB implements FinalVariables {
 		newProductVal.put(DB_OPIS, opis);
 		newProductVal.put(DB_PRZYPOMNIENIA, przypomnienia);
 		newProductVal.put(DB_DATA_ZUZYCIA, dataZuzycia);
+		newProductVal.put(DB_IS_SCANNED, isScanned);
 		
 		return newProductVal;
 	}

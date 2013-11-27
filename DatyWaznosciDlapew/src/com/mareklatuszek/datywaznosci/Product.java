@@ -15,6 +15,7 @@ import com.mareklatuszek.datywznosci.utilities.FinalVariables;
 public class Product implements FinalVariables, Serializable {
 	
 	private static final long serialVersionUID = 1L;
+	
 	private String nazwa;
 	private String dataOtwarcia;
 	private String okresWaznosci;
@@ -25,6 +26,7 @@ public class Product implements FinalVariables, Serializable {
 	private String image;
 	private String opis;
 	private String dataZuz;
+	private String isScanned;
 	private ArrayList<HashMap<String, String>> przypomnienia;
 	
 	public Product() {		
@@ -37,7 +39,8 @@ public class Product implements FinalVariables, Serializable {
 		this.codeFormat = "QR_CODE";
 		this.image = "";
 		this.opis = "";
-		this.dataZuz ="";
+		this.dataZuz = "";
+		this.isScanned = "0"; // 1 jeśli zeskanowany, 0 jeśli nie
 		this.przypomnienia = new ArrayList<HashMap<String,String>>();
 	}
 	
@@ -81,6 +84,18 @@ public class Product implements FinalVariables, Serializable {
 		return dataZuz;
 	}
 	
+	public boolean getIsScanned() {
+		if (isScanned.equals("0")) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+	
+	public String getIsScannedToDB() {
+		return this.isScanned;
+	}
+	
 	public ArrayList<HashMap<String, String>> getPrzypomnienia() {
 		return przypomnienia;
 	}
@@ -119,36 +134,6 @@ public class Product implements FinalVariables, Serializable {
 		
 		return przypomnieniaJson;
 	}
-		
-//	public String getGrupa(int rodzajGrupy) {
-//		
-//		switch (rodzajGrupy) {
-//		case 0: // wg nazwy
-//			return getPierwszaLitera();
-//		case 1: // wg daty otwarcia
-//			return getGrupaDataOtwarcia();
-//		}
-//		
-//		return "0";
-//		
-//	}
-//	
-//	private String getPierwszaLitera() {
-//		
-//		if (nazwa.length() > 1) {
-//			return nazwa.substring(0, 1);
-//		} else {
-//			return nazwa;
-//		}
-//		
-//	}
-//	
-//	private String getGrupaDataOtwarcia() {
-//		
-//		return "";
-//		
-//	}
-	
 	
 	public void setNazwa(String nazwa) {	
 		this.nazwa = nazwa;
@@ -190,6 +175,18 @@ public class Product implements FinalVariables, Serializable {
 		this.dataZuz = dataZuz;
 	}
 	
+	public void setIsScanned(String isScanned) {
+		this.isScanned = isScanned;
+	}
+	
+	public void setIsScanned(boolean isScanned) {
+		if (isScanned) {
+			this.isScanned = "1";
+		} else {
+			this.isScanned = "0";
+		}
+	}
+	
 	public void setPrzypomnienia(ArrayList<HashMap<String, String>> przypomnienia) {
 		this.przypomnienia = przypomnienia;
 	}
@@ -224,6 +221,4 @@ public class Product implements FinalVariables, Serializable {
 
 		this.przypomnienia = przypomnienia;
 	}
-
-
 }

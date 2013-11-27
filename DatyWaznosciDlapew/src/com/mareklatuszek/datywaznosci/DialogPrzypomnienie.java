@@ -1,30 +1,17 @@
 package com.mareklatuszek.datywaznosci;
 
-import java.io.ObjectInputStream.GetField;
 import java.text.ParseException;
-import java.util.ArrayList;
-
-import com.mareklatuszek.datywznosci.utilities.CommonUtilities;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.Context;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.DatePicker;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import com.mareklatuszek.datywznosci.utilities.CommonUtilities;
 
 public class DialogPrzypomnienie extends Dialog implements android.view.View.OnClickListener {
 	

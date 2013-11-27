@@ -1,32 +1,21 @@
 package com.mareklatuszek.datywaznosci;
 
 import java.io.File;
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -34,32 +23,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnKeyListener;
-import android.view.View.OnLayoutChangeListener;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
-import android.widget.LinearLayout.LayoutParams;
 import android.widget.PopupMenu.OnMenuItemClickListener;
-import android.widget.ListView;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragment;
-import com.google.zxing.WriterException;
 import com.mareklatuszek.datywznosci.utilities.BitmapLoader;
 import com.mareklatuszek.datywznosci.utilities.CommonUtilities;
-import com.mareklatuszek.datywznosci.utilities.Contents;
 import com.mareklatuszek.datywznosci.utilities.FinalVariables;
-import com.mareklatuszek.datywznosci.utilities.QRCodeEncoder;
 
 public class FragmentEdytuj extends SherlockFragment implements OnClickListener, OnKeyListener, FinalVariables {
 	
@@ -94,7 +72,7 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 		dbAdapter = new AdapterDB(getActivity());	
 		
 		getSherlockActivity().getSupportActionBar().setTitle("Edycja produktu");
-		
+				
 		initPodstawowe();
 		initDodatkowe();
 		
@@ -122,9 +100,10 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 				showDodatkowe();
 			}
 		}
+
 		return rootView;
 	}
-	
+		
 	@Override
 	public void onSaveInstanceState(Bundle bundle) {
 		super.onSaveInstanceState(bundle);
@@ -184,11 +163,11 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 		case R.id.okresWazTextBox:
 			Log.i("box", "onItem");
 	    	setTerminWaz();	    		
-			break;
+			break;	
 		}
 		return false;
 	}
-				
+					
 	private void initPodstawowe() {		
 		podstawowe = (LinearLayout) rootView.findViewById(R.id.podstawowe);
 		barcodeImage = (ImageView) rootView.findViewById(R.id.barcodeImage);
@@ -446,6 +425,15 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 				});				
 			}
 			
+			godzButton.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					DialogTimePicker dialogTimePicker = new DialogTimePicker(getActivity(), v);
+					dialogTimePicker.show();				
+				}
+			});
+			
 			przypLayout.addView(row);	
 		}	
 	}
@@ -686,7 +674,7 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 	
 	private void showChoiceDialog(final String code, final String codeFormat) {
 		AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
-		dialog.setMessage("Produkt o takim kodzie znajduje się już w bazie. Możesz przejść do edycji lub do podglądu");
+		dialog.setMessage("Produkt o takim kodzie znajduje się już w bazie. Możesz wrócić do edycji lub do podglądu");
 		dialog.setPositiveButton("Edytuj",new DialogInterface.OnClickListener() {
 
 			@Override

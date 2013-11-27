@@ -2,8 +2,6 @@ package com.mareklatuszek.datywaznosci;
 
 import java.util.ArrayList;
 
-import com.mareklatuszek.datywznosci.utilities.CommonUtilities;
-
 import android.app.Activity;
 import android.content.Context;
 import android.support.v4.app.FragmentManager;
@@ -14,6 +12,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.TextView;
+
+import com.mareklatuszek.datywznosci.utilities.CommonUtilities;
 
 public class AdapterKategorie extends BaseAdapter {
 	

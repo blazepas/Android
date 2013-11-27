@@ -1,19 +1,14 @@
 package com.mareklatuszek.datywznosci.utilities;
 
-import java.util.HashMap;
-
-import com.mareklatuszek.datywaznosci.AdapterDB;
-import com.mareklatuszek.datywaznosci.MainActivity;
-import com.mareklatuszek.datywaznosci.R;
-
 import android.app.IntentService;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
-import android.util.Log;
+
+import com.mareklatuszek.datywaznosci.MainActivity;
+import com.mareklatuszek.datywaznosci.R;
 
 public class ReminderService extends IntentService implements FinalVariables {
     private static final int NOTIF_ID = 1;

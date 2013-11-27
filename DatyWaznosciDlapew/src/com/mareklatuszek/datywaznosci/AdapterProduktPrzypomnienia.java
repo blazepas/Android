@@ -3,17 +3,16 @@ package com.mareklatuszek.datywaznosci;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import com.mareklatuszek.datywznosci.utilities.CommonUtilities;
-import com.mareklatuszek.datywznosci.utilities.FinalVariables;
-
 import android.app.Activity;
 import android.content.Context;
-import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+
+import com.mareklatuszek.datywznosci.utilities.CommonUtilities;
+import com.mareklatuszek.datywznosci.utilities.FinalVariables;
 
 public class AdapterProduktPrzypomnienia extends BaseAdapter implements FinalVariables {
 	

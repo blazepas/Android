@@ -14,9 +14,17 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -432,14 +440,9 @@ public class CommonUtilities implements FinalVariables {
 		return json;
 	}
 	
-	public String getProductsTableToShare(ArrayList<Product> products) {
+	public JSONArray getProductsTableToShare(ArrayList<Product> products) {
 		
-		String table = "<br />" +
-				"Nazwa  " + " &nbsp " +
-				"Data otwarcia" + " &nbsp " +
-				"Termin ważności" + " &nbsp " +
-				"Kategoria" + " &nbsp " +
-			"<br />";
+		JSONArray lista = new JSONArray();
 			
 		for (int i = 0; i < products.size(); i++) {
 			Product product = products.get(i);
@@ -449,18 +452,21 @@ public class CommonUtilities implements FinalVariables {
 		    String terminWaz = product.getTerminWaznosci();
 		    String kategoria = product.getKategoria();
 		    
-		    String row =
-					"<br />" +
-						nazwa + " &nbsp " +
-						dataOtw + " &nbsp " +
-						terminWaz + " &nbsp " +
-						kategoria + " &nbsp " +
-					"<br />";
+		    JSONObject jObj = new JSONObject();
+		    try {
+				jObj.put(DB_NAZWA, nazwa);
+				jObj.put(DB_DATA_OTWARCIA, dataOtw);
+				jObj.put(DB_TERMIN_WAZNOSCI, terminWaz);
+				jObj.put(DB_KATEGORIA, kategoria);
+			} catch (JSONException e) {
+				Log.i("utiliteis", "get product list to email");
+			}
 		    
-		    table = table + row;
+		    lista.put(jObj);
+		   
 		}
 		
-		return table;
+		return lista;
 	}
 	
 	public boolean validateCode(String code, String codeFormat) {
@@ -638,8 +644,7 @@ public class CommonUtilities implements FinalVariables {
 	    alarmManager.set(AlarmManager.RTC_WAKEUP, when, pendingIntent);
 	            
 	            
-	    Log.i("Alarm ustawiony", when+"");
-          
+	    Log.i("Alarm ustawiony", when+"");         
 	}
 	
 	private boolean appInstalledOrNot(String uri, FragmentActivity mActivity)
@@ -650,10 +655,34 @@ public class CommonUtilities implements FinalVariables {
                pm.getPackageInfo(uri, PackageManager.GET_ACTIVITIES);
                app_installed = true;
         }
-        catch (PackageManager.NameNotFoundException e)
-        {
+        catch (PackageManager.NameNotFoundException e) {
                app_installed = false;
         }
         return app_installed ;
-}
+    }
+	
+	public boolean postData(String email, JSONArray json, String url) {
+	    HttpClient httpclient = new DefaultHttpClient();
+
+	    Log.i("post", "post");
+	    try { 
+	        HttpPost httppost = new HttpPost(url);
+
+	        List<NameValuePair> nvp = new ArrayList<NameValuePair>(2);    
+	        nvp.add(new BasicNameValuePair("json", json.toString()));
+	        nvp.add(new BasicNameValuePair("email", email)); 
+	        httppost.setEntity(new UrlEncodedFormEntity(nvp));
+	        HttpResponse response = httpclient.execute(httppost); 
+
+	        if(response.getStatusLine().getStatusCode() == 200) {
+	            return true;
+	        } else {
+	        	return false;
+	        }
+
+	    } catch (Exception e) {
+	    	Log.i("utilities", "post data error");
+	        return false;
+	    } 
+	}
 }

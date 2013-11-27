@@ -1,12 +1,12 @@
 package com.mareklatuszek.datywaznosci;
 
-import com.mareklatuszek.datywznosci.utilities.FinalVariables;
-
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+
+import com.mareklatuszek.datywznosci.utilities.FinalVariables;
 
 class HelperDB extends SQLiteOpenHelper implements FinalVariables {
     public HelperDB(Context context, String name, CursorFactory factory, int version) {
@@ -24,7 +24,7 @@ class HelperDB extends SQLiteOpenHelper implements FinalVariables {
  
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL(DROP_PRODUCT_TABLE); //TODO zrobiæ przepisywanie do nowej tabeli
+        db.execSQL(DROP_PRODUCT_TABLE); //TODO zrobiï¿½ przepisywanie do nowej tabeli
         db.execSQL(DROP_CATEGORIES_TABLE);
  
         Log.d(DB_DEBUG_TAG, "Database updating...");

@@ -1,6 +1,4 @@
 package com.mareklatuszek.datywaznosci;
-import com.mareklatuszek.datywaznosci.R;
-
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
@@ -9,7 +7,6 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
 public class AdapterSpinnerOkres extends BaseAdapter implements OnClickListener {

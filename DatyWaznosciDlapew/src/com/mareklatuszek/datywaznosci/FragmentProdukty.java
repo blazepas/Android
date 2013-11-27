@@ -3,13 +3,10 @@ package com.mareklatuszek.datywaznosci;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.json.JSONArray;
+
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Vibrator;
-import android.text.Spanned;
-import android.util.Log;
-import android.view.ContextMenu;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -17,7 +14,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.PopupMenu;
@@ -49,66 +45,16 @@ public class FragmentProdukty extends SherlockFragment implements OnItemLongClic
 		getSherlockActivity().getSupportActionBar().setTitle("Lista produktów");
 		
 		rootView = inflater.inflate(R.layout.fragment_produkty, container, false);
-		
-		initList();
+
+		new InitList().execute();
 		
 		return rootView;
 	}
 	
 	public void onResume() {
-		super.onResume();
+		super.onResume();		
+	}
 		
-	}
-	
-	private void initList() {
-		new AsyncTask<Void, Void, Void>() {
-			
-			@Override
-			protected void onPreExecute() {
-				productsList = (ListView) rootView.findViewById(R.id.productsList);
-				
-				//TODO zrobic oddzielny layout
-				footer = new Button(getActivity());
-				footer.setText("Dodaj");
-				footer.setOnClickListener(new OnClickListener() {
-					
-					@Override
-					public void onClick(View v) {
-						((MainActivity) getActivity()).selectFragment(1);
-					}
-				});
-				//TODO
-				
-				productsList.addFooterView(footer);
-			}
-
-			@Override
-			protected Void doInBackground(Void... params) {
-				dbAdapter = new AdapterDB(getActivity());
-				dbAdapter.open();
-				products = dbAdapter.getAllProducts();
-				dbAdapter.close();
-				return null;
-			}
-			
-			@Override
-			protected void onPostExecute(Void v) {
-				if (!products.isEmpty()) {
-					listAdapter = new AdapterProductList(getActivity(), products);
-					productsList.setAdapter(listAdapter);
-					productsList.setOnItemLongClickListener(FragmentProdukty.this);
-					productsList.setOnItemClickListener(new OnItemClickListener() {
-
-	                    @Override
-	                    public void onItemClick(AdapterView<?> arg0, View arg1, int pos, long arg3) {
-	                        switchToProductFragment(pos);
-	                    }
-					});
-				}
-			}
-		}.execute();
-	}
-	
 	private void switchToProductFragment(int positon) {
 		Product product = products.get(positon);
 		((MainActivity) getActivity()).selectFragmentToShowProduct(product);
@@ -128,7 +74,8 @@ public class FragmentProdukty extends SherlockFragment implements OnItemLongClic
        switch (item.getItemId()) {
           case R.id.share:
           case R.id.share2:
-          	shareAllProducts();
+          	DialogShare dialogShare = new DialogShare(getActivity(), getFragmentManager(), getId());
+          	dialogShare.show();
             break;
        }
        return true;
@@ -174,9 +121,11 @@ public class FragmentProdukty extends SherlockFragment implements OnItemLongClic
 		utilities.sendEmail(productJson, getActivity());
 	}
 	
-	private void shareAllProducts() {
-		String table = utilities.getProductsTableToShare(products);
-		utilities.sendEmailWithProductList(getActivity(), table);
+	public boolean shareAllProducts(String email) {
+		JSONArray productList = utilities.getProductsTableToShare(products);
+		String url = getResources().getString(R.string.send_products_list_url);
+		boolean emailStatus = utilities.postData(email, productList, url);
+		return emailStatus;
 	}
 	
 	private void deleteProduct(Product product) {
@@ -198,5 +147,51 @@ public class FragmentProdukty extends SherlockFragment implements OnItemLongClic
 	private void removeAlarms(ArrayList<HashMap<String, String>> przypomnienia, String codeId) {
 		utilities.cancelAlarms(przypomnienia, codeId, getActivity());
 	}
+	
+	private class InitList extends AsyncTask<Void, Void, Void> {
+		
+		@Override
+		protected void onPreExecute() {
+			productsList = (ListView) rootView.findViewById(R.id.productsList);
+			
+			//TODO zrobic oddzielny layout
+			footer = new Button(getActivity());
+			footer.setText("Dodaj");
+			footer.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					((MainActivity) getActivity()).selectFragment(1);
+				}
+			});
+			//TODO
+			
+			productsList.addFooterView(footer);
+		}
 
+		@Override
+		protected Void doInBackground(Void... params) {
+			dbAdapter = new AdapterDB(getActivity());
+			dbAdapter.open();
+			products = dbAdapter.getAllProducts();
+			dbAdapter.close();
+			return null;
+		}
+		
+		@Override
+		protected void onPostExecute(Void v) {
+			if (!products.isEmpty()) {
+				listAdapter = new AdapterProductList(getActivity(), products);
+				productsList.setAdapter(listAdapter);
+				productsList.setOnItemLongClickListener(FragmentProdukty.this);
+				productsList.setOnItemClickListener(new OnItemClickListener() {
+
+                    @Override
+                    public void onItemClick(AdapterView<?> arg0, View arg1, int pos, long arg3) {
+                        switchToProductFragment(pos);
+                    }
+				});
+			}
+		}
+	}
 }

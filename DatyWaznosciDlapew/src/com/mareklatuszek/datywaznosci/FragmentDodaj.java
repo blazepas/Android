@@ -1,28 +1,18 @@
 package com.mareklatuszek.datywaznosci;
 
 import java.io.File;
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -34,38 +24,28 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnKeyListener;
-import android.view.View.OnLayoutChangeListener;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
-import android.widget.LinearLayout.LayoutParams;
 import android.widget.PopupMenu.OnMenuItemClickListener;
-import android.widget.ListView;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragment;
-import com.google.zxing.WriterException;
 import com.mareklatuszek.datywznosci.utilities.BitmapLoader;
 import com.mareklatuszek.datywznosci.utilities.CommonUtilities;
-import com.mareklatuszek.datywznosci.utilities.Contents;
 import com.mareklatuszek.datywznosci.utilities.FinalVariables;
-import com.mareklatuszek.datywznosci.utilities.QRCodeEncoder;
 
 public class FragmentDodaj extends SherlockFragment implements OnClickListener, OnKeyListener, FinalVariables {
 	
 	boolean takePictureStat = false;
 	boolean dodatkoweIsShown = false;
 	boolean isFullVersion = true;
+	boolean isScanned = false;
 	int tempSpinnOkresPos = 0;
 	String currentDate = "";
 	String code = "";
@@ -248,6 +228,35 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		kategorieSpinner.setAdapter(spinnerAdapter);
 	}
 	
+	private void initPrzypomnienia() {
+		Log.i("init", "przypomnienia");
+		final LayoutInflater inflater = getActivity().getLayoutInflater();
+		LinearLayout row = (LinearLayout) inflater.inflate(R.layout.listview_add_powiadomienia, null);
+		Button przypButton = (Button) row.findViewById(R.id.przypButton);
+		Button godzButton = (Button) row.findViewById(R.id.godzButton);
+		
+		godzButton.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				DialogTimePicker dialogTimePicker = new DialogTimePicker(getActivity(), v);
+				dialogTimePicker.show();				
+			}
+		});
+		
+		przypButton.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				initPrzypomnienia();	
+				View viv =przypLayout.getChildAt(przypLayout.getChildCount() - 2);
+				Button przypButton = (Button) viv.findViewById(R.id.przypButton);
+				przypButton.setVisibility(View.GONE);
+			}
+		});
+		przypLayout.addView(row);
+	}
+	
 	private void initObrazek() {
 		if(MainActivity.imageUri.toString().equals("")) {
 			Log.i("uri", "null");
@@ -265,8 +274,14 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 	}
 		
 	public void takePhoto() {
+	
+		File directory = new File(Environment.getExternalStorageDirectory()+File.separator+"TPP");
+		directory.mkdirs();
+		
+		
 		Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        File f = new File(android.os.Environment.getExternalStorageDirectory(), "TPP" + (System.currentTimeMillis()/1000) + ".jpg");
+        File f = new File(android.os.Environment.getExternalStorageDirectory(), "TPP" + File.separator 
+        		+ (System.currentTimeMillis()/1000) + ".jpg");
         MainActivity.imageUri = Uri.fromFile(f);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
         startActivityForResult(intent, CAMERA_ADD_RQ_CODE);
@@ -288,7 +303,8 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		product.setNazwa(nazwa);
 		product.setOkresWaznosci(okresWaznosci);			
 		product.setCode(kod);
-		product.setCodeFormat(typKodu);		
+		product.setCodeFormat(typKodu);	
+		product.setIsScanned(isScanned);
 
 		String dataOtwarcia = dataOtwButton.getText().toString();			
 		String terminWaznosci = getTerminWaznosci();
@@ -352,6 +368,7 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 			String nazwa = product.getNazwa();
 			String code = product.getCode();
 			setAlarms(przypomnienia, nazwa, code);
+			isScanned = false;
 		}
 		
 		return storeStatus; //je�li zapisze do poprawnie
@@ -372,7 +389,8 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		okresWazSpinner.setSelection(okresSpinPos);
 		if (!kod.equals("")) {
 			setCodeImage(kod, typKodu);
-		}		
+		}	
+		isScanned = product.getIsScanned();
 		
 		String dataOtwarcia = product.getDataOtwarcia();			
 		String terminWaznosci = product.getTerminWaznosci();
@@ -442,6 +460,15 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 				});				
 			}
 			
+			godzButton.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					DialogTimePicker dialogTimePicker = new DialogTimePicker(getActivity(), v);
+					dialogTimePicker.show();				
+				}
+			});
+			
 			przypLayout.addView(row);	
 		}	
 	}
@@ -498,7 +525,6 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		
 	public void setCameraResult() { 
 		Uri selectedImage = MainActivity.imageUri;
-		Log.i("uri", selectedImage+"");
         getActivity().getContentResolver().notifyChange(selectedImage, null);
         ContentResolver cr = getActivity().getContentResolver();
         Bitmap bitmap;
@@ -617,35 +643,7 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 
         popup.show();
 	}
-			
-	private void initPrzypomnienia() {
-		final LayoutInflater inflater = getActivity().getLayoutInflater();
-		LinearLayout row = (LinearLayout) inflater.inflate(R.layout.listview_add_powiadomienia, null);
-		Button przypButton = (Button) row.findViewById(R.id.przypButton);
-		Button godzButton = (Button) row.findViewById(R.id.godzButton);
-		
-		godzButton.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				DialogTimePicker dialogTimePicker = new DialogTimePicker(getActivity(), v);
-				dialogTimePicker.show();				
-			}
-		});
-		
-		przypButton.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				initPrzypomnienia();	
-				View viv =przypLayout.getChildAt(przypLayout.getChildCount() - 2);
-				Button przypButton = (Button) viv.findViewById(R.id.przypButton);
-				przypButton.setVisibility(View.GONE);
-			}
-		});
-		przypLayout.addView(row);
-	}
-	
+				
 	private String getRealPathFromURI(Uri contentUri) {
 	    String[] proj = { MediaStore.Images.Media.DATA };
 	    Cursor cursor = getActivity().managedQuery(contentUri, proj, null, null, null);
@@ -673,6 +671,7 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 				dialogGen.show();	
 			}
 		} else {
+			isScanned = true;
 			saveData();
 		}	
 	}

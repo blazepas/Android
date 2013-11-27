@@ -2,12 +2,9 @@ package com.mareklatuszek.datywaznosci;
 
 import java.util.ArrayList;
 
-import com.mareklatuszek.datywznosci.utilities.CommonUtilities;
-
 import android.app.Activity;
 import android.content.Context;
 import android.support.v4.app.FragmentManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -15,7 +12,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import com.mareklatuszek.datywznosci.utilities.CommonUtilities;
 
 public class AdapterDialogKategorie extends BaseAdapter {
 	
