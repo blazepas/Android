@@ -103,6 +103,7 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
 
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 		
+		// wielkosc strefy reakcji menu np 0.3 to 30% szerokości ekranu
 		setDrawerLeftEdgeSize(mDrawerLayout, 0.3f);
 
 		mDrawerList = (ListView) findViewById(R.id.listview_drawer);
@@ -381,15 +382,16 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
 	    if (drawerLayout == null)
 	        return;
 	    try {
-	        // find ViewDragHelper and set it accessible
+	       
 	        Field leftDraggerField = drawerLayout.getClass().getDeclaredField("mLeftDragger");
 	        leftDraggerField.setAccessible(true);
 	        ViewDragHelper leftDragger = (ViewDragHelper) leftDraggerField.get(drawerLayout);
-	        // find edgesize and set is accessible
+
 	        Field edgeSizeField = leftDragger.getClass().getDeclaredField("mEdgeSize");
 	        edgeSizeField.setAccessible(true);
 	        int edgeSize = edgeSizeField.getInt(leftDragger);
-	        // set new edgesize
+	        
+	        //nowa wielkość pola dotyku
 	        Point displaySize = new Point();
 	        getWindowManager().getDefaultDisplay().getSize(displaySize);
 	        edgeSizeField.setInt(leftDragger, Math.max(edgeSize, (int) (displaySize.x * displayWidthPercentage)));
