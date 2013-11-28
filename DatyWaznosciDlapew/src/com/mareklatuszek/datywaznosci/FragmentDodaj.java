@@ -19,9 +19,11 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
 import android.view.View.OnKeyListener;
 import android.view.ViewGroup;
@@ -31,6 +33,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.PopupMenu.OnMenuItemClickListener;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -119,6 +122,52 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		bundle.putInt("tempSpinnOkresPos", tempSpinnOkresPos);
 	    bundle.putSerializable("product", productToSave);     
 	}
+	
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+		super.onCreateContextMenu(menu, v, menuInfo);
+	    android.view.MenuInflater inflater = getActivity().getMenuInflater();
+	    
+	    switch (v.getId()) {
+	    case R.id.barcodeImage:
+	    	inflater.inflate(R.menu.popup_get_code, menu);
+	    	break;
+	    case R.id.obrazekImage:
+	    	inflater.inflate(R.menu.popup_get_image, menu);
+	    	break;
+	    }
+	    
+	    
+	}
+	
+	@Override
+	public boolean onContextItemSelected(android.view.MenuItem item) {
+		super.onContextItemSelected(item);
+	    
+	    switch (item.getItemId()) {
+    	case R.id.scanPopup:
+    			((MainActivity)getActivity()).startScanner();
+    		break;
+    	case R.id.generatePopup:
+    		if (!checkFormIsFill()) {
+    			Toast.makeText(getActivity(), "Należy podać nazwę i okres ważności", 1500).show();
+    		} else {
+        		Product product = prepareDataToStore();
+        		
+				DialogGeneruj dialogGen = new DialogGeneruj(getActivity(),product , getFragmentManager(), getId());
+				dialogGen.show();
+    		}	
+    		break;
+    	case R.id.gallery:
+    		pickImageFromGallery();
+    		break;
+    		
+    	case R.id.camera:
+    		takePhoto();
+    		break; 
+    	}
+	    return true;
+	}
 	 	
 	@Override
 	public void onClick(View view) {
@@ -126,7 +175,7 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		
 		switch (view.getId()) {
 		case R.id.barcodeImage:
-			getCodePopUp(view);
+			view.showContextMenu();
 			break;
 		case R.id.dataOtwButton:
         	dialogDatePicker.show();
@@ -144,7 +193,7 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 			showDodatkowe();
 			break;	
 		case R.id.obrazekImage:
-			getImagePopUp(view);
+			view.showContextMenu();
 			break;
 		case R.id.kategorieButton:
 			DialogKategorie dialogKategorier = new DialogKategorie(getActivity(), kategorieSpinner, getFragmentManager(), getId());
@@ -180,6 +229,7 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 			setDataFromScan(code, codeFormat); 
 		}
 
+		registerForContextMenu(barcodeImage);
 		barcodeImage.setOnClickListener(this);
 		zapiszButton.setOnClickListener(this);	
 		dodatkoweButton.setOnClickListener(this);
@@ -204,10 +254,11 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		przypLayout = (LinearLayout) dodatkowe.findViewById(R.id.przypomnieniaLayout);
 		dataZuzButton = (Button) dodatkowe.findViewById(R.id.dataZuzButton);
 		
+		registerForContextMenu(obrazekImage);
+		obrazekImage.setOnClickListener(this);
 		dataOtwButton.setOnClickListener(this);
 		terminWazButton.setOnClickListener(this);
 		kategorieButton.setOnClickListener(this);
-		obrazekImage.setOnClickListener(this);
 		dataZuzButton.setOnClickListener(this);
 		
 //		initObrazek();
@@ -232,10 +283,23 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 	
 	private void initPrzypomnienia() {
 		Log.i("init", "przypomnienia");
-		final LayoutInflater inflater = getActivity().getLayoutInflater();
-		LinearLayout row = (LinearLayout) inflater.inflate(R.layout.listview_add_powiadomienia, null);
-		Button przypButton = (Button) row.findViewById(R.id.przypButton);
+		LayoutInflater inflater = getActivity().getLayoutInflater();
+		final LinearLayout row = (LinearLayout) inflater.inflate(R.layout.listview_add_powiadomienia, null);
+		Button removePrzypButton = (Button) row.findViewById(R.id.removePrzypButton);
+		Button addPrzypButton = (Button) row.findViewById(R.id.addPrzypButton);
 		Button godzButton = (Button) row.findViewById(R.id.godzButton);
+		
+//		if (przypLayout.getChildCount() == 1) {
+//			removePrzypButton.setVisibility(View.GONE);//TODO
+//		}
+		
+		removePrzypButton.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				przypLayout.removeView(row);				
+			}
+		});
 		
 		godzButton.setOnClickListener(new OnClickListener() {
 			
@@ -246,13 +310,13 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 			}
 		});
 		
-		przypButton.setOnClickListener(new OnClickListener() {
+		addPrzypButton.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
 				initPrzypomnienia();	
 				View viv =przypLayout.getChildAt(przypLayout.getChildCount() - 2);
-				Button przypButton = (Button) viv.findViewById(R.id.przypButton);
+				Button przypButton = (Button) viv.findViewById(R.id.addPrzypButton);
 				przypButton.setVisibility(View.GONE);
 			}
 		});
@@ -429,10 +493,11 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 			int spinnerPos = Integer.parseInt(spinner);
 			String przypHour = przypomnienie.get(PRZYP_HOUR);//TODO	
 						
-			LinearLayout row = (LinearLayout) inflater.inflate(R.layout.listview_add_powiadomienia, null);
+			final LinearLayout row = (LinearLayout) inflater.inflate(R.layout.listview_add_powiadomienia, null);
 			EditText przypTextBox = (EditText) row.findViewById(R.id.przypTextBox);
 			Spinner przypSpinner = (Spinner) row.findViewById(R.id.przypSpinner);
-			Button przypButton = (Button) row.findViewById(R.id.przypButton);
+			Button removePrzypButton = (Button) row.findViewById(R.id.removePrzypButton);
+			Button przypButton = (Button) row.findViewById(R.id.addPrzypButton);
 			Button godzButton = (Button) row.findViewById(R.id.godzButton);
 			
 			przypTextBox.setText(boxTxt);
@@ -444,6 +509,14 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 //			temp.setLayoutParams(params);
 //			temp.setText(boxTxt);
 //			row.addView(temp);		
+						
+			removePrzypButton.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					przypLayout.removeView(row);				
+				}
+			});
 			
 			if (i < (przypCount - 1)) {
 				przypButton.setVisibility(View.GONE);
@@ -454,7 +527,7 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 					public void onClick(View v) {
 						initPrzypomnienia();
 						View rowBefore = przypLayout.getChildAt(przypLayout.getChildCount() - 2);
-						Button buttonBefore = (Button) rowBefore.findViewById(R.id.przypButton);
+						Button buttonBefore = (Button) rowBefore.findViewById(R.id.addPrzypButton);
 						buttonBefore.setVisibility(View.GONE);				
 					}
 				});				
@@ -621,61 +694,7 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		
 		return peroid;
 	}
-	
-	private void getImagePopUp(View v) {
-		PopupMenu popup = new PopupMenu(getActivity(), v);
-        popup.getMenuInflater().inflate(R.menu.popup_get_image, popup.getMenu());
-        popup.setOnMenuItemClickListener(new OnMenuItemClickListener() {
-
-            @Override
-            public boolean onMenuItemClick(android.view.MenuItem item) {
-            	switch (item.getItemId()) {
-            	case R.id.gallery:
-            		pickImageFromGallery();
-            		break;
-            	case R.id.camera:
-            		takePhoto();
-            		break;
-            	}
-            	           	
-                return true;
-            }
-        });
-
-        popup.show();
-	}
-	
-	private void getCodePopUp(View v) {
-		 PopupMenu popup = new PopupMenu(getActivity(), v);
-	     popup.getMenuInflater().inflate(R.menu.popup_get_code, popup.getMenu());
-	     popup.setOnMenuItemClickListener(new OnMenuItemClickListener() {
-	    	 
-	    	 @Override
-	            public boolean onMenuItemClick(android.view.MenuItem item) {
-	            	switch (item.getItemId()) {
-	            	case R.id.scanPopup:
-	            		
-	            			((MainActivity)getActivity()).startScanner();
-	            		
-	            		break;
-	            	case R.id.generatePopup:
-	            		if (checkFormIsFill()) {
-	            			Toast.makeText(getActivity(), "Należy podać nazwę i okres ważności", 1500).show();
-	            		} else {
-		            		Product product = prepareDataToStore();
-		    				DialogGeneruj dialogGen = new DialogGeneruj(getActivity(),product , getFragmentManager(), getId());
-		    				dialogGen.show();
-	            		}
-	            		break;
-	            	}
-	            	           	
-	                return true;
-	            }
-	        });
-	           
-	        popup.show();
-	}
-				
+					
 	private String getRealPathFromURI(Uri contentUri) {
 	    String[] proj = { MediaStore.Images.Media.DATA };
 	    Cursor cursor = getActivity().managedQuery(contentUri, proj, null, null, null);
@@ -688,7 +707,7 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 	}
 		
 	private void save() {		
-		if (checkFormIsFill()) {
+		if (!checkFormIsFill()) {
 			Toast.makeText(getActivity(), "Należy podać nazwę i okres ważności", 1500).show();
 		} else if (code.equals("")) {	
 			Product product = prepareDataToStore();

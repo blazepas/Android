@@ -391,9 +391,14 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
 	        edgeSizeField.setAccessible(true);
 	        int edgeSize = edgeSizeField.getInt(leftDragger);
 	        
-	        //nowa wielkość pola dotyku
 	        Point displaySize = new Point();
-	        getWindowManager().getDefaultDisplay().getSize(displaySize);
+	        try {
+	        	 getWindowManager().getDefaultDisplay().getSize(displaySize);
+	        } catch (java.lang.NoSuchMethodError ignore) { // Older device
+	        	displaySize.x = getWindowManager().getDefaultDisplay().getWidth();
+	        	displaySize.y = getWindowManager().getDefaultDisplay().getHeight();
+	        }
+	        
 	        edgeSizeField.setInt(leftDragger, Math.max(edgeSize, (int) (displaySize.x * displayWidthPercentage)));
 	    } catch (NoSuchFieldException e) {
 	        // ignore

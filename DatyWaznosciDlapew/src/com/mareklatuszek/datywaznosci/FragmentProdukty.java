@@ -7,18 +7,19 @@ import org.json.JSONArray;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.PopupMenu;
-import android.widget.PopupMenu.OnMenuItemClickListener;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragment;
@@ -27,7 +28,7 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.mareklatuszek.utilities.CommonUtilities;
 
-public class FragmentProdukty extends SherlockFragment implements OnItemLongClickListener {
+public class FragmentProdukty extends SherlockFragment {
 	
 	AdapterDB dbAdapter;
 	AdapterProductList listAdapter;
@@ -62,6 +63,33 @@ public class FragmentProdukty extends SherlockFragment implements OnItemLongClic
 	}
 	
 	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+	    android.view.MenuInflater inflater = getActivity().getMenuInflater();
+	    inflater.inflate(R.menu.popup_product_list, menu);
+	}
+	
+	@Override
+	public boolean onContextItemSelected(android.view.MenuItem item) {
+		super.onContextItemSelected(item);
+	    AdapterContextMenuInfo info = (AdapterContextMenuInfo)item.getMenuInfo();
+	    int pos = info.position;
+	    
+	    Product product = products.get(pos);
+    	switch (item.getItemId()) {
+    	case R.id.udostepnijPopup:
+    		share(product);
+    		break;
+    	case R.id.edytujPopup:
+    		switchToEditFragment(product);
+    		break;
+    	case R.id.usunPopup:
+    		deleteProduct(product);
+    		break;
+    	}
+	    return true;
+	}
+	
+	@Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
       inflater.inflate(R.menu.items_product_list, menu);
 
@@ -89,37 +117,6 @@ public class FragmentProdukty extends SherlockFragment implements OnItemLongClic
        }
        return true;
     }
-
-	@Override
-	public boolean onItemLongClick(AdapterView<?> arg0, final View v, final int pos, long arg3) {
-		
-        PopupMenu popup = new PopupMenu(getActivity(), v);
-        popup.getMenuInflater().inflate(R.menu.popup, popup.getMenu());
-        popup.setOnMenuItemClickListener(new OnMenuItemClickListener() {
-
-            @Override
-            public boolean onMenuItemClick(android.view.MenuItem item) {
-            	Product product = products.get(pos);
-            	switch (item.getItemId()) {
-            	case R.id.udostepnijPopup:
-            		share(product);
-            		break;
-            	case R.id.edytujPopup:
-            		switchToEditFragment(product);
-            		break;
-            	case R.id.usunPopup:
-            		deleteProduct(product);
-            		break;
-            	}
-            	           	
-                return true;
-            }
-        });
-
-        popup.show();
-		
-		return true;
-	}
 
 	private void switchToEditFragment(Product product) {
 		((MainActivity) getActivity()).selectFragmentToEditProduct(product);
@@ -180,7 +177,6 @@ public class FragmentProdukty extends SherlockFragment implements OnItemLongClic
 			if (!products.isEmpty()) {
 				listAdapter = new AdapterProductList(getActivity(), products);
 				productsList.setAdapter(listAdapter);
-				productsList.setOnItemLongClickListener(FragmentProdukty.this);
 				productsList.setOnItemClickListener(new OnItemClickListener() {
 
                     @Override
@@ -188,6 +184,8 @@ public class FragmentProdukty extends SherlockFragment implements OnItemLongClic
                         switchToProductFragment(pos);
                     }
 				});
+				
+				registerForContextMenu(productsList);
 			}
 		}
 	}

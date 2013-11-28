@@ -40,16 +40,17 @@
                 android:entries="@array/array_date" />
 
             <LinearLayout
-                android:layout_width="80dp"
+                android:layout_width="65dp"
                 android:layout_height="50dp"
                 android:gravity="bottom"
                 android:orientation="vertical" >
 
                 <Button
-                    android:id="@+id/przypButton"
-                    android:layout_width="match_parent"
+                    android:id="@+id/removePrzypButton"
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_width="63dp"
                     android:layout_height="wrap_content"
-                    android:text="+" />
+                    android:text="-" />
 
             </LinearLayout>
         </LinearLayout>
@@ -69,9 +70,15 @@
         <Button
             android:id="@+id/godzButton"
             style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
+            android:layout_width="97dp"
             android:layout_height="wrap_content"
             android:text="14:00" />
+
+        <Button
+            android:id="@+id/addPrzypButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="+" />
 
     </LinearLayout>
 

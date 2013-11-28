@@ -18,9 +18,11 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
 import android.view.View.OnKeyListener;
 import android.view.ViewGroup;
@@ -126,6 +128,42 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 		bundle.putInt("tempSpinnOkresPos", tempSpinnOkresPos);
 	    bundle.putSerializable("product", productToSave);     
 	}
+	
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+		super.onCreateContextMenu(menu, v, menuInfo);
+	    android.view.MenuInflater inflater = getActivity().getMenuInflater();
+	    
+	    switch (v.getId()) {
+	    case R.id.barcodeImage:
+	    	inflater.inflate(R.menu.popup_edit_get_code, menu);
+	    	break;
+	    case R.id.obrazekImage:
+	    	inflater.inflate(R.menu.popup_get_image, menu);
+	    	break;
+	    }
+
+	}
+	
+	@Override
+	public boolean onContextItemSelected(android.view.MenuItem item) {
+		super.onContextItemSelected(item);
+	    
+	    switch (item.getItemId()) {
+	    case R.id.generatePopup:
+    		Product product = prepareDataToStore();
+			DialogGeneruj dialogGen = new DialogGeneruj(getActivity(),product , getFragmentManager(), getId());
+			dialogGen.show();
+    		break;
+	    case R.id.gallery:
+    		pickImageFromGallery();
+    		break;
+    	case R.id.camera:
+    		takePhoto();
+    		break; 
+    	}
+	    return true;
+	}
 	 	
 	@Override
 	public void onClick(View view) {
@@ -135,7 +173,7 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 		case R.id.barcodeImage:
 			if (!isScanned) {
 				if(checkFormIsFill()) {
-					getCodePopUp(view);
+					view.showContextMenu();
 				} else {
 					Toast.makeText(getActivity(), "Należy podać nazwę i okres ważności", 1500).show();
 				}	
@@ -157,7 +195,7 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 			showDodatkowe();
 			break;	
 		case R.id.obrazekImage:
-			getPopUp(view);
+			view.showContextMenu();
 			break;
 		case R.id.kategorieButton:
 			DialogKategorie dialogKategorier = new DialogKategorie(getActivity(), kategorieSpinner, getFragmentManager(), getId());
@@ -194,6 +232,7 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 //			setDataFromScan(code, codeFormat); 
 //		}
 		
+		registerForContextMenu(barcodeImage);
 		barcodeImage.setOnClickListener(this);
 		zapiszButton.setOnClickListener(this);	
 		dodatkoweButton.setOnClickListener(this);
@@ -219,12 +258,13 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 		przypLayout = (LinearLayout) dodatkowe.findViewById(R.id.przypomnieniaLayout);
 		dataZuzButton = (Button) dodatkowe.findViewById(R.id.dataZuzButton);
 		
+		registerForContextMenu(obrazekImage);
+		obrazekImage.setOnClickListener(this);
 		dataOtwButton.setOnClickListener(this);
 		terminWazButton.setOnClickListener(this);
 		kategorieButton.setOnClickListener(this);
-		obrazekImage.setOnClickListener(this);
 		dataZuzButton.setOnClickListener(this);
-		
+
 		dataOtwButton.setText(currentDate);
 		
 		initKategorie();
@@ -242,6 +282,43 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 	
 		spinnerAdapter= new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, kategorie);
 		kategorieSpinner.setAdapter(spinnerAdapter);
+	}
+	
+	private void initPrzypomnienia() {
+		final LayoutInflater inflater = getActivity().getLayoutInflater();
+		final LinearLayout row = (LinearLayout) inflater.inflate(R.layout.listview_add_powiadomienia, null);
+		Button removePrzypButton = (Button) row.findViewById(R.id.removePrzypButton);
+		Button button = (Button) row.findViewById(R.id.addPrzypButton);
+		Button godzButton = (Button) row.findViewById(R.id.godzButton);
+		
+		removePrzypButton.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				przypLayout.removeView(row);				
+			}
+		});
+		
+		godzButton.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				DialogTimePicker dialogTimePicker = new DialogTimePicker(getActivity(), v);
+				dialogTimePicker.show();				
+			}
+		});
+		
+		button.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				initPrzypomnienia();	
+				View viv =przypLayout.getChildAt(przypLayout.getChildCount() - 2);
+				Button przypButton = (Button) viv.findViewById(R.id.addPrzypButton);
+				przypButton.setVisibility(View.GONE);
+			}
+		});
+		przypLayout.addView(row);
 	}
 			
 	private void showDodatkowe() {
@@ -404,10 +481,11 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 			int spinnerPos = Integer.parseInt(spinner);
 			String przypHour = przypomnienie.get(PRZYP_HOUR);//TODO	
 						
-			LinearLayout row = (LinearLayout) inflater.inflate(R.layout.listview_add_powiadomienia, null);
+			final LinearLayout row = (LinearLayout) inflater.inflate(R.layout.listview_add_powiadomienia, null);
 			EditText przypTextBox = (EditText) row.findViewById(R.id.przypTextBox);
 			Spinner przypSpinner = (Spinner) row.findViewById(R.id.przypSpinner);
-			Button przypButton = (Button) row.findViewById(R.id.przypButton);
+			Button removePrzypButton = (Button) row.findViewById(R.id.removePrzypButton);
+			Button przypButton = (Button) row.findViewById(R.id.addPrzypButton);
 			Button godzButton = (Button) row.findViewById(R.id.godzButton);
 		
 			przypTextBox.setText(boxTxt);
@@ -418,7 +496,15 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 //			LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(54, LayoutParams.WRAP_CONTENT, 1);
 //			temp.setLayoutParams(params);
 //			temp.setText(boxTxt);
-//			row.addView(temp);		
+//			row.addView(temp);	
+			
+			removePrzypButton.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					przypLayout.removeView(row);				
+				}
+			});
 			
 			if (i < (przypCount - 1)) {
 				przypButton.setVisibility(View.GONE);
@@ -429,7 +515,7 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 					public void onClick(View v) {
 						initPrzypomnienia();
 						View rowBefore = przypLayout.getChildAt(przypLayout.getChildCount() - 2);
-						Button buttonBefore = (Button) rowBefore.findViewById(R.id.przypButton);
+						Button buttonBefore = (Button) rowBefore.findViewById(R.id.addPrzypButton);
 						buttonBefore.setVisibility(View.GONE);				
 					}
 				});				
@@ -594,80 +680,7 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 		
 		return peroid;
 	}
-	
-	private void getPopUp(View v) {
-		PopupMenu popup = new PopupMenu(getActivity(), v);
-        popup.getMenuInflater().inflate(R.menu.popup_get_image, popup.getMenu());
-        popup.setOnMenuItemClickListener(new OnMenuItemClickListener() {
-
-            @Override
-            public boolean onMenuItemClick(android.view.MenuItem item) {
-            	switch (item.getItemId()) {
-            	case R.id.gallery:
-            		pickImageFromGallery();
-            		break;
-            	case R.id.camera:
-            		takePhoto();
-            		break;
-            	}
-            	           	
-                return true;
-            }
-        });
-
-        popup.show();
-	}
-	
-	private void getCodePopUp(View v) {
-		 PopupMenu popup = new PopupMenu(getActivity(), v);
-	     popup.getMenuInflater().inflate(R.menu.popup_edit_get_code, popup.getMenu());
-	     popup.setOnMenuItemClickListener(new OnMenuItemClickListener() {
-	    	 
-	    	 @Override
-	            public boolean onMenuItemClick(android.view.MenuItem item) {
-	            	switch (item.getItemId()) {
-	            	case R.id.generatePopup:
-	            		Product product = prepareDataToStore();
-	    				DialogGeneruj dialogGen = new DialogGeneruj(getActivity(),product , getFragmentManager(), getId());
-	    				dialogGen.show();
-	            		break;
-	            	}
-	            	           	
-	                return true;
-	            }
-	        });
-	           
-	        popup.show();
-	}
-		
-	private void initPrzypomnienia() {
-		final LayoutInflater inflater = getActivity().getLayoutInflater();
-		LinearLayout row = (LinearLayout) inflater.inflate(R.layout.listview_add_powiadomienia, null);
-		Button button = (Button) row.findViewById(R.id.przypButton);
-		Button godzButton = (Button) row.findViewById(R.id.godzButton);
-		
-		godzButton.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				DialogTimePicker dialogTimePicker = new DialogTimePicker(getActivity(), v);
-				dialogTimePicker.show();				
-			}
-		});
-		
-		button.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				initPrzypomnienia();	
-				View viv =przypLayout.getChildAt(przypLayout.getChildCount() - 2);
-				Button przypButton = (Button) viv.findViewById(R.id.przypButton);
-				przypButton.setVisibility(View.GONE);
-			}
-		});
-		przypLayout.addView(row);
-	}
-	
+				
 	private String getRealPathFromURI(Uri contentUri) {
 	    String[] proj = { MediaStore.Images.Media.DATA };
 	    Cursor cursor = getActivity().managedQuery(contentUri, proj, null, null, null);

@@ -6,21 +6,25 @@ import java.util.HashMap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AdapterView;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ListView;
 import android.widget.PopupMenu;
+import android.widget.Toast;
 import android.widget.PopupMenu.OnMenuItemClickListener;
 
 import com.actionbarsherlock.app.SherlockFragment;
 import com.mareklatuszek.utilities.CommonUtilities;
 import com.mareklatuszek.utilities.FinalVariables;
 
-public class FragmentPrzypomnienia extends SherlockFragment implements FinalVariables, OnItemClickListener, OnItemLongClickListener{
+public class FragmentPrzypomnienia extends SherlockFragment implements FinalVariables, OnItemClickListener{
 	
 	View rootView;
 	ListView listPow;
@@ -56,41 +60,31 @@ public class FragmentPrzypomnienia extends SherlockFragment implements FinalVari
 				DialogPrzypomnienie dialog = new DialogPrzypomnienie(getActivity(), product);
 				dialog.show();
 				
-				break; // pokazyje tylko ten jeden produkt
+				break; // pokazuje tylko ten jeden produkt
 			}
 		}		
 	}
+		
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+		super.onCreateContextMenu(menu, v, menuInfo);
+	    android.view.MenuInflater inflater = getActivity().getMenuInflater();
+	    inflater.inflate(R.menu.popup_przypomnienia, menu);
+	}
 	
 	@Override
-	public boolean onItemLongClick(AdapterView<?> arg0, View v, final int pos, long arg3) {
-		Vibrator vibe = (Vibrator) getActivity().getSystemService(getActivity().VIBRATOR_SERVICE);
-		vibe.vibrate(25);
+	public boolean onContextItemSelected(android.view.MenuItem item) {
+		super.onContextItemSelected(item);		
 		
-        PopupMenu popup = new PopupMenu(getActivity(), v);
-        popup.getMenuInflater().inflate(R.menu.popup, popup.getMenu());
-        popup.setOnMenuItemClickListener(new OnMenuItemClickListener() {
-
-            @Override
-            public boolean onMenuItemClick(android.view.MenuItem item) {
-            	Product product = products.get(pos);
-            	switch (item.getItemId()) {
-            	case R.id.udostepnijPopup:
-
-            		break;
-            	case R.id.edytujPopup:
- 
-            		break;
-            	case R.id.usunPopup:
-            		removePrzypomnienie(pos);
-            		break;
-            	}
-            	           	
-                return true;
-            }
-        });
-
-        popup.show();
-		return false;
+		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+		int pos = info.position;
+		
+	    switch (item.getItemId()) {
+    	case R.id.usunPopup:
+    		removePrzypomnienie(pos);
+    		break;
+    	}
+	    return true;
 	}
 	
 	private void initList() {
@@ -116,7 +110,7 @@ public class FragmentPrzypomnienia extends SherlockFragment implements FinalVari
 			protected void onPostExecute(Void v) {
 				listPow.setAdapter(adapterPrzyp);
 				listPow.setOnItemClickListener(FragmentPrzypomnienia.this);
-				listPow.setOnItemLongClickListener(FragmentPrzypomnienia.this);
+				registerForContextMenu(listPow);
 			}
 		}.execute();
 		
