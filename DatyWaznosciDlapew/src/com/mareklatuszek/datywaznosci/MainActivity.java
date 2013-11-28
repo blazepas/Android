@@ -1,9 +1,12 @@
 package com.mareklatuszek.datywaznosci;
 
+import java.lang.reflect.Field;
+
 import jim.h.common.android.lib.zxing.integrator.IntentIntegrator;
 import jim.h.common.android.lib.zxing.integrator.IntentResult;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -13,6 +16,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.ViewDragHelper;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -98,11 +102,14 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
 				R.drawable.collections_cloud, R.drawable.collections_cloud, R.drawable.collections_cloud };
 
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+		
+		setDrawerLeftEdgeSize(mDrawerLayout, 0.3f);
 
 		mDrawerList = (ListView) findViewById(R.id.listview_drawer);
 
 		// cie� menu
 		mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow,GravityCompat.START);
+		
 
 		mMenuAdapter = new AdapterMenu(MainActivity.this, title, subtitle,
 				icon);
@@ -132,6 +139,7 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
 		if (savedInstanceState == null) {
 			selectFragment(2);
 		}
+		
 	}
 
 	@Override
@@ -367,6 +375,31 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
 		boolean status = adapterDb.chckIfProductIsInDB(code);
 		adapterDb.close();
 		return status;
+	}
+	
+	public void setDrawerLeftEdgeSize(DrawerLayout drawerLayout, float displayWidthPercentage) {
+	    if (drawerLayout == null)
+	        return;
+	    try {
+	        // find ViewDragHelper and set it accessible
+	        Field leftDraggerField = drawerLayout.getClass().getDeclaredField("mLeftDragger");
+	        leftDraggerField.setAccessible(true);
+	        ViewDragHelper leftDragger = (ViewDragHelper) leftDraggerField.get(drawerLayout);
+	        // find edgesize and set is accessible
+	        Field edgeSizeField = leftDragger.getClass().getDeclaredField("mEdgeSize");
+	        edgeSizeField.setAccessible(true);
+	        int edgeSize = edgeSizeField.getInt(leftDragger);
+	        // set new edgesize
+	        Point displaySize = new Point();
+	        getWindowManager().getDefaultDisplay().getSize(displaySize);
+	        edgeSizeField.setInt(leftDragger, Math.max(edgeSize, (int) (displaySize.x * displayWidthPercentage)));
+	    } catch (NoSuchFieldException e) {
+	        // ignore
+	    } catch (IllegalArgumentException e) {
+	        // ignore
+	    } catch (IllegalAccessException e) {
+	        // ignore
+	    }
 	}
 	
 }

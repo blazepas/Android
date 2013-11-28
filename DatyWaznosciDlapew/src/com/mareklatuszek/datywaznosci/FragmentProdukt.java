@@ -54,7 +54,7 @@ public class FragmentProdukt extends SherlockFragment implements OnClickListener
 	
 	@Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-      inflater.inflate(R.menu.items, menu);
+      inflater.inflate(R.menu.items_product, menu);
 
       super.onCreateOptionsMenu(menu, inflater);
     }
@@ -65,11 +65,11 @@ public class FragmentProdukt extends SherlockFragment implements OnClickListener
     {
        switch (item.getItemId()) {
           case R.id.edit:
-          case R.id.edit2:
+          case R.id.editMenuButton:
         	switchToEditFragment(product);
             break;
           case R.id.share:
-          case R.id.share2:
+          case R.id.shareMenuButton:
         	String productJson = utilities.getJsonFromProduct(product);
           	utilities.sendEmail(productJson, getActivity());
             break;
@@ -108,8 +108,10 @@ public class FragmentProdukt extends SherlockFragment implements OnClickListener
 		okresTxt.setText(okres);
 		barcodeImage.setImageBitmap(codeBmp);
 		barcodeImage.setOnClickListener(this);
-		if (!product.getIsScanned()) {
-			isScannedTxt.setVisibility(View.GONE);
+		if (product.getIsScanned()) {
+			isScannedTxt.setText("Zeskanowany");
+		} else {
+			isScannedTxt.setText("Własny produkt");
 		}
 		
 	}

@@ -46,7 +46,7 @@ public class DialogKategorie extends Dialog implements android.view.View.OnClick
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		setTitle("Kategorie");
 		setContentView(R.layout.dialog_kategorie);
 
 		kategorieRoot = (LinearLayout) findViewById(R.id.kategorieRoot);
@@ -115,7 +115,7 @@ public class DialogKategorie extends Dialog implements android.view.View.OnClick
 			
 			@Override
 			protected void onPostExecute(Void v) {
-				adapterCat = new AdapterDialogKategorie(mActivity, categories, fragmentManager, fragmentId);
+				adapterCat = new AdapterDialogKategorie(mActivity, categories, viewToSetKat);
 				categoryList.setAdapter(adapterCat);
 			}
 		}.execute();
@@ -129,6 +129,7 @@ public class DialogKategorie extends Dialog implements android.view.View.OnClick
 			categories.add(0, category);
 			adapterCat.notifyDataSetChanged();
 			setSpinner();
+			dismiss();
 		}
 		
 		return status;
@@ -143,6 +144,10 @@ public class DialogKategorie extends Dialog implements android.view.View.OnClick
 		ArrayAdapter<String> spinnerAdapter;
 		spinnerAdapter= new ArrayAdapter<String>(mActivity, android.R.layout.simple_spinner_dropdown_item, kategorie);
 		spinner.setAdapter(spinnerAdapter);
+		
+		if (kategorie.size() > 0) {
+			spinner.setSelection(1);
+		}
 	}
 	
 		

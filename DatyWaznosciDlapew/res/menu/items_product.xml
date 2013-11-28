@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    
+    <item
+	    android:icon="@drawable/ic_action_overflow"
+	    android:showAsAction="ifRoom">
+	    <menu>
+	        <item android:id="@+id/edit"
+	          android:visible="true" 
+	          android:title="Edytuj" 
+	          android:enabled="true">       
+	    	</item>
+	    	<item android:id="@+id/share"
+	          android:visible="true" 
+	          android:title="Udostępnij" 
+	          android:enabled="true">       
+	    	</item>
+	    </menu>
+	</item> 
+        
+    <item android:id="@+id/editMenuButton"
+          android:icon="@drawable/settings" 
+          android:visible="true" 
+          android:title="Edytuj" 
+          android:enabled="true"
+          android:showAsAction="never">       
+    </item>
+        
+    <item android:id="@+id/shareMenuButton"
+          android:icon="@drawable/share" 
+          android:visible="true" 
+          android:title="Udostępnij" 
+          android:enabled="true"
+          android:showAsAction="never">       
+    </item>
+</menu>

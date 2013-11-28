@@ -9,8 +9,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.mareklatuszek.utilities.CommonUtilities;
@@ -20,9 +22,7 @@ public class AdapterDialogKategorie extends BaseAdapter {
 	private AdapterDB adapterDb;
 	private Activity mActivity;
 	private LayoutInflater inflater=null;
-	FragmentManager fragmentManager; 
-	int fragmentId;
-	int fragPos;
+	private Spinner spinner;
 
 	ArrayList<String> categories = new ArrayList<String>();
 	CommonUtilities utilites = new CommonUtilities();
@@ -30,12 +30,11 @@ public class AdapterDialogKategorie extends BaseAdapter {
 	TextView catNameTxtKat;
 	Button usunButtonKat;
 	
-	public AdapterDialogKategorie(Activity mActivity, ArrayList<String> categories, FragmentManager fragmentManager, int fragmentId) {
+	public AdapterDialogKategorie(Activity mActivity, ArrayList<String> categories, View spinner) {
 		this.mActivity = mActivity;
 		this.categories = categories;
-		this.fragmentManager = fragmentManager;
-		this.fragmentId = fragmentId;
-		fragPos = MainActivity.currentFragmentPos;
+		this.spinner = (Spinner) spinner;
+
 		inflater = (LayoutInflater)mActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		adapterDb = new AdapterDB(mActivity);
 	}
@@ -94,16 +93,14 @@ public class AdapterDialogKategorie extends BaseAdapter {
 		}
 		this.notifyDataSetChanged();
 		
-		switch (fragPos) {
-		case 1:
-			FragmentDodaj fragmentDodaj = (FragmentDodaj) fragmentManager.findFragmentById(fragmentId);
-			fragmentDodaj.refreshKategorieSpinner(category);
-			break;
-		case 6:
-			FragmentEdytuj fragmentEdytuj = (FragmentEdytuj) fragmentManager.findFragmentById(fragmentId);
-			fragmentEdytuj.refreshKategorieSpinner(category);
-			break;
-		}
+		ArrayList<String> kategorie = new ArrayList<String>();
+		kategorie.add("Brak kategorii");
+		kategorie.addAll(categories);
+		ArrayAdapter<String> spinnerAdapter;
+		spinnerAdapter= new ArrayAdapter<String>(mActivity, android.R.layout.simple_spinner_dropdown_item, kategorie);
+		spinner.setAdapter(spinnerAdapter);
+		
+		spinner.setSelection(0);
 		
 		return status;
 	}

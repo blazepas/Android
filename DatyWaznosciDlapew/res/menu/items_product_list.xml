@@ -1,17 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android" >    
-    <item android:id="@+id/share"
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >           
+	<item
+	    android:icon="@drawable/ic_action_overflow"
+	    android:showAsAction="ifRoom">
+	    <menu>
+	        <item android:id="@+id/share"
+	          android:visible="true" 
+	          android:title="Udostępnij" 
+	          android:enabled="true">       
+	    	</item>
+	    	<item android:id="@+id/scan"
+	          android:visible="true" 
+	          android:title="Skanowanie produktu" 
+	          android:enabled="true">       
+	    	</item>
+	    	<item android:id="@+id/add"
+	          android:visible="true" 
+	          android:title="Własny produkt" 
+	          android:enabled="true">       
+	    	</item>
+	    </menu>
+	</item>
+	
+	<item android:id="@+id/shareMenuButton"
           android:icon="@drawable/share" 
           android:visible="true" 
           android:title="Udostępnij listę" 
           android:enabled="true"
-          android:showAsAction="ifRoom|withText">       
+          android:showAsAction="never">       
     </item>
-    
-    <item android:id="@+id/share2"
+    <item android:id="@+id/scanMenuButton"
           android:icon="@drawable/share" 
           android:visible="true" 
-          android:title="Udostępnij listę" 
+          android:title="Skanowanie produktu" 
+          android:enabled="true"
+          android:showAsAction="never">       
+    </item>
+    <item android:id="@+id/addMenuButton"
+          android:icon="@drawable/share" 
+          android:visible="true" 
+          android:title="Własny produkt" 
           android:enabled="true"
           android:showAsAction="never">       
     </item>

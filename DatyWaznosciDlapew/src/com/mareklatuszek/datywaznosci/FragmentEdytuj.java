@@ -43,6 +43,7 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 	
 	boolean takePictureStat = false;
 	boolean dodatkoweIsShown = false;
+	boolean isScanned = false;
 	int tempSpinnOkresPos = 0;
 	String currentDate = "";
 	String code = "";
@@ -83,6 +84,7 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 				Product bundleProduct = (Product) extras.getSerializable("product");
 				oldCode = bundleProduct.getCode();
 				oldPrzypomnienia = bundleProduct.getPrzypomnienia();
+				isScanned = bundleProduct.getIsScanned();
 				setViewsFromProduct(bundleProduct);
 				showDodatkowe();
 			}
@@ -92,6 +94,7 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 			oldCode = savedInstanceState.getString("oldCode");
 			oldPrzypomnienia = (ArrayList<HashMap<String, String>>) savedInstanceState.getSerializable("oldPrzypomnienia");
 			boolean ifDodatkoweExpand = savedInstanceState.getBoolean("dodatkowe");
+			isScanned = savedInstanceState.getBoolean("isScanned");
 			tempSpinnOkresPos = savedInstanceState.getInt("tempSpinnOkresPos");
 			
 			setViewsFromProduct(savedStateProduct);
@@ -117,6 +120,7 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 			bundle.putBoolean("dodatkowe", false);
 		}
 		
+		bundle.putBoolean("isScanned", isScanned);
 		bundle.putString("oldCode", oldCode);
 		bundle.putSerializable("oldPrzypomnienia", oldPrzypomnienia);
 		bundle.putInt("tempSpinnOkresPos", tempSpinnOkresPos);
@@ -129,7 +133,13 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 		
 		switch (view.getId()) {
 		case R.id.barcodeImage:
-//			((MainActivity)getActivity()).startScanner();// wylaczone bo nie bedzie potrzebne - jesli jednak trzeba zmnienic w main activity
+			if (!isScanned) {
+				if(checkFormIsFill()) {
+					getCodePopUp(view);
+				} else {
+					Toast.makeText(getActivity(), "Należy podać nazwę i okres ważności", 1500).show();
+				}	
+			}
 			break;
 		case R.id.dataOtwButton:
         	dialogDatePicker.show();
@@ -141,7 +151,7 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 			dialogDatePicker.show();
 			break;
 		case R.id.zapiszButton:
-			zapisz();
+			save();
 			break;
 		case R.id.dodatkoweButton:
 			showDodatkowe();
@@ -264,7 +274,8 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 		product.setNazwa(nazwa);
 		product.setOkresWaznosci(okresWaznosci);			
 		product.setCode(kod);
-		product.setCodeFormat(typKodu);		
+		product.setCodeFormat(typKodu);	
+		product.setIsScanned(isScanned);
 
 		String dataOtwarcia = dataOtwButton.getText().toString();			
 		String terminWaznosci = getTerminWaznosci();
@@ -280,8 +291,7 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 		product.setDataZuzycia(dataZuz);
 		product.setImage(obrazek);
 		product.setOpis(opis);
-		product.setPrzypomnienia(przypomnienia);
-		
+		product.setPrzypomnienia(przypomnienia);		
 	
 		return product;
 	}
@@ -314,8 +324,7 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 	public void saveProductFromDialogGeneruj(String code, String codeFormat) {
 		this.code = code;
 		this.codeFormat = codeFormat;
-		
-		saveData();
+		setCodeImage(code, codeFormat);
 	}
 	
 	private boolean storeAllToDatabase() {
@@ -343,6 +352,7 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 		String okresText = utilities.getFirstValue(okresWaznosci);
 		String okresSpinnVal = utilities.getSecondValue(okresWaznosci);
 		int okresSpinPos = utilities.getPosInSpinner(okresSpinnVal, okresWazSpinner);
+		isScanned = product.getIsScanned();
 		
 		nazwaTextBox.setText(nazwa);
 		okresWazTextBox.setText(okresText);
@@ -607,6 +617,28 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 
         popup.show();
 	}
+	
+	private void getCodePopUp(View v) {
+		 PopupMenu popup = new PopupMenu(getActivity(), v);
+	     popup.getMenuInflater().inflate(R.menu.popup_edit_get_code, popup.getMenu());
+	     popup.setOnMenuItemClickListener(new OnMenuItemClickListener() {
+	    	 
+	    	 @Override
+	            public boolean onMenuItemClick(android.view.MenuItem item) {
+	            	switch (item.getItemId()) {
+	            	case R.id.generatePopup:
+	            		Product product = prepareDataToStore();
+	    				DialogGeneruj dialogGen = new DialogGeneruj(getActivity(),product , getFragmentManager(), getId());
+	    				dialogGen.show();
+	            		break;
+	            	}
+	            	           	
+	                return true;
+	            }
+	        });
+	           
+	        popup.show();
+	}
 		
 	private void initPrzypomnienia() {
 		final LayoutInflater inflater = getActivity().getLayoutInflater();
@@ -647,21 +679,13 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 	    return cursor.getString(column_index);
 	}
 	
-	private void zapisz() {
-		String nazwa = nazwaTextBox.getText().toString();
-		String termin = terminWazButton.getText().toString();
-		Product product = prepareDataToStore();
-		this.code = utilities.getJsonFromProduct(product);
-		
-		if (code.equals("") || !oldCode.equals(code) || nazwa.equals("") || termin.equals("") || termin.equals("Wprowadź datę")) {		
-			
-			if (nazwa.equals("") || termin.equals("") || termin.equals("Wprowadź datę")) {
-				Toast.makeText(getActivity(), "Należy podać nazwę i okres ważności", 1500).show();
-			} else {
-				DialogGeneruj dialogGen = new DialogGeneruj(getActivity(), product, getFragmentManager(), getId());
-				dialogGen.show();	
-			}
-			
+	private void save() {		
+		if (!checkFormIsFill()) {		
+			Toast.makeText(getActivity(), "Należy podać nazwę i okres ważności", 1500).show();
+		} else if (code.equals("")) {
+			Product product = prepareDataToStore();
+			this.code = utilities.getJsonFromProduct(product);
+			this.codeFormat = product.getCodeFormat();
 		} else {
 			saveData();
 		}	
@@ -679,7 +703,10 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				setValidateCode(code, codeFormat);				
+				dbAdapter.open();
+				Product product = dbAdapter.getProduct(code);
+				dbAdapter.close();
+				switchToEditFragment(product);
 			}
 			
 		});
@@ -697,5 +724,23 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 		});
 
 		dialog.show();
+	}
+	
+	private boolean checkFormIsFill() {
+		String nazwa = nazwaTextBox.getText().toString();
+		String termin = terminWazButton.getText().toString();
+		
+		Log.i("nazwa", nazwa);
+		Log.i("termin", termin);
+		
+		if (nazwa.equals("") || termin.equals("") || termin.equals("Wprowadź datę")) {
+			return false;
+		} else {	
+			return true;
+		}
+	}
+	
+	private void switchToEditFragment(Product product) {
+		((MainActivity) getActivity()).selectFragmentToEditProduct(product);
 	}
 }	

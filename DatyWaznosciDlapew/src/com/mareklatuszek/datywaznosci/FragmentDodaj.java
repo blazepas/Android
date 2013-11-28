@@ -89,6 +89,7 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		} else {
 			Product savedStateProduct = (Product) savedInstanceState.getSerializable("product");
 			boolean ifDodatkoweExpand = savedInstanceState.getBoolean("dodatkowe");
+			isScanned = savedInstanceState.getBoolean("isScanned");
 			tempSpinnOkresPos = savedInstanceState.getInt("tempSpinnOkresPos");
 			
 			setViewsFromProduct(savedStateProduct);
@@ -114,6 +115,7 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 			bundle.putBoolean("dodatkowe", false);
 		}
 		
+		bundle.putBoolean("isScanned", isScanned);
 		bundle.putInt("tempSpinnOkresPos", tempSpinnOkresPos);
 	    bundle.putSerializable("product", productToSave);     
 	}
@@ -124,7 +126,7 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		
 		switch (view.getId()) {
 		case R.id.barcodeImage:
-			((MainActivity)getActivity()).startScanner();
+			getCodePopUp(view);
 			break;
 		case R.id.dataOtwButton:
         	dialogDatePicker.show();
@@ -136,13 +138,13 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 			dialogDatePicker.show();
 			break;
 		case R.id.zapiszButton:
-			zapisz();
+			save();
 			break;
 		case R.id.dodatkoweButton:
 			showDodatkowe();
 			break;	
 		case R.id.obrazekImage:
-			getPopUp(view);
+			getImagePopUp(view);
 			break;
 		case R.id.kategorieButton:
 			DialogKategorie dialogKategorier = new DialogKategorie(getActivity(), kategorieSpinner, getFragmentManager(), getId());
@@ -350,11 +352,9 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		}.execute();
 	}
 	
-	public void saveProductFromDialogGeneruj(String code, String codeFormat) {
+	public void saveCodeFromDialogGeneruj(String code, String codeFormat) {
 		this.code = code;
 		this.codeFormat = codeFormat;
-		
-		saveData();
 	}
 	
 	private boolean storeAllToDatabase() {
@@ -515,7 +515,8 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 			product.setCode(code);
 			product.setCodeFormat(codeFormat);
 			setViewsFromProduct(product);
-							
+						
+			isScanned = true;
 			Log.i("Validate", "true");
 		} else {
 			Log.i("Validate", "false");
@@ -621,7 +622,7 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		return peroid;
 	}
 	
-	private void getPopUp(View v) {
+	private void getImagePopUp(View v) {
 		PopupMenu popup = new PopupMenu(getActivity(), v);
         popup.getMenuInflater().inflate(R.menu.popup_get_image, popup.getMenu());
         popup.setOnMenuItemClickListener(new OnMenuItemClickListener() {
@@ -643,6 +644,37 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 
         popup.show();
 	}
+	
+	private void getCodePopUp(View v) {
+		 PopupMenu popup = new PopupMenu(getActivity(), v);
+	     popup.getMenuInflater().inflate(R.menu.popup_get_code, popup.getMenu());
+	     popup.setOnMenuItemClickListener(new OnMenuItemClickListener() {
+	    	 
+	    	 @Override
+	            public boolean onMenuItemClick(android.view.MenuItem item) {
+	            	switch (item.getItemId()) {
+	            	case R.id.scanPopup:
+	            		
+	            			((MainActivity)getActivity()).startScanner();
+	            		
+	            		break;
+	            	case R.id.generatePopup:
+	            		if (checkFormIsFill()) {
+	            			Toast.makeText(getActivity(), "Należy podać nazwę i okres ważności", 1500).show();
+	            		} else {
+		            		Product product = prepareDataToStore();
+		    				DialogGeneruj dialogGen = new DialogGeneruj(getActivity(),product , getFragmentManager(), getId());
+		    				dialogGen.show();
+	            		}
+	            		break;
+	            	}
+	            	           	
+	                return true;
+	            }
+	        });
+	           
+	        popup.show();
+	}
 				
 	private String getRealPathFromURI(Uri contentUri) {
 	    String[] proj = { MediaStore.Images.Media.DATA };
@@ -655,25 +687,17 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 	    return cursor.getString(column_index);
 	}
 		
-	private void zapisz() {
-		String nazwa = nazwaTextBox.getText().toString();
-		String termin = terminWazButton.getText().toString();
-		
-		if (code.equals("") || nazwa.equals("") || termin.equals("") || termin.equals("Wprowadź datę")) {
-						
-			if (nazwa.equals("") || termin.equals("") || termin.equals("Wprowadź datę")) {
-				Toast.makeText(getActivity(), "Należy podać nazwę i okres ważności", 1500).show();
-			} else {
-				
-				Product product = prepareDataToStore();
-				
-				DialogGeneruj dialogGen = new DialogGeneruj(getActivity(),product , getFragmentManager(), getId());
-				dialogGen.show();	
-			}
+	private void save() {		
+		if (checkFormIsFill()) {
+			Toast.makeText(getActivity(), "Należy podać nazwę i okres ważności", 1500).show();
+		} else if (code.equals("")) {	
+			Product product = prepareDataToStore();
+			DialogGeneruj dialogGen = new DialogGeneruj(getActivity(),product , getFragmentManager(), getId());
+			dialogGen.show();	
 		} else {
-			isScanned = true;
 			saveData();
 		}	
+	
 	}
 	
 	public void refreshKategorieSpinner(String category) {
@@ -683,12 +707,15 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 	
 	private void showChoiceDialog(final String code, final String codeFormat) {
 		AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
-		dialog.setMessage("Produkt o takim kodzie znajduje się już w bazie. Możesz kontynuować dodawanie lub przejść do podglądu");
-		dialog.setPositiveButton("Kontynuuj",new DialogInterface.OnClickListener() {
+		dialog.setMessage("Produkt o takim kodzie znajduje się już w bazie. Możesz przejść do jego edycji lub do podglądu");
+		dialog.setPositiveButton("Edytyj",new DialogInterface.OnClickListener() {
 
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				setValidateCode(code, codeFormat);				
+				dbAdapter.open();
+				Product product = dbAdapter.getProduct(code);
+				dbAdapter.close();
+				switchToEditFragment(product);
 			}
 			
 		});
@@ -700,11 +727,26 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 				dbAdapter.open();
 				Product product = dbAdapter.getProduct(code);
 				dbAdapter.close();
-				((MainActivity) getActivity()).selectFragmentToShowProduct(product);
+				switchToEditFragment(product);
 			}
 			
 		});
 
 		dialog.show();
+	}
+	
+	private boolean checkFormIsFill() {
+		String nazwa = nazwaTextBox.getText().toString();
+		String termin = terminWazButton.getText().toString();
+		
+		if (nazwa.equals("") || termin.equals("") || termin.equals("Wprowadź datę")) {
+			return false;
+		} else {	
+			return true;
+		}
+	}
+	
+	private void switchToEditFragment(Product product) {
+		((MainActivity) getActivity()).selectFragmentToEditProduct(product);
 	}
 }

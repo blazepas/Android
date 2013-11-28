@@ -141,7 +141,7 @@ public class DialogGeneruj extends Dialog implements android.view.View.OnClickLi
 		switch (fragPos) {
 		case 1:
 			FragmentDodaj fragmentDodaj = (FragmentDodaj) fragmentManager.findFragmentById(fragmentId);
-			fragmentDodaj.saveProductFromDialogGeneruj(code, codeFormat);
+			fragmentDodaj.saveCodeFromDialogGeneruj(code, codeFormat);
 			break;
 		case 6:
 			FragmentEdytuj fragmentEdytuj = (FragmentEdytuj) fragmentManager.findFragmentById(fragmentId);

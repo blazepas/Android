@@ -15,6 +15,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.PopupMenu.OnMenuItemClickListener;
@@ -35,7 +36,7 @@ public class FragmentProdukty extends SherlockFragment implements OnItemLongClic
 	
 	ListView productsList;
 	View rootView;
-	Button footer;
+	LinearLayout footer;
 		
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -73,9 +74,17 @@ public class FragmentProdukty extends SherlockFragment implements OnItemLongClic
     {
        switch (item.getItemId()) {
           case R.id.share:
-          case R.id.share2:
+          case R.id.shareMenuButton:
           	DialogShare dialogShare = new DialogShare(getActivity(), getFragmentManager(), getId());
           	dialogShare.show();
+            break;
+          case R.id.scan:
+          case R.id.scanMenuButton:
+        	  scanCode();
+            break;
+          case R.id.add:
+          case R.id.addMenuButton:
+        	  selectFragmentDodaj();
             break;
        }
        return true;
@@ -153,19 +162,7 @@ public class FragmentProdukty extends SherlockFragment implements OnItemLongClic
 		@Override
 		protected void onPreExecute() {
 			productsList = (ListView) rootView.findViewById(R.id.productsList);
-			
-			//TODO zrobic oddzielny layout
-			footer = new Button(getActivity());
-			footer.setText("Dodaj");
-			footer.setOnClickListener(new OnClickListener() {
-				
-				@Override
-				public void onClick(View v) {
-					((MainActivity) getActivity()).selectFragment(1);
-				}
-			});
-			//TODO
-			
+			footer = initFooter();
 			productsList.addFooterView(footer);
 		}
 
@@ -193,5 +190,48 @@ public class FragmentProdukty extends SherlockFragment implements OnItemLongClic
 				});
 			}
 		}
+	}
+	
+	private LinearLayout initFooter() {
+		
+		//TODO zrobic oddzielny layout
+		
+		LinearLayout footerLay = new LinearLayout(getActivity());
+		Button skanowanieButton = new Button(getActivity());
+		Button wlasnyButton = new Button(getActivity());
+		
+		footerLay.setOrientation(LinearLayout.VERTICAL);
+		
+		skanowanieButton.setText("Skanowanie produktu");
+		wlasnyButton.setText("Własny produkt");
+		
+		skanowanieButton.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				scanCode();
+			}
+		});
+		
+		wlasnyButton.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				selectFragmentDodaj();
+			}
+		});
+		
+		footerLay.addView(skanowanieButton);
+		footerLay.addView(wlasnyButton);
+		
+		return footerLay;
+	}
+	
+	private void selectFragmentDodaj() {
+		((MainActivity) getActivity()).selectFragment(1);
+	}
+	
+	private void scanCode() {
+		((MainActivity) getActivity()).selectFragment(0);
 	}
 }
