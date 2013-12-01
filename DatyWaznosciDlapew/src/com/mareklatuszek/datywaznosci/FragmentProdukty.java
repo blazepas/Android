@@ -27,6 +27,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.mareklatuszek.utilities.CommonUtilities;
+import com.mareklatuszek.utilities.JavaMail;
 
 public class FragmentProdukty extends SherlockFragment {
 	
@@ -53,13 +54,9 @@ public class FragmentProdukty extends SherlockFragment {
 		return rootView;
 	}
 	
+	@Override
 	public void onResume() {
 		super.onResume();		
-	}
-		
-	private void switchToProductFragment(int positon) {
-		Product product = products.get(positon);
-		((MainActivity) getActivity()).selectFragmentToShowProduct(product);
 	}
 	
 	@Override
@@ -103,7 +100,7 @@ public class FragmentProdukty extends SherlockFragment {
        switch (item.getItemId()) {
           case R.id.share:
           case R.id.shareMenuButton:
-          	DialogShare dialogShare = new DialogShare(getActivity(), getFragmentManager(), getId());
+          	DialogShare dialogShare = new DialogShare(getActivity(), products);
           	dialogShare.show();
             break;
           case R.id.scan:
@@ -117,6 +114,11 @@ public class FragmentProdukty extends SherlockFragment {
        }
        return true;
     }
+    
+	private void switchToProductFragment(int positon) {
+		Product product = products.get(positon);
+		((MainActivity) getActivity()).selectFragmentToShowProduct(product);
+	}
 
 	private void switchToEditFragment(Product product) {
 		((MainActivity) getActivity()).selectFragmentToEditProduct(product);
@@ -124,16 +126,9 @@ public class FragmentProdukty extends SherlockFragment {
 	
 	private void share(Product product) {
 		String productJson = utilities.getJsonFromProduct(product);
-		utilities.sendEmail(productJson, getActivity());
+		utilities.sendEmail(productJson, getActivity());		
 	}
-	
-	public boolean shareAllProducts(String email) {
-		JSONArray productList = utilities.getProductsTableToShare(products);
-		String url = getResources().getString(R.string.send_products_list_url);
-		boolean emailStatus = utilities.postData(email, productList, url);
-		return emailStatus;
-	}
-	
+		
 	private void deleteProduct(Product product) {
 		dbAdapter.open();
 		boolean deleteStatus = dbAdapter.deleteProduct(product);

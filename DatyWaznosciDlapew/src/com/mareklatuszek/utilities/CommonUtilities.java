@@ -440,7 +440,7 @@ public class CommonUtilities implements FinalVariables {
 		return json;
 	}
 	
-	public JSONArray getProductsTableToShare(ArrayList<Product> products) {
+	public JSONArray getProductsTableJSON(ArrayList<Product> products) {
 		
 		JSONArray lista = new JSONArray();
 			
@@ -467,6 +467,37 @@ public class CommonUtilities implements FinalVariables {
 		}
 		
 		return lista;
+	}
+	
+	public String getProductsTableHTML(ArrayList<Product> products) {
+		
+		StringBuilder table = new StringBuilder();
+		table.append("<html><body><table border='1'>");
+			
+		for (int i = 0; i < products.size(); i++) {
+			StringBuilder row = new StringBuilder();
+			
+			Product product = products.get(i);		
+			String nazwa = product.getNazwa();
+			String dataOtw = product.getDataOtwarcia();
+		    String terminWaz = product.getTerminWaznosci();
+		    String kategoria = product.getKategoria();
+		    
+		    row.append("<tr>");
+		    
+		    row.append("<td>" + nazwa + "</td>");
+		    row.append("<td>" + dataOtw + "</td>");
+		    row.append("<td>" + terminWaz + "</td>");
+		    row.append("<td>" + kategoria + "</td>");
+		    
+		    row.append("</tr>");
+		    
+		    table.append(row);
+		}
+		
+		table.append("</table></body></html>");
+		
+		return table.toString();
 	}
 	
 	public boolean validateCode(String code, String codeFormat) {
@@ -501,7 +532,7 @@ public class CommonUtilities implements FinalVariables {
 			
 			File mFile = savebitmap(bitmap);
 			u = Uri.fromFile(mFile);
-			
+						
 			//TODO jesli nie ma kardy sd 
 
 			Intent i = new Intent(Intent.ACTION_SEND);
@@ -522,22 +553,16 @@ public class CommonUtilities implements FinalVariables {
 		}			
 	}
 	
-	public void sendEmailWithProductList(FragmentActivity mActivity, String table) {			
-		try {
-
-			Intent i = new Intent(Intent.ACTION_SEND);
-			i.setType("text/html");
-			i.putExtra(Intent.EXTRA_EMAIL  , new String[]{"marek.lat@gmail.com"});
-			i.putExtra(Intent.EXTRA_SUBJECT, "Lista produktów z programu TPP");
-			i.putExtra(Intent.EXTRA_TEXT   , Html.fromHtml(table));
-			
-			mActivity.startActivity(Intent.createChooser(i, "Wysyłanie..."));
-			
-		} catch (android.content.ActivityNotFoundException ex) {
-		    Toast.makeText(mActivity, "Brak klienta email", Toast.LENGTH_SHORT).show();
-		}			
+	public boolean sendEmailWithProductList(String email, String table) {
+		try {  
+            JavaMail sender = new JavaMail();
+            sender.sendMail("Lista produktów z programu TPP", table, email);
+        } catch (Exception e) {   
+             return false; 
+        } 
+		return true;
 	}
-	
+			
 	public File savebitmap(Bitmap bmp) throws IOException {
 		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
 		bmp.compress(Bitmap.CompressFormat.JPEG, 40, bytes);
@@ -595,7 +620,6 @@ public class CommonUtilities implements FinalVariables {
 	    Calendar cal = new GregorianCalendar();
 	    cal.setTimeInMillis(alarmTime);
 	    
-	    long when = cal.getTimeInMillis();
 	    int intentId = productCode.hashCode();
 	    Intent intent = new Intent(mActivity, ReminderService.class);
 	    PendingIntent pendingIntent = PendingIntent.getService(mActivity, intentId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -625,28 +649,7 @@ public class CommonUtilities implements FinalVariables {
 		
 		return przypomnienia;
 	}
-	
-	public void TESTstartAlarm(FragmentActivity mActivity) {
-		AlarmManager alarmManager = (AlarmManager) mActivity.getSystemService(mActivity.ALARM_SERVICE);
-	    
-	    Calendar cal = new GregorianCalendar();
-	    cal.set(Calendar.YEAR, 2013);
-	    cal.set(Calendar.MONTH, 11 - 1); // miesi�ce s� numerowane od 0-11
-	    cal.set(Calendar.DAY_OF_MONTH, 24);
-	    cal.set(Calendar.HOUR_OF_DAY, 15);
-	    cal.set(Calendar.MINUTE, 33);
-	    cal.set(Calendar.SECOND, 0);
-	    cal.set(Calendar.MILLISECOND, 0);
-	    
-	    long when = cal.getTimeInMillis(); // czas powiadomienia
-	    Intent intent = new Intent(mActivity, ReminderService.class);
-	    PendingIntent pendingIntent = PendingIntent.getService(mActivity, (int) when, intent, 0);
-	    alarmManager.set(AlarmManager.RTC_WAKEUP, when, pendingIntent);
-	            
-	            
-	    Log.i("Alarm ustawiony", when+"");         
-	}
-	
+		
 	private boolean appInstalledOrNot(String uri, FragmentActivity mActivity)
     {
         PackageManager pm = mActivity.getPackageManager();
@@ -685,4 +688,7 @@ public class CommonUtilities implements FinalVariables {
 	        return false;
 	    } 
 	}
+	
+
+	
 }

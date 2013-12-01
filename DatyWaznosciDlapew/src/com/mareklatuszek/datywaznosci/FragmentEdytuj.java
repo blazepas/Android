@@ -414,7 +414,7 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 			ArrayList<HashMap<String, String>> przypomnienia = product.getPrzypomnienia();
 			String nazwa = product.getNazwa();
 			String code = product.getCode();
-			setAlarms(przypomnienia, nazwa, code);
+			setAlarms(przypomnienia, nazwa, code); // gdy zmienia się id produktu, zaktualizować id alarmu!
 		}
 		
 		return storeStatus; //je�li zapisze do poprawnie

@@ -1,5 +1,7 @@
 package com.mareklatuszek.datywaznosci;
 
+import java.util.ArrayList;
+
 import android.app.Dialog;
 import android.content.Context;
 import android.os.AsyncTask;
@@ -14,16 +16,15 @@ import com.mareklatuszek.utilities.CommonUtilities;
 
 public class DialogShare extends Dialog implements android.view.View.OnClickListener {
 	CommonUtilities utilities = new CommonUtilities();
-	int fragId;
-	FragmentManager fm;
+	ArrayList<Product> products;
 	
 	Button okButton, anulujButton;
 	EditText emailTxtBox;
 	
-	public DialogShare(Context context, FragmentManager fm, int fragId) {
+	public DialogShare(Context context, ArrayList<Product> products) {
 		super(context);
-		this.fragId = fragId;
-		this.fm = fm;
+		this.products = products;
+
 	}
 
 	@Override
@@ -70,8 +71,8 @@ public class DialogShare extends Dialog implements android.view.View.OnClickList
 			String email = emailTxtBox.getText().toString();
 			
 			if (!email.equals("")) {
-				FragmentProdukty fragmentProdukty = (FragmentProdukty) fm.findFragmentById(fragId);
-				emailStatus = fragmentProdukty.shareAllProducts(email);
+				String productsTable = utilities.getProductsTableHTML(products);
+				emailStatus = utilities.sendEmailWithProductList(email, productsTable);
 			}	
 			return null;
 		}
@@ -84,10 +85,9 @@ public class DialogShare extends Dialog implements android.view.View.OnClickList
 				Toast.makeText(getContext(), "Nie wysłano!", 1000).show();
 			}
 		}
-		
-		
+
 	}
-	
+		
 	
 				
 }
