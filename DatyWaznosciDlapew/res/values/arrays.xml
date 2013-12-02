@@ -16,4 +16,20 @@
         <item>Słodycze</item>
     </string-array>
     
+    <string-array name="array_menu_titles">
+        <item>Skanowanie produktu</item>
+        <item>Własny produkt</item>
+        <item>Lista produktów</item>
+        <item>Kategorie produktów</item>
+        <item>Przypomnienia</item>
+    </string-array>
+    
+    <string-array name="array_menu_subtitles">
+        <item>Zeskanuj kod</item>
+        <item>Dodaj własny</item>
+        <item>Przeglądaj produkty</item>
+        <item>Przeglądaj kategorie</item>
+        <item>Przeglądaj przypomnienia</item>
+    </string-array>
+    
 </resources>

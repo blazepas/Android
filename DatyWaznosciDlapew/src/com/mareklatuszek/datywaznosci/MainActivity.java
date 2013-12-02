@@ -1,45 +1,37 @@
 package com.mareklatuszek.datywaznosci;
 
-import java.lang.reflect.Field;
-
 import jim.h.common.android.lib.zxing.integrator.IntentIntegrator;
 import jim.h.common.android.lib.zxing.integrator.IntentResult;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v4.widget.ViewDragHelper;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
+import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.MenuItem;
+import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.mareklatuszek.utilities.FinalVariables;
 
 
 public class MainActivity extends SherlockFragmentActivity implements FinalVariables {
 
-	DrawerLayout mDrawerLayout;
-	ListView mDrawerList;
-	ActionBarDrawerToggle mDrawerToggle;
-	AdapterMenu mMenuAdapter;
+	ListView menuList;
+	AdapterMenu menuAdapter;
 	AdapterDB adapterDb;
+	SlidingMenu menu;
 	
-	String[] title;
-	String[] subtitle;
-	int[] icon;
 	boolean backIsDoublePressed = false;
 	public static int currentFragmentPos = 2;
 	public static int currentFragmentId;
@@ -53,9 +45,6 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
 	Fragment fragmentProdukt = new FragmentProdukt();
 	Fragment fragmentEdytuj;
 	
-	private CharSequence mDrawerTitle;
-	private CharSequence mTitle;
-	
     @Override   
     public void onResume()
     {
@@ -63,7 +52,6 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
     	
     	if(notification)
     	{
-    		
     		String productCode = getIntent().getStringExtra("productCode");
             String timeInMillis = getIntent().getStringExtra("timeInMillis");
             notification = false;
@@ -83,149 +71,30 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
 		this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 		adapterDb = new AdapterDB(this);
 				
-		// Layout wysuwanego menu
-		setContentView(R.layout.drawer_main);
-
-		// Tytul
-		mTitle = mDrawerTitle = getTitle();
-
-		// Nag��wki element�w menu
-		title = new String[] { "Skanowanie produktu", "Własny produkt",
-				"Lista produktów", "Kategorie produktów", "Przypomnienia" };
-
-		// Opisy nag��wk�
-		subtitle = new String[] { "Zeskanuj kod", "Dodaj własny",
-				"Przeglądaj dodane", "Przeglądaj kategorie", "Przeglądaj przypomnienia" };
-
-		// przypisywanie ikon elementom menu
-		icon = new int[] { R.drawable.collections_cloud, R.drawable.collections_cloud,
-				R.drawable.collections_cloud, R.drawable.collections_cloud, R.drawable.collections_cloud };
-
-		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-		
-		// wielkosc strefy reakcji menu np 0.3 to 30% szerokości ekranu
-		setDrawerLeftEdgeSize(mDrawerLayout, 0.3f);
-
-		mDrawerList = (ListView) findViewById(R.id.listview_drawer);
-
-		// cie� menu
-		mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow,GravityCompat.START);
-		
-
-		mMenuAdapter = new AdapterMenu(MainActivity.this, title, subtitle,
-				icon);
-
-		// Adapter menu
-		mDrawerList.setAdapter(mMenuAdapter);
-
-		mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
-
+		setContentView(R.layout.main_frame);
+	
 		getSupportActionBar().setHomeButtonEnabled(true);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-		mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.drawable.ic_drawer, R.string.drawer_open, R.string.drawer_close) {
-
-			public void onDrawerClosed(View view) {
-				super.onDrawerClosed(view);
-			}
-
-			public void onDrawerOpened(View drawerView) {
-				getSupportActionBar().setTitle(mDrawerTitle);
-				super.onDrawerOpened(drawerView);
-			}
-		};
-
-		mDrawerLayout.setDrawerListener(mDrawerToggle);
-
-		if (savedInstanceState == null) {
-			selectFragment(2);
-		}
+		initMenu();
 		
+		if (savedInstanceState == null) {
+			selectFragment(2);			
+		}
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 
 		if (item.getItemId() == android.R.id.home) {
-
-			if (mDrawerLayout.isDrawerOpen(mDrawerList)) {
-				mDrawerLayout.closeDrawer(mDrawerList);
-			} else {
-				mDrawerLayout.openDrawer(mDrawerList);
-			}
+			menu.toggle();
 		}
 
 		return super.onOptionsItemSelected(item);
 	}
-
-	private class DrawerItemClickListener implements
-			ListView.OnItemClickListener {
-		@Override
-		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {		
-			selectFragment(position);
-		}
-	}
-
-	public void selectFragment(int position) {
-		
-		currentFragmentPos = position;
-
-		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-		switch (position) {
-		case 0:
-			startScanner();
-			break;
-		case 1:
-			fragmentDodaj = new FragmentDodaj();
-			ft.replace(R.id.content_frame, fragmentDodaj);
-			break;
-		case 2:
-			ft.replace(R.id.content_frame, fragmentProdukty);
-			break;
-		case 3:
-			ft.replace(R.id.content_frame, fragmentKategorie);
-			break;
-		case 4:
-			ft.replace(R.id.content_frame, fragmentPrzypomnienia);
-			break;
-		case 5:
-			ft.replace(R.id.content_frame, fragmentProdukt);
-			ft.commit();
-			return;
-		case 6:
-			ft.replace(R.id.content_frame, fragmentEdytuj);
-			ft.commit();
-			return;
-		}
-		ft.commit();
-		mDrawerList.setItemChecked(position, true);
-
-		setTitle(title[position]);
-		mDrawerLayout.closeDrawer(mDrawerList);
-		
-	}
-
-	@Override
-	protected void onPostCreate(Bundle savedInstanceState) {
-		super.onPostCreate(savedInstanceState);
-		mDrawerToggle.syncState();
-	}
-
-	@Override
-	public void onConfigurationChanged(Configuration newConfig) {
-		super.onConfigurationChanged(newConfig);
-		mDrawerToggle.onConfigurationChanged(newConfig);
-	}
-
-	@Override
-	public void setTitle(CharSequence title) {
-		mTitle = title;
-		getSupportActionBar().setTitle(mTitle);
-	}
 	
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent intent) {   
-		mDrawerLayout.closeDrawer(mDrawerList);
 		if (resultCode == RESULT_OK) {
 			if (requestCode == CAMERA_ADD_RQ_CODE) {
 				imageUri = intent.getData();
@@ -250,8 +119,7 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
 		        }
 	        }
 		}
-		
-		
+
 	}
 	
 	@Override
@@ -289,6 +157,61 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
 	        }, 2000);
 		}
     } 
+	
+	private void initMenu() {
+		menu = new SlidingMenu(this);
+		menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
+		menu.setShadowWidthRes(R.dimen.shadow_width);
+		menu.setShadowDrawable(R.drawable.shadow);
+		menu.setBehindOffsetRes(R.dimen.slidingmenu_offset);
+		menu.setFadeDegree(0.35f);
+		menu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
+		menu.setMenu(getMenuList());
+		menu.toggle();
+	}
+	
+
+	private class MenuItemClickListener implements
+			ListView.OnItemClickListener {
+		@Override
+		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {		
+			selectFragment(position);
+			menu.toggle();
+		}
+	}
+
+	public void selectFragment(int position) {		
+		currentFragmentPos = position;
+
+		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+		switch (position) {
+		case 0:
+			startScanner();
+			break;
+		case 1:
+			fragmentDodaj = new FragmentDodaj();
+			ft.replace(R.id.content_frame, fragmentDodaj);
+			break;
+		case 2:
+			ft.replace(R.id.content_frame, fragmentProdukty);
+			break;
+		case 3:
+			ft.replace(R.id.content_frame, fragmentKategorie);
+			break;
+		case 4:
+			ft.replace(R.id.content_frame, fragmentPrzypomnienia);
+			break;
+		case 5:
+			ft.replace(R.id.content_frame, fragmentProdukt);
+			ft.commit();
+			return;
+		case 6:
+			ft.replace(R.id.content_frame, fragmentEdytuj);
+			ft.commit();
+			return;
+		}
+		ft.commit();	
+	}
 	
 	private void onNotification(String productId, String alarmTime) {	
 		adapterDb.open();
@@ -342,6 +265,26 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
         FragmentEdytuj actualFragment = (FragmentEdytuj) fragmentManager.findFragmentById(currentFragmentId);
         actualFragment.setCameraResult();      
 	}
+	
+
+	private FrameLayout getMenuList() {
+		String[] title = getResources().getStringArray(R.array.array_menu_titles);
+		String[] subtitle = getResources().getStringArray(R.array.array_menu_subtitles);
+		int[] icon = new int[] { R.drawable.collections_cloud, R.drawable.collections_cloud,
+				R.drawable.collections_cloud, R.drawable.collections_cloud, R.drawable.collections_cloud };
+		
+		LayoutInflater li = getLayoutInflater();
+		FrameLayout menuFrame = (FrameLayout) li.inflate(R.layout.menu_frame, null);
+
+		menuAdapter = new AdapterMenu(MainActivity.this, title, subtitle, icon);
+		
+		menuList = (ListView) menuFrame.findViewById(R.id.listview_drawer);
+		menuList.setAdapter(menuAdapter);
+		menuList.setOnItemClickListener(new MenuItemClickListener());
+		menuList.setDivider(null);
+				
+		return menuFrame;
+	}
 		
 	public void selectFragmentToShowProduct(Product product) {
 		Bundle data = new Bundle();
@@ -377,36 +320,5 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
 		adapterDb.close();
 		return status;
 	}
-	
-	public void setDrawerLeftEdgeSize(DrawerLayout drawerLayout, float displayWidthPercentage) {
-	    if (drawerLayout == null)
-	        return;
-	    try {
-	       
-	        Field leftDraggerField = drawerLayout.getClass().getDeclaredField("mLeftDragger");
-	        leftDraggerField.setAccessible(true);
-	        ViewDragHelper leftDragger = (ViewDragHelper) leftDraggerField.get(drawerLayout);
-
-	        Field edgeSizeField = leftDragger.getClass().getDeclaredField("mEdgeSize");
-	        edgeSizeField.setAccessible(true);
-	        int edgeSize = edgeSizeField.getInt(leftDragger);
-	        
-	        Point displaySize = new Point();
-	        try {
-	        	 getWindowManager().getDefaultDisplay().getSize(displaySize);
-	        } catch (java.lang.NoSuchMethodError ignore) { // Older device
-	        	displaySize.x = getWindowManager().getDefaultDisplay().getWidth();
-	        	displaySize.y = getWindowManager().getDefaultDisplay().getHeight();
-	        }
-	        
-	        edgeSizeField.setInt(leftDragger, Math.max(edgeSize, (int) (displaySize.x * displayWidthPercentage)));
-	    } catch (NoSuchFieldException e) {
-	        // ignore
-	    } catch (IllegalArgumentException e) {
-	        // ignore
-	    } catch (IllegalAccessException e) {
-	        // ignore
-	    }
-	}
-	
+			
 }

@@ -47,7 +47,7 @@ public class AdapterMenu extends BaseAdapter {
 
 		inflater = (LayoutInflater) context
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		View itemView = inflater.inflate(R.layout.drawer_list_item, parent,
+		View itemView = inflater.inflate(R.layout.listview_menu, parent,
 				false);
 
 		txtTitle = (TextView) itemView.findViewById(R.id.title);
