@@ -79,7 +79,8 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
 		initMenu();
 		
 		if (savedInstanceState == null) {
-			selectFragment(2);			
+			selectFragment(2);	
+			menu.toggle();
 		}
 	}
 
@@ -167,7 +168,6 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
 		menu.setFadeDegree(0.35f);
 		menu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
 		menu.setMenu(getMenuList());
-		menu.toggle();
 	}
 	
 
