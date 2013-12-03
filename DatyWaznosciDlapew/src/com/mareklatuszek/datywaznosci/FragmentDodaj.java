@@ -13,6 +13,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -282,22 +283,26 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 	}
 	
 	private void initPrzypomnienia() {
-		Log.i("init", "przypomnienia");
 		LayoutInflater inflater = getActivity().getLayoutInflater();
 		final LinearLayout row = (LinearLayout) inflater.inflate(R.layout.listview_add_powiadomienia, null);
 		Button removePrzypButton = (Button) row.findViewById(R.id.removePrzypButton);
 		Button addPrzypButton = (Button) row.findViewById(R.id.addPrzypButton);
 		Button godzButton = (Button) row.findViewById(R.id.godzButton);
 		
-//		if (przypLayout.getChildCount() == 1) {
-//			removePrzypButton.setVisibility(View.GONE);//TODO
-//		}
-		
 		removePrzypButton.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
-				przypLayout.removeView(row);				
+				przypLayout.removeView(row);
+				int rowsCount = przypLayout.getChildCount();
+				
+				if (rowsCount == 0) {
+					initPrzypomnienia();
+				} else {
+					View viv = przypLayout.getChildAt(rowsCount - 1);
+					Button przypButton = (Button) viv.findViewById(R.id.addPrzypButton);
+					przypButton.setVisibility(View.VISIBLE);
+				}
 			}
 		});
 		
@@ -454,7 +459,6 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		if (!kod.equals("")) {
 			setCodeImage(kod, typKodu);
 		}	
-		isScanned = product.getIsScanned();
 		
 		String dataOtwarcia = product.getDataOtwarcia();			
 		String terminWaznosci = product.getTerminWaznosci();
@@ -514,7 +518,16 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 				
 				@Override
 				public void onClick(View v) {
-					przypLayout.removeView(row);				
+					przypLayout.removeView(row);
+					int rowsCount = przypLayout.getChildCount();
+					
+					if (rowsCount == 0) {
+						initPrzypomnienia();
+					} else {
+						View viv = przypLayout.getChildAt(rowsCount - 1);
+						Button przypButton = (Button) viv.findViewById(R.id.addPrzypButton);
+						przypButton.setVisibility(View.VISIBLE);
+					}				
 				}
 			});
 			
@@ -559,8 +572,7 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		terminWazButton.setText(date);
 	}
 	
-	public void setDataFromScan(String code, String codeFormat) {
-		
+	public void setDataFromScan(String code, String codeFormat) {		
 		dbAdapter.open();
 		boolean isInDB = dbAdapter.chckIfProductIsInDB(code);
 		dbAdapter.close();
@@ -575,13 +587,26 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 	}
 	
 	private void setCodeImage(String code, String codeFormat) {
-		this.code = code;
-		this.codeFormat = codeFormat;
+		
 		Bitmap bmp = utilities.encodeCodeToBitmap(code, codeFormat, getActivity());
-		barcodeImage.setImageBitmap(bmp);
+		if (bmp != null) {
+			this.code = code;
+			this.codeFormat = codeFormat;
+			barcodeImage.setImageBitmap(bmp);
+		} else {
+			// jesli niepoprawny kod
+			this.code = "";
+			this.codeFormat = "";
+			isScanned = false;
+			bmp = BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.zxinglib_icon); 
+			barcodeImage.setImageBitmap(bmp);
+	    	Toast.makeText(getActivity(), "Błąd skanowania lub niepoprawny kod", 2000).show();
+		}
+		
 	}
 	
 	private void setValidateCode(String code, String codeFormat) {
+		isScanned = true;
 		if (utilities.validateCode(code, codeFormat)) { //jeśli kod zawiera produkt
 
 			Product product = utilities.parseCodeToProduct(code);
@@ -589,7 +614,6 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 			product.setCodeFormat(codeFormat);
 			setViewsFromProduct(product);
 						
-			isScanned = true;
 			Log.i("Validate", "true");
 		} else {
 			Log.i("Validate", "false");

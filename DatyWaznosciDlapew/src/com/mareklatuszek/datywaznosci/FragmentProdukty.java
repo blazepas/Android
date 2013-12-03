@@ -115,41 +115,7 @@ public class FragmentProdukty extends SherlockFragment {
        return true;
     }
     
-	private void switchToProductFragment(int positon) {
-		Product product = products.get(positon);
-		((MainActivity) getActivity()).selectFragmentToShowProduct(product);
-	}
-
-	private void switchToEditFragment(Product product) {
-		((MainActivity) getActivity()).selectFragmentToEditProduct(product);
-	}
-	
-	private void share(Product product) {
-		String productJson = utilities.getJsonFromProduct(product);
-		utilities.sendEmail(productJson, getActivity());		
-	}
-		
-	private void deleteProduct(Product product) {
-		dbAdapter.open();
-		boolean deleteStatus = dbAdapter.deleteProduct(product);
-		dbAdapter.close();
-		
-		if (deleteStatus) {
-			products.remove(product);
-			listAdapter.notifyDataSetChanged();
-			ArrayList<HashMap<String, String>> przypomnienia = product.getPrzypomnienia();
-			String codeId = product.getCode();
-			removeAlarms(przypomnienia, codeId);
-		} else {
-			Toast.makeText(getActivity(), "Usuwanie zakończone niepowodzeniem", 2000).show();
-		}
-	}
-	
-	private void removeAlarms(ArrayList<HashMap<String, String>> przypomnienia, String codeId) {
-		utilities.cancelAlarms(przypomnienia, codeId, getActivity());
-	}
-	
-	private class InitList extends AsyncTask<Void, Void, Void> {
+    private class InitList extends AsyncTask<Void, Void, Void> {
 		
 		@Override
 		protected void onPreExecute() {
@@ -170,17 +136,17 @@ public class FragmentProdukty extends SherlockFragment {
 		@Override
 		protected void onPostExecute(Void v) {
 			if (!products.isEmpty()) {
-				listAdapter = new AdapterProductList(getActivity(), products);
+				listAdapter = new AdapterProductList(getActivity(), products, getFragmentManager(), getId());
 				productsList.setAdapter(listAdapter);
-				productsList.setOnItemClickListener(new OnItemClickListener() {
-
-                    @Override
-                    public void onItemClick(AdapterView<?> arg0, View arg1, int pos, long arg3) {
-                        switchToProductFragment(pos);
-                    }
-				});
+//				productsList.setOnItemClickListener(new OnItemClickListener() {
+//
+//                    @Override
+//                    public void onItemClick(AdapterView<?> arg0, View arg1, int pos, long arg3) {
+//                        switchToProductFragment(pos);
+//                    }
+//				});
 				
-				registerForContextMenu(productsList);
+				registerForContextMenu(productsList); // TODO prawdopodobnie nie bedzie uzywane
 			}
 		}
 	}
@@ -219,8 +185,42 @@ public class FragmentProdukty extends SherlockFragment {
 		
 		return footerLay;
 	}
+    
+	public void switchToProductFragment(int positon) {
+		Product product = products.get(positon);
+		((MainActivity) getActivity()).selectFragmentToShowProduct(product);
+	}
+
+	private void switchToEditFragment(Product product) {
+		((MainActivity) getActivity()).selectFragmentToEditProduct(product);
+	}
 	
-	private void selectFragmentDodaj() {
+	private void share(Product product) {
+		String productJson = utilities.getJsonFromProduct(product);
+		utilities.sendEmail(productJson, getActivity());		
+	}
+		
+	public void deleteProduct(Product product) {
+		dbAdapter.open();
+		boolean deleteStatus = dbAdapter.deleteProduct(product);
+		dbAdapter.close();
+		
+		if (deleteStatus) {
+			products.remove(product);
+			listAdapter.notifyDataSetChanged();
+			ArrayList<HashMap<String, String>> przypomnienia = product.getPrzypomnienia();
+			String codeId = product.getCode();
+			removeAlarms(przypomnienia, codeId);
+		} else {
+			Toast.makeText(getActivity(), "Usuwanie zakończone niepowodzeniem", 2000).show();
+		}
+	}
+	
+	private void removeAlarms(ArrayList<HashMap<String, String>> przypomnienia, String codeId) {
+		utilities.cancelAlarms(przypomnienia, codeId, getActivity());
+	}
+		
+	public void selectFragmentDodaj() {
 		((MainActivity) getActivity()).selectFragment(1);
 	}
 	

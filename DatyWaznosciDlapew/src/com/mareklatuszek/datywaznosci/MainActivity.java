@@ -50,8 +50,7 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
     {
     	super.onResume();
     	
-    	if(notification)
-    	{
+    	if(notification) {
     		String productCode = getIntent().getStringExtra("productCode");
             String timeInMillis = getIntent().getStringExtra("timeInMillis");
             notification = false;
@@ -62,7 +61,6 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
             	//TODO
             }
     	}
-    	
     }
 
 	@Override

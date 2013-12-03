@@ -13,6 +13,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -295,7 +296,16 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 			
 			@Override
 			public void onClick(View v) {
-				przypLayout.removeView(row);				
+				przypLayout.removeView(row);
+				int rowsCount = przypLayout.getChildCount();
+				
+				if (rowsCount == 0) {
+					initPrzypomnienia();
+				} else {
+					View viv = przypLayout.getChildAt(rowsCount - 1);
+					Button przypButton = (Button) viv.findViewById(R.id.addPrzypButton);
+					przypButton.setVisibility(View.VISIBLE);
+				}		
 			}
 		});
 		
@@ -502,7 +512,16 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 				
 				@Override
 				public void onClick(View v) {
-					przypLayout.removeView(row);				
+					przypLayout.removeView(row);
+					int rowsCount = przypLayout.getChildCount();
+					
+					if (rowsCount == 0) {
+						initPrzypomnienia();
+					} else {
+						View viv = przypLayout.getChildAt(rowsCount - 1);
+						Button przypButton = (Button) viv.findViewById(R.id.addPrzypButton);
+						przypButton.setVisibility(View.VISIBLE);
+					}				
 				}
 			});
 			
@@ -560,10 +579,19 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 	}
 	
 	private void setCodeImage(String code, String codeFormat) {
-		this.code = code;
-		this.codeFormat = codeFormat;
 		Bitmap bmp = utilities.encodeCodeToBitmap(code, codeFormat, getActivity());
-		barcodeImage.setImageBitmap(bmp);
+		if (bmp != null) {
+			this.code = code;
+			this.codeFormat = codeFormat;
+			barcodeImage.setImageBitmap(bmp);
+		} else {
+			// jesli niepoprawny kod
+			this.code = "";
+			this.codeFormat = "";
+			bmp = BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.zxinglib_icon); 
+			barcodeImage.setImageBitmap(bmp);
+	    	Toast.makeText(getActivity(), "Błąd skanowania lub niepoprawny kod", 2000).show();
+		}
 	}
 		
 	public void setCameraResult() { 

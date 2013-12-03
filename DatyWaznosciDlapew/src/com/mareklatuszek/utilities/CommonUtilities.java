@@ -358,15 +358,9 @@ public class CommonUtilities implements FinalVariables {
 	        Bitmap bitmap = qrCodeEncoder.encodeAsBitmap();
 	        return bitmap;
 	    } catch (WriterException e) {
-	    	//w razie niepowodzenia - domy�lna grafika
-	    	Bitmap bitmap= BitmapFactory.decodeResource(mActivity.getResources(), R.drawable.zxinglib_icon); 
-	    	Toast.makeText(mActivity, "Błąd skanowania lub niepoprawny kod", 2000).show();
-	        return bitmap;
+	        return null;
 	    } catch (IllegalArgumentException e) {
-	    	//w razie niepowodzenia - domy�lna grafika
-	    	Bitmap bitmap= BitmapFactory.decodeResource(mActivity.getResources(), R.drawable.zxinglib_icon); 
-	    	Toast.makeText(mActivity, "Błąd skanowania lub niepoprawny kod", 2000).show();
-	        return bitmap;
+	        return null;
 	    }
 	}
 	
