@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -70,8 +71,8 @@ public class FragmentProdukt extends SherlockFragment implements OnClickListener
             break;
           case R.id.share:
           case R.id.shareMenuButton:
-        	String productJson = utilities.getJsonFromProduct(product);
-          	utilities.sendEmail(productJson, getActivity());
+        	  DialogShare dialogShare = new DialogShare(getActivity(), product);
+        	  dialogShare.show();
             break;
        }
        return true;
@@ -169,5 +170,5 @@ public class FragmentProdukt extends SherlockFragment implements OnClickListener
 	private void switchToEditFragment(Product product) {
 		((MainActivity) getActivity()).selectFragmentToEditProduct(product);
 	}
-	
+		
 }

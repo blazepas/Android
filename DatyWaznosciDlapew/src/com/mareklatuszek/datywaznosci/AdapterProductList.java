@@ -1,5 +1,6 @@
 package com.mareklatuszek.datywaznosci;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -7,6 +8,7 @@ import java.util.Collections;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -99,11 +101,13 @@ public class AdapterProductList extends BaseAdapter {
         terminWazTxtList.setText(terminWaz);
         pozostaloPrgsList.setProgress(progress);
         
-//        if (!image.equals("")) {
-//			String imagePath = product.getImage();
-//			Bitmap imageBmp = BitmapLoader.loadBitmap(imagePath, 50, 50);
-//			obrazekImage.setImageBitmap(imageBmp);
-//		}
+        if (!image.equals("")) {
+        	File imgFile = new  File(image + "thumb");
+        	if(imgFile.exists()){
+        	    Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+        	    obrazekImage.setImageBitmap(myBitmap);
+        	}	
+		}
         
         initAnimations(position);
                 
@@ -123,7 +127,7 @@ public class AdapterProductList extends BaseAdapter {
 			
 			@Override
 			public void onClick(View v) {
-
+				deleteProduct(product);
 			}
 		});
         showProdLay.setOnClickListener(new OnClickListener() {

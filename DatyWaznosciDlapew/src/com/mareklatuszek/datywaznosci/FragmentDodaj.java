@@ -332,7 +332,7 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		if(MainActivity.imageUri.toString().equals("")) {
 			Log.i("uri", "null");
 		} else {
-			String path = getRealPathFromURI(MainActivity.imageUri);
+			String path = utilities.getRealPathFromURI(MainActivity.imageUri, getActivity());
 			Bitmap bm = BitmapLoader.loadBitmap(path, 100, 100);
 			obrazekImage.setImageBitmap(bm);
 		}
@@ -344,18 +344,16 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		dodatkoweButton.setVisibility(View.GONE);
 	}
 		
-	public void takePhoto() {
-	
+	public void takePhoto() {	
 		File directory = new File(Environment.getExternalStorageDirectory()+File.separator+"TPP");
 		directory.mkdirs();
-		
 		
 		Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         File f = new File(android.os.Environment.getExternalStorageDirectory(), "TPP" + File.separator 
         		+ (System.currentTimeMillis()/1000) + ".jpg");
         MainActivity.imageUri = Uri.fromFile(f);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
-        startActivityForResult(intent, CAMERA_ADD_RQ_CODE);
+        getActivity().startActivityForResult(intent, CAMERA_ADD_RQ_CODE);
     }
 	
 	public void pickImageFromGallery() {
@@ -381,7 +379,7 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		String terminWaznosci = getTerminWaznosci();
 		String kategoria = getKategoria();
 		String dataZuz = dataZuzButton.getText().toString();
-		String obrazek = getRealPathFromURI(MainActivity.imageUri);
+		String image = utilities.getRealPathFromURI(MainActivity.imageUri, getActivity());
 		String opis = opisTxtBox.getText().toString();
 		ArrayList<HashMap<String, String>> przypomnienia = getPrzypomnienia();
 		
@@ -389,7 +387,7 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		product.setTerminWaznosci(terminWaznosci);
 		product.setKategoria(kategoria);
 		product.setDataZuzycia(dataZuz);
-		product.setImage(obrazek);
+		product.setImage(image);
 		product.setOpis(opis);
 		product.setPrzypomnienia(przypomnienia);
 	
@@ -402,7 +400,7 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 				
 			@Override
 			protected void onPreExecute() {
-				progressDialog =ProgressDialog.show(getActivity(), "Dodaję", "Dodawanie do bazy");
+				progressDialog = ProgressDialog.show(getActivity(), "Dodaję", "Dodawanie do bazy");
 			}
 
 			@Override
@@ -428,6 +426,7 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 	
 	private boolean storeAllToDatabase() {
 		Product product = prepareDataToStore();
+		utilities.createThumb(product.getImage());
 		dbAdapter.open();		
 		boolean storeStatus = dbAdapter.insertProduct(product);
 		dbAdapter.close();
@@ -473,6 +472,7 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		dataOtwButton.setText(dataOtwarcia);
 		terminWazButton.setText(terminWaznosci);
 		kategorieSpinner.setSelection(kategoriaId);
+		Log.i("set image", "setViews");
 		obrazekImage.setImageBitmap(imageBmp);
 		opisTxtBox.setText(opis);
 		setPrzypomnienia(przypomnienia);	
@@ -621,16 +621,14 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		}
 	}
 		
-	public void setCameraResult() { 
-		Uri selectedImage = MainActivity.imageUri;
+	public void setCameraResult(Uri selectedImage) { 
         getActivity().getContentResolver().notifyChange(selectedImage, null);
         ContentResolver cr = getActivity().getContentResolver();
         Bitmap bitmap;
         try {
-        	bitmap = BitmapLoader.loadBitmap(getRealPathFromURI(selectedImage), 100, 100);
-
+        	String path = utilities.getRealPathFromURI(selectedImage, getActivity());
+        	bitmap = BitmapLoader.loadBitmap(path, 100, 100);
             obrazekImage.setImageBitmap(bitmap);
-            Toast.makeText(getActivity(), selectedImage.toString(), Toast.LENGTH_LONG).show();
         } catch (Exception e) {
             Toast.makeText(getActivity(), "Błąd aparatu!", Toast.LENGTH_SHORT).show();
             Log.e("Camera", e.toString());
@@ -718,18 +716,7 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		
 		return peroid;
 	}
-					
-	private String getRealPathFromURI(Uri contentUri) {
-	    String[] proj = { MediaStore.Images.Media.DATA };
-	    Cursor cursor = getActivity().managedQuery(contentUri, proj, null, null, null);
-	    if (cursor == null) {
-	      return contentUri.getPath();
-	    }
-	    int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-	    cursor.moveToFirst();
-	    return cursor.getString(column_index);
-	}
-		
+							
 	private void save() {		
 		if (!checkFormIsFill()) {
 			Toast.makeText(getActivity(), "Należy podać nazwę i okres ważności", 1500).show();

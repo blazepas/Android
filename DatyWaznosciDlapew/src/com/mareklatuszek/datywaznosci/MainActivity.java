@@ -96,17 +96,25 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
 	public void onActivityResult(int requestCode, int resultCode, Intent intent) {   
 		if (resultCode == RESULT_OK) {
 			if (requestCode == CAMERA_ADD_RQ_CODE) {
-				imageUri = intent.getData();
-				setPictureInFragmentDodaj();
+				Uri selectedImage = intent.getData();
+				imageUri = selectedImage;
+				
+				setPictureInFragmentDodaj(selectedImage);
 			} else if (requestCode == GALLERY_ADD_RQ_CODE) {
-				imageUri = intent.getData();
-				setPictureInFragmentDodaj();
+				Uri selectedImage = intent.getData();
+				imageUri = selectedImage;
+				
+				setPictureInFragmentDodaj(selectedImage);
 			} else if (requestCode == CAMERA_EDIT_RQ_CODE) {
-				imageUri = intent.getData();
-				setPictureInFragmentEdytuj();
+				Uri selectedImage = intent.getData();
+				imageUri = selectedImage;
+				
+				setPictureInFragmentEdytuj(selectedImage);
 			} else if (requestCode == GALLERY_EDIT_RQ_CODE) {
-				imageUri = intent.getData();
-				setPictureInFragmentEdytuj();
+				Uri selectedImage = intent.getData();
+				imageUri = selectedImage;
+				
+				setPictureInFragmentEdytuj(selectedImage);
 	        } else {
 	        	IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
 		        if (scanResult != null) {
@@ -248,20 +256,20 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
         }		
 	}
 	
-	private void setPictureInFragmentDodaj() {
+	private void setPictureInFragmentDodaj(Uri selectedImage) {
 		Log.i("picture", "taken");
 	       
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentDodaj actualFragment = (FragmentDodaj) fragmentManager.findFragmentById(currentFragmentId);
-        actualFragment.setCameraResult();      
+        actualFragment.setCameraResult(selectedImage);      
 	}
 	
-	private void setPictureInFragmentEdytuj() {
+	private void setPictureInFragmentEdytuj(Uri selectedImage) {
 		Log.i("picture", "taken");
 	       
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentEdytuj actualFragment = (FragmentEdytuj) fragmentManager.findFragmentById(currentFragmentId);
-        actualFragment.setCameraResult();      
+        actualFragment.setCameraResult(selectedImage);      
 	}
 	
 

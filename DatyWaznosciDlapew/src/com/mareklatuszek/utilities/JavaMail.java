@@ -2,12 +2,17 @@ package com.mareklatuszek.utilities;
 
 import javax.activation.DataHandler;   
 import javax.activation.DataSource;   
+import javax.activation.FileDataSource;
+import javax.mail.BodyPart;
 import javax.mail.Message;   
+import javax.mail.Multipart;
 import javax.mail.PasswordAuthentication;   
 import javax.mail.Session;   
 import javax.mail.Transport;   
 import javax.mail.internet.InternetAddress;   
+import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;   
+import javax.mail.internet.MimeMultipart;
 
 import android.util.Log;
 
@@ -45,20 +50,65 @@ public class JavaMail extends javax.mail.Authenticator {
         session = Session.getDefaultInstance(props, this);   
     }   
     
-    public synchronized void sendMail(String subject, String body, String recipients) throws Exception {   
+    public synchronized void sendMailWithList(String subject, String body, String recipients) throws Exception {   
+    	
         try{
-        MimeMessage message = new MimeMessage(session);   
-        DataHandler handler = new DataHandler(new ByteArrayDataSource(body.getBytes(), "text/html"));   
-        message.setSender(new InternetAddress(sender));   
-        message.setSubject(subject);   
-        message.setDataHandler(handler);   
-        if (recipients.indexOf(',') > 0)   
-            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipients));   
-        else  
-            message.setRecipient(Message.RecipientType.TO, new InternetAddress(recipients));   
-        Transport.send(message);   
+        	
+	        MimeMessage message = new MimeMessage(session);   
+	        DataHandler handler = new DataHandler(new ByteArrayDataSource(body.getBytes(), "text/html"));   
+	        message.setSender(new InternetAddress(sender));   
+	        message.setSubject(subject);   
+	        message.setDataHandler(handler);   
+	        if (recipients.indexOf(',') > 0)   
+	            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipients));   
+	        else  
+	            message.setRecipient(Message.RecipientType.TO, new InternetAddress(recipients));   
+	        Transport.send(message);   
         }catch(Exception e){
-
+        	//TODO
+        }
+    } 
+    
+    public synchronized void sendMailWithProduct(String subject, String body, String imagePath, String codePath,
+    			String recipients) throws Exception {   
+    	
+        try{
+        	
+	        MimeMessage message = new MimeMessage(session);     
+	        message.setSender(new InternetAddress(sender));   
+	        message.setSubject(subject);    
+	        if (recipients.indexOf(',') > 0)   
+	            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipients));   
+	        else  
+	            message.setRecipient(Message.RecipientType.TO, new InternetAddress(recipients)); 
+	        
+	        MimeMultipart multipart = new MimeMultipart("related");
+	
+	        // tabela
+	        BodyPart messageBodyPart = new MimeBodyPart();
+	        messageBodyPart.setContent(body, "text/html; charset=utf-8");
+	        multipart.addBodyPart(messageBodyPart);
+	        
+	        // obrazek
+	        messageBodyPart = new MimeBodyPart();
+	        DataSource fds = new FileDataSource(imagePath);
+	        messageBodyPart.setDataHandler(new DataHandler(fds));
+	        messageBodyPart.setHeader("Content-ID","<image>");
+	        multipart.addBodyPart(messageBodyPart);
+	        
+	        //QR code
+	        messageBodyPart = new MimeBodyPart();
+	        DataSource fds2 = new FileDataSource(codePath);
+	        messageBodyPart.setDataHandler(new DataHandler(fds2));
+	        messageBodyPart.setHeader("Content-ID","<image2>");
+	        multipart.addBodyPart(messageBodyPart);
+	
+	        // dodanie wszystkiego do maila
+	        message.setContent(multipart);
+	        
+	        Transport.send(message);   
+        }catch(Exception e){
+        	// TODO
         }
     } 
 

@@ -51,7 +51,8 @@ public class DialogPrzypomnienie extends Dialog implements android.view.View.OnC
 		} catch (ParseException e) {
 			Log.i("dialog przyp", "parse error");
 		}
-		String okres = utilities.dateToWords(terminDateInMillis);
+		long currentTime = System.currentTimeMillis();
+		String okres = "za " + utilities.dateToWords(currentTime, terminDateInMillis);
 		String dataOtw = product.getDataOtwarcia();		
 		String kategoria = product.getKategoria();
 		int progress = utilities.getProgress(dataOtw, terminWaz);

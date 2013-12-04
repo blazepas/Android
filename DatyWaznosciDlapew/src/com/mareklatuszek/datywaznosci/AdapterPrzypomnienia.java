@@ -62,7 +62,8 @@ public class AdapterPrzypomnienia extends BaseAdapter implements FinalVariables 
         String dataOtw = przypomnienie.get(DB_DATA_OTWARCIA);
         String terminWaz = przypomnienie.get(DB_TERMIN_WAZNOSCI);
         long powiadomienieDate = Long.parseLong(przypomnienie.get(PRZYP_DATE));
-        String pozostaloText = utilities.dateToWords(powiadomienieDate);
+        long currentTime = System.currentTimeMillis();
+        String pozostaloText = "za " + utilities.dateToWords(currentTime, powiadomienieDate);
         int progress = utilities.getProgress(dataOtw, terminWaz);
         
         nazwaPow.setText(nazwa);

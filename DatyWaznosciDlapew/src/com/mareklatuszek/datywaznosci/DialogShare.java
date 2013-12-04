@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.view.View;
 import android.widget.Button;
@@ -16,15 +17,23 @@ import com.mareklatuszek.utilities.CommonUtilities;
 
 public class DialogShare extends Dialog implements android.view.View.OnClickListener {
 	CommonUtilities utilities = new CommonUtilities();
-	ArrayList<Product> products;
+	FragmentActivity mActivity;
+	ArrayList<Product> products = new ArrayList<Product>();
+	Product product;
 	
 	Button okButton, anulujButton;
 	EditText emailTxtBox;
 	
-	public DialogShare(Context context, ArrayList<Product> products) {
-		super(context);
+	public DialogShare(FragmentActivity mActivity, ArrayList<Product> products) {
+		super(mActivity);
 		this.products = products;
-
+		this.mActivity = mActivity;
+	}
+	
+	public DialogShare(FragmentActivity mActivity, Product product) {
+		super(mActivity);
+		this.product = product;
+		this.mActivity = mActivity;
 	}
 
 	@Override
@@ -71,8 +80,13 @@ public class DialogShare extends Dialog implements android.view.View.OnClickList
 			String email = emailTxtBox.getText().toString();
 			
 			if (!email.equals("")) {
-				String productsTable = utilities.getProductsTableHTML(products);
-				emailStatus = utilities.sendEmailWithProductList(email, productsTable);
+				
+				if (product != null) {
+					emailStatus = utilities.sendEmailWithSingleProduct(email, product, mActivity);
+				} else {
+					String productsTable = utilities.getProductsTableHTML(products);
+					emailStatus = utilities.sendEmailWithProductList(email, productsTable);
+				}
 			}	
 			return null;
 		}

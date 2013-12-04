@@ -33,10 +33,12 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.v4.app.FragmentActivity;
 import android.text.Html;
 import android.util.Log;
@@ -220,57 +222,57 @@ public class CommonUtilities implements FinalVariables {
 		}			
 	}
 	
-	public String dateToWords(long startTimeInMillis)
+	public String dateToWords(long startTimeInMillis, long endTimeInMillis)
 	{
 		String time = "";
-		long startTimeInSec = startTimeInMillis / 1000;
-		long currentTimeInSec = (int) (System.currentTimeMillis() / 1000L);
-		long difference = startTimeInSec - currentTimeInSec;
+		long endTimeInSec = endTimeInMillis / 1000;
+		long startTimeInSec = (int) (startTimeInMillis / 1000L);
+		long difference = endTimeInSec - startTimeInSec;
 		
 		if (difference < 0) {
 			time = "Powiadomino";
 			return time;
 		} else if (0 < difference & difference < 3600) {
-			time = "za godzinę";
+			time = "godzinę";
 			return time;
 		} else if (difference >= 3600 & difference < 14400) {
-			time = "za " + (difference/3600) + " godziny";
+			time = (difference/3600) + " godziny";
 			return time;
 		} else if (difference >= 14400 & difference < 75600) {
-			time = "za " + (difference/3600) + " godzin";
+			time = (difference/3600) + " godzin";
 			return time;
 		} else if (difference >= 75600 & difference < 86400) {
-			time = "za " + (difference/3600) + " godziny";
+			time = (difference/3600) + " godziny";
 			return time;
 		} else if (difference >= 86400 & difference < 172800) {
-			time = "jutro";
+			time = "1 dzień";
 			return time;
 		} else if (difference >= 172800 & difference < 259200) {
-			time = "pojutrze";
+			time = "2 dni";
 			return time;
 		} else if (difference >= 259200 & difference < 604800) {
-			time = "za " + (difference/86400) + " dni";
+			time = (difference/86400) + " dni";
 			return time;
 		} else if (difference >= 604800 & difference < 1209600) {
-			time = "za tydzień";
+			time = "tydzień";
 			return time;
 		} else if (difference >= 1209600 & difference < 2419200) {
-			time = "za " + (difference/604800) + " tygodnie";
+			time = (difference/604800) + " tygodnie";
 			return time;
 		} else if (difference >= 2419200 & difference < 4838400) {
-			time = "za miesiąc";
+			time = "miesiąc";
 			return time;
-		} else if (difference >= 4838400 & difference < 9676800) {
-			time = "za " + (difference/2419200) + " miesiące";
+		} else if (difference >= 4838400 & difference < 10540800) {
+			time = (difference/2419200) + " mies.";
 			return time;
-		} else if (difference >= 9676800 & difference < 29030400) {
-			time = "za " + (difference/2419200) + " miesięcy";
+		} else if (difference >= 10540800 & difference < 29030400) {
+			time = (difference/2419200) + " mies.";
 			return time;
 		} else if (difference >= 29030400 & difference < 58060800) {
-			time = "za rok";
+			time = "rok";
 			return time;
 		} else if (difference >= 58060800 & difference < 145152000) {
-			time = "za " + (difference/29030400) + " lata";
+			time = (difference/29030400) + " lata";
 			return time;
 		} else {
 			time = (difference/29030400) + "lat";
@@ -494,6 +496,86 @@ public class CommonUtilities implements FinalVariables {
 		return table.toString();
 	}
 	
+	public String getProductTableHTML(Product product) {
+			
+		String nazwa = product.getNazwa();
+		String dataOtw = product.getDataOtwarcia();
+		String terminWaz = product.getTerminWaznosci();
+		long dataOtwMillis;
+		long terminWazMillis;
+		long currentTime = System.currentTimeMillis();
+		String okresWazPeroid;
+		try {
+			dataOtwMillis = parseDate(dataOtw);
+			terminWazMillis = parseDate(terminWaz);
+			okresWazPeroid = dateToWords(dataOtwMillis, terminWazMillis);
+		} catch (ParseException e) {
+			okresWazPeroid = "";
+			terminWazMillis = currentTime;
+		}
+		
+		String terminPeroid = dateToWords(currentTime, terminWazMillis);		   
+	    String kategoria = product.getKategoria();
+	    
+	    StringBuilder table = new StringBuilder();
+		table.append("<html><body><table border='1'>");
+	    
+	    table.append("<tr>");
+	    table.append("<td>Nazwa</td>");
+	    table.append("<td>" + nazwa + "</td>");
+	    table.append("</tr>");
+	    
+	    table.append("<tr>");
+	    table.append("<td>Data otwarcia</td>");
+	    table.append("<td>" + dataOtw + "</td>");
+	    table.append("</tr>");
+	    
+	    table.append("<tr>");
+	    table.append("<td>Okres ważności</td>");
+	    table.append("<td>" + okresWazPeroid + "</td>");
+	    table.append("</tr>");
+	    
+	    table.append("<tr>");
+	    table.append("<td>Okres ważności mija za</td>");
+	    table.append("<td>" + terminPeroid + "</td>");
+	    table.append("</tr>");
+	    
+	    table.append("<tr>");
+	    table.append("<td>Termin ważności</td>");
+	    table.append("<td>" + terminWaz + "</td>");
+	    table.append("</tr>");
+	    
+	    table.append("<tr>");
+	    table.append("<td>Kategoria</td>");
+	    table.append("<td>" + kategoria + "</td>");
+	    table.append("</tr>");
+	    
+	    table.append("<tr>");
+	    table.append("<td>Obrazek</td>");
+	    table.append("<td><img src=\"cid:image\"></td>");
+	    table.append("</tr>");
+	    
+	    table.append("<tr>");
+	    table.append("<td>Kod</td>");
+	    table.append("<td><img src=\"cid:image2\"></td>");
+	    table.append("</tr>");
+	
+		table.append("</table></body></html>");
+		
+		return table.toString();
+	}
+	
+	public String getRealPathFromURI(Uri contentUri, FragmentActivity mActivity) {
+	    String[] proj = { MediaStore.Images.Media.DATA };
+	    Cursor cursor = mActivity.managedQuery(contentUri, proj, null, null, null);
+	    if (cursor == null) {
+	      return contentUri.getPath();
+	    }
+	    int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+	    cursor.moveToFirst();
+	    return cursor.getString(column_index);
+	}
+	
 	public boolean validateCode(String code, String codeFormat) {
 		if(codeFormat.equals("QR_CODE")){
 			try {
@@ -550,7 +632,28 @@ public class CommonUtilities implements FinalVariables {
 	public boolean sendEmailWithProductList(String email, String table) {
 		try {  
             JavaMail sender = new JavaMail();
-            sender.sendMail("Lista produktów z programu TPP", table, email);
+            sender.sendMailWithList("Lista produktów z programu TPP", table, email);
+        } catch (Exception e) {   
+             return false; 
+        } 
+		return true;
+	}
+	
+	public boolean sendEmailWithSingleProduct(String email, Product product, FragmentActivity mActivity) {
+		try {  
+			String table = getProductTableHTML(product);
+			String imagePath = product.getImage() + "thumb";
+			
+			String productJson = getJsonFromProduct(product);
+			Bitmap bitmap = encodeCodeToBitmap(productJson, "QR_CODE", mActivity);
+			Uri u = null;
+			
+			File mFile = savebitmap(bitmap);
+			u = Uri.fromFile(mFile);
+			String codePath = getRealPathFromURI(u, mActivity);
+			
+            JavaMail sender = new JavaMail();
+            sender.sendMailWithProduct("Mój produkt", table, imagePath, codePath, email);
         } catch (Exception e) {   
              return false; 
         } 
@@ -683,6 +786,22 @@ public class CommonUtilities implements FinalVariables {
 	    } 
 	}
 	
+	public void createThumb(String path) {
+        try {
+        	Bitmap b = BitmapFactory.decodeFile(path);
+    		Bitmap out = Bitmap.createScaledBitmap(b, 50, 50, false);
 
+            File file = new File(path + "thumb");
+            FileOutputStream fOut = new FileOutputStream(file);
+            out.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
+            fOut.flush();
+            fOut.close();
+            b.recycle();
+            out.recycle();
+
+        } catch (Exception e) { // TODO
+        	Log.i("utilities", "create thumb error");
+        }
+	}
 	
 }

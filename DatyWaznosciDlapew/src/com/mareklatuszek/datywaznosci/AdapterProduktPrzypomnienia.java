@@ -54,7 +54,8 @@ public class AdapterProduktPrzypomnienia extends BaseAdapter implements FinalVar
         
         String przypDate = przypomnienia.get(position).get(PRZYP_DATE);
         long notifTime = Long.parseLong(przypDate);
-        String date = utilities.dateToWords(notifTime);
+        long currentTime = System.currentTimeMillis();
+        String date = "za " + utilities.dateToWords(currentTime, notifTime);
         
         kiedyPow.setText(date);
         

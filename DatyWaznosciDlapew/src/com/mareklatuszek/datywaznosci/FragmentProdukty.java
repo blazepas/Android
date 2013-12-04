@@ -74,7 +74,8 @@ public class FragmentProdukty extends SherlockFragment {
 	    Product product = products.get(pos);
     	switch (item.getItemId()) {
     	case R.id.udostepnijPopup:
-    		share(product);
+    		DialogShare dialogShare = new DialogShare(getActivity(), product);
+       	  	dialogShare.show();
     		break;
     	case R.id.edytujPopup:
     		switchToEditFragment(product);
@@ -92,16 +93,15 @@ public class FragmentProdukty extends SherlockFragment {
 
       super.onCreateOptionsMenu(menu, inflater);
     }
-        
-    
+            
     @Override
     public boolean onOptionsItemSelected(MenuItem item) 
     {
        switch (item.getItemId()) {
           case R.id.share:
           case R.id.shareMenuButton:
-          	DialogShare dialogShare = new DialogShare(getActivity(), products);
-          	dialogShare.show();
+          	  DialogShare dialogShare = new DialogShare(getActivity(), products);
+          	  dialogShare.show();
             break;
           case R.id.scan:
           case R.id.scanMenuButton:
@@ -194,12 +194,7 @@ public class FragmentProdukty extends SherlockFragment {
 	private void switchToEditFragment(Product product) {
 		((MainActivity) getActivity()).selectFragmentToEditProduct(product);
 	}
-	
-	private void share(Product product) {
-		String productJson = utilities.getJsonFromProduct(product);
-		utilities.sendEmail(productJson, getActivity());		
-	}
-		
+			
 	public void deleteProduct(Product product) {
 		dbAdapter.open();
 		boolean deleteStatus = dbAdapter.deleteProduct(product);
