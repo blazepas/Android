@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="delete_pressed">#40ffffff</color>
+    <color name="delete_normal">#10ffffff</color>
+    
+    <color name="show_pressed">#40ffffff</color>
+    <color name="show_normal">#00ffffff</color>
+    
+</resources>

@@ -206,6 +206,8 @@ public class FragmentProdukty extends SherlockFragment {
 			ArrayList<HashMap<String, String>> przypomnienia = product.getPrzypomnienia();
 			String codeId = product.getCode();
 			removeAlarms(przypomnienia, codeId);
+			listAdapter = new AdapterProductList(getActivity(), products, getFragmentManager(), getId());
+			productsList.setAdapter(listAdapter);
 		} else {
 			Toast.makeText(getActivity(), "Usuwanie zakończone niepowodzeniem", 2000).show();
 		}

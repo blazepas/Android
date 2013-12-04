@@ -6,7 +6,9 @@ import java.util.Arrays;
 import java.util.Collections;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v4.app.FragmentManager;
@@ -73,93 +75,93 @@ public class AdapterProductList extends BaseAdapter {
 
 	@Override
 	public View getView(final int position, View convertView, ViewGroup parent) {
-		View vi=convertView;
-        vi = inflater.inflate(R.layout.listview_products, null);
-        
-        final Product product = products.get(position);
-        
-        nazwaTxtList = (TextView) vi.findViewById(R.id.nazwaTxtList);
-        dataOtwTxtList = (TextView) vi.findViewById(R.id.dataOtwTxtList);
-        terminWazTxtList = (TextView) vi.findViewById(R.id.terminWazTxtList);
-        pozostaloPrgsList = (ProgressBar) vi.findViewById(R.id.pozostaloPrgsList);
-        expandImage = (ImageView) vi.findViewById(R.id.expandImage);
-        obrazekImage = (ImageView) vi.findViewById(R.id.obrazekImage);
-        detailsLay = (LinearLayout) vi.findViewById(R.id.detailsLay);
-        basicLay = (LinearLayout) vi.findViewById(R.id.basicLay);
-        deleteLay = (LinearLayout) vi.findViewById(R.id.deleteLay);
-        showProdLay = (LinearLayout) vi.findViewById(R.id.showProdLay);
-        
-        
-        String nazwa = product.getNazwa();
-        String dataOtw = product.getDataOtwarcia();
-        String terminWaz = product.getTerminWaznosci();
-        String image = product.getImage();
-        int progress = utilities.getProgress(dataOtw, terminWaz);
-        
-        nazwaTxtList.setText(nazwa);
-        dataOtwTxtList.setText(dataOtw);
-        terminWazTxtList.setText(terminWaz);
-        pozostaloPrgsList.setProgress(progress);
-        
-        if (!image.equals("")) {
-        	File imgFile = new  File(image + "thumb");
-        	if(imgFile.exists()){
-        	    Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-        	    obrazekImage.setImageBitmap(myBitmap);
-        	}	
-		}
-        
-        initAnimations(position);
-                
-        basicLay.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				boolean expanded = isExpanded[position];
-				isExpanded[position] = !expanded;
-				clickedPos = position;
-				
-				AdapterProductList.this.notifyDataSetChanged();
-			}
-		});
-        
-        deleteLay.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				deleteProduct(product);
-			}
-		});
-        showProdLay.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				showProduct(position);				
-			}
-		});
 
-		return vi;
+		boolean convertViewStatus = (convertView == null);
+		
+		if (clickedPos == position | convertViewStatus){
+			View vi;
+			if (convertViewStatus) {
+				vi = inflater.inflate(R.layout.listview_products, null);
+			} else {
+				vi = convertView;
+			}
+       
+	        nazwaTxtList = (TextView) vi.findViewById(R.id.nazwaTxtList);
+	        dataOtwTxtList = (TextView) vi.findViewById(R.id.dataOtwTxtList);
+	        terminWazTxtList = (TextView) vi.findViewById(R.id.terminWazTxtList);
+	        pozostaloPrgsList = (ProgressBar) vi.findViewById(R.id.pozostaloPrgsList);
+	        expandImage = (ImageView) vi.findViewById(R.id.expandImage);
+	        obrazekImage = (ImageView) vi.findViewById(R.id.obrazekImage);
+	        detailsLay = (LinearLayout) vi.findViewById(R.id.detailsLay);
+	        basicLay = (LinearLayout) vi.findViewById(R.id.basicLay);
+	        deleteLay = (LinearLayout) vi.findViewById(R.id.deleteLay);
+	        showProdLay = (LinearLayout) vi.findViewById(R.id.showProdLay);
+	          
+	        final Product product = products.get(position);
+	        String nazwa = product.getNazwa();
+	        String dataOtw = product.getDataOtwarcia();
+	        String terminWaz = product.getTerminWaznosci();
+	        String image = product.getImage();
+	        int progress = utilities.getProgress(dataOtw, terminWaz);
+	        
+	        nazwaTxtList.setText(nazwa);
+	        dataOtwTxtList.setText(dataOtw);
+	        terminWazTxtList.setText(terminWaz);
+	        pozostaloPrgsList.setProgress(progress);
+	        
+	        if (!image.equals("")) {
+	        	File imgFile = new  File(image + "thumb");
+	        	if(imgFile.exists()){
+	        	    Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+	        	    obrazekImage.setImageBitmap(myBitmap);
+	        	}	
+			}
+	        
+	        initAnimations(position);
+	                
+	        basicLay.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					boolean expanded = isExpanded[position];
+					isExpanded[position] = !expanded;
+					clickedPos = position;
+					AdapterProductList.this.notifyDataSetChanged();
+				}
+			});
+	        
+	        deleteLay.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					showChoiceDialog(product);
+				}
+			});
+	        showProdLay.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					showProduct(position);				
+				}
+			});
+
+	        return vi;
+		} else {
+			return convertView;
+		}
 	}
 	
 	private void initAnimations(int position) {
 		boolean expanded = isExpanded[position];
 		
 		if (expanded) {
-			if (clickedPos == position) {
-	    		rotateView(expandImage, 0f, 90f, 250);   		
-	    	} else {
-	    		rotateView(expandImage, 0f, 90f, 0);
-	    	}
-			
-			detailsLay.setVisibility(View.VISIBLE);	
-			
-		    } else {    	
-		    	if (clickedPos == position) {
-		    		rotateView(expandImage, 90f, 0f, 250);
-		    	} 
-		    	
-		    	detailsLay.setVisibility(View.GONE);	
-		    }
+	    	rotateView(expandImage, 0f, 90f, 250);   		
+	    	detailsLay.setVisibility(View.VISIBLE);	
+		} else {    	
+		    rotateView(expandImage, 90f, 0f, 250);
+		    Log.i("initAnim", position+" gone");
+		    detailsLay.setVisibility(View.GONE);	
+		}
 	}
 	
 	private void rotateView(View view, float fromDegree, float toDegree, int duration) {
@@ -181,5 +183,28 @@ public class AdapterProductList extends BaseAdapter {
 		FragmentProdukty fragmentProdukty = (FragmentProdukty) fragmentManager.findFragmentById(fragmentId);
 		fragmentProdukty.switchToProductFragment(position);
 	}
-		
+	
+	private void showChoiceDialog(final Product product) {
+		AlertDialog.Builder dialog = new AlertDialog.Builder(mActivity);
+		dialog.setTitle("Usuwanie");
+		dialog.setMessage("Czy na pewno usunąć produkt?");
+		dialog.setPositiveButton("Tak",new DialogInterface.OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				deleteProduct(product);
+			}
+		});
+
+		dialog.setNegativeButton("Anuluj",new DialogInterface.OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				dialog.dismiss();
+			}
+		});
+
+		dialog.show();
+	}
+			
 }
