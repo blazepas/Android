@@ -5,6 +5,8 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
+import java.util.TreeSet;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -36,7 +38,7 @@ import com.mareklatuszek.utilities.BitmapLoader;
 import com.mareklatuszek.utilities.CommonUtilities;
 
 public class AdapterProductList extends BaseAdapter {
-	
+		
 	private int detailsHeightInDps = 50;
 	float scale;
 	
@@ -47,7 +49,6 @@ public class AdapterProductList extends BaseAdapter {
 	int fragmentId;
 	
 	private Boolean[] isExpanded;
-	private View[] views;
 	private int clickedPos = -1;
 	private CommonUtilities utilities = new CommonUtilities();
 	
@@ -65,9 +66,18 @@ public class AdapterProductList extends BaseAdapter {
 		scale = mActivity.getResources().getDisplayMetrics().density; //oblicza skalę px do dps
 		inflater = (LayoutInflater) mActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		isExpanded = new Boolean[products.size()];
-		views = new View[products.size()];
 		Arrays.fill(isExpanded, false);
 	}
+	
+	@Override
+    public int getItemViewType(int position) {
+        return position;
+    }
+
+    @Override
+    public int getViewTypeCount() {
+        return getCount();
+    }
 
 	@Override
 	public int getCount() {
@@ -86,82 +96,22 @@ public class AdapterProductList extends BaseAdapter {
 
 	@Override
 	public View getView(final int position, View convertView, ViewGroup parent) {	
-		
-		convertView = views[position];//TODO convertView przechowuje niepoprawne view dlatego pobierane jest z tablicy	
-		boolean convertViewStatus = (convertView == null); 
+        boolean convertViewStatus = (convertView == null); 
 
-		if (clickedPos == position | convertViewStatus){
-			View vi;
-			if (convertViewStatus) {
-				vi = inflater.inflate(R.layout.listview_products, null);
-			} else {
-				vi = convertView;
-			}
-       
-	        nazwaTxtList = (TextView) vi.findViewById(R.id.nazwaTxtList);
-	        dataOtwTxtList = (TextView) vi.findViewById(R.id.dataOtwTxtList);
-	        terminWazTxtList = (TextView) vi.findViewById(R.id.terminWazTxtList);
-	        pozostaloPrgsList = (ProgressBar) vi.findViewById(R.id.pozostaloPrgsList);
-	        expandImage = (ImageView) vi.findViewById(R.id.expandImage);
-	        obrazekImage = (ImageView) vi.findViewById(R.id.obrazekImage);
-	        detailsLay = (LinearLayout) vi.findViewById(R.id.detailsLay);
-	        basicLay = (LinearLayout) vi.findViewById(R.id.basicLay);
-	        deleteLay = (LinearLayout) vi.findViewById(R.id.deleteLay);
-	        showProdLay = (LinearLayout) vi.findViewById(R.id.showProdLay);
-	          
-	        final Product product = products.get(position);
-	        String nazwa = product.getNazwa();
-	        String dataOtw = product.getDataOtwarcia();
-	        String terminWaz = product.getTerminWaznosci();
-	        String image = product.getImage();
-	        int progress = utilities.getProgress(dataOtw, terminWaz);
-	        
-	        nazwaTxtList.setText(nazwa);
-	        dataOtwTxtList.setText(dataOtw);
-	        terminWazTxtList.setText(terminWaz);
-	        pozostaloPrgsList.setProgress(progress);
-	        
-	        if (!image.equals("")) {
-	        	File imgFile = new  File(image + "thumb");
-	        	if(imgFile.exists()){
-	        	    Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-	        	    obrazekImage.setImageBitmap(myBitmap);
-	        	}	
-			}
-	        
-	        initAnimations(position); // animacje rozsuwania i chowania dodatkowych
-	                
-	        basicLay.setOnClickListener(new OnClickListener() {
-				
-				@Override
-				public void onClick(View v) {
-					boolean expanded = isExpanded[position];
-					isExpanded[position] = !expanded;
-					clickedPos = position;
-					AdapterProductList.this.notifyDataSetChanged();
-				}
-			});
-	        
-	        deleteLay.setOnClickListener(new OnClickListener() {
-				
-				@Override
-				public void onClick(View v) {
-					showChoiceDialog(product);
-				}
-			});
-	        showProdLay.setOnClickListener(new OnClickListener() {
-				
-				@Override
-				public void onClick(View v) {
-					showProduct(position);				
-				}
-			});
-	        
-	        views[position] = vi;
+        if (clickedPos == position | convertViewStatus){
+	        View vi;
+	        if (convertViewStatus) {
+                vi = inflater.inflate(R.layout.listview_products, null);
+	        } else {
+                vi = convertView;
+	        }
+	        vi.setTag(position);
+	        vi = initRow(vi);
 	        return vi;
-		} else {
-			return convertView;			
-		}
+        } else {
+        	convertView.setTag(position);
+            return convertView;                        
+        }
 	}
 	
 	private void initAnimations(int position) {
@@ -238,6 +188,72 @@ public class AdapterProductList extends BaseAdapter {
 	
 	private void collapseItem(View v) {
 		utilities.collapseView(v);
+	}
+	
+	private View initRow(View vi) {
+		final int pos = (Integer) vi.getTag();
+		
+        nazwaTxtList = (TextView) vi.findViewById(R.id.nazwaTxtList);
+        dataOtwTxtList = (TextView) vi.findViewById(R.id.dataOtwTxtList);
+        terminWazTxtList = (TextView) vi.findViewById(R.id.terminWazTxtList);
+        pozostaloPrgsList = (ProgressBar) vi.findViewById(R.id.pozostaloPrgsList);
+        expandImage = (ImageView) vi.findViewById(R.id.expandImage);
+        obrazekImage = (ImageView) vi.findViewById(R.id.obrazekImage);
+        detailsLay = (LinearLayout) vi.findViewById(R.id.detailsLay);
+        basicLay = (LinearLayout) vi.findViewById(R.id.basicLay);
+        deleteLay = (LinearLayout) vi.findViewById(R.id.deleteLay);
+        showProdLay = (LinearLayout) vi.findViewById(R.id.showProdLay);
+          
+        final Product product = products.get(pos);
+        String nazwa = product.getNazwa();
+        String dataOtw = product.getDataOtwarcia();
+        String terminWaz = product.getTerminWaznosci();
+        String image = product.getImage();
+        int progress = utilities.getProgress(dataOtw, terminWaz);
+        
+        nazwaTxtList.setText(nazwa);
+        dataOtwTxtList.setText(dataOtw);
+        terminWazTxtList.setText(terminWaz);
+        pozostaloPrgsList.setProgress(progress);
+        
+        if (!image.equals("")) {
+        	File imgFile = new  File(image + "thumb");
+        	if(imgFile.exists()){
+        	    Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+        	    obrazekImage.setImageBitmap(myBitmap);
+        	}	
+		}
+        
+        initAnimations(pos); // animacje rozsuwania i chowania dodatkowych
+                
+        basicLay.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				boolean expanded = isExpanded[pos];
+				isExpanded[pos] = !expanded;
+				clickedPos = pos;
+				AdapterProductList.this.notifyDataSetChanged();
+			}
+		});
+
+        
+        deleteLay.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				showChoiceDialog(product);
+			}
+		});
+        showProdLay.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				showProduct(pos);				
+			}
+		});
+        
+        return vi;
 	}
 	
 }
