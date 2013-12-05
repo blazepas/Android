@@ -45,7 +45,7 @@ import com.mareklatuszek.utilities.FinalVariables;
 public class FragmentEdytuj extends SherlockFragment implements OnClickListener, OnKeyListener, FinalVariables {
 	
 	boolean takePictureStat = false;
-	boolean dodatkoweIsShown = false;
+	boolean dodatkoweIsVisible = false;
 	boolean isScanned = false;
 	int tempSpinnOkresPos = 0;
 	String currentDate = "";
@@ -116,7 +116,7 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 
 		Product productToSave = prepareDataToStore();
 		
-		if (dodatkoweIsShown) { 
+		if (dodatkoweIsVisible) { 
 			bundle.putBoolean("dodatkowe", true);
 
 		} else {
@@ -332,7 +332,7 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 	}
 			
 	private void showDodatkowe() {
-		dodatkoweIsShown = true;
+		dodatkoweIsVisible = true;
 		utilities.expandLinearLayout(dodatkowe);
 		dodatkoweButton.setVisibility(View.GONE);
 	}
@@ -737,7 +737,7 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 				dbAdapter.open();
 				Product product = dbAdapter.getProduct(code);
 				dbAdapter.close();
-				switchToEditFragment(product);
+				switchToShowFragment(product);
 			}
 			
 		});
@@ -773,5 +773,9 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 	
 	private void switchToEditFragment(Product product) {
 		((MainActivity) getActivity()).selectFragmentToEditProduct(product);
+	}
+
+	private void switchToShowFragment(Product product) {
+		((MainActivity) getActivity()).selectFragmentToShowProduct(product);
 	}
 }	

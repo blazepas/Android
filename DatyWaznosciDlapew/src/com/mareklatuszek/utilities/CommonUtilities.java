@@ -804,4 +804,60 @@ public class CommonUtilities implements FinalVariables {
         }
 	}
 	
+	public void collapseView(final View v) {
+	    final int initialHeight = v.getMeasuredHeight();
+
+	    Animation a = new Animation()
+	    {
+	        @Override
+	        protected void applyTransformation(float interpolatedTime, Transformation t) {
+	            if(interpolatedTime == 1){
+	                v.setVisibility(View.GONE);
+	            }else{
+	                v.getLayoutParams().height = initialHeight - (int)(initialHeight * interpolatedTime);
+	                v.requestLayout();
+	            }
+	        }
+
+	        @Override
+	        public boolean willChangeBounds() {
+	            return true;
+	        }
+	    };
+
+	    // 1dp/ms
+	    a.setDuration(150);
+	   
+	    v.startAnimation(a);
+
+	}
+	
+	public void expandView(final View v, final int targetHeightInPx) {
+		
+	    v.getLayoutParams().height = 0;
+	    v.setVisibility(View.VISIBLE);
+	    Animation a = new Animation()
+	    {
+	        @Override
+	        protected void applyTransformation(float interpolatedTime, Transformation t) {
+	        	if(interpolatedTime == 1){
+	        		 v.getLayoutParams().height = targetHeightInPx;
+	            }else{
+	                v.getLayoutParams().height = (int)(targetHeightInPx * interpolatedTime);
+	               
+	            }
+	        	v.requestLayout();
+	        }
+
+	        @Override
+	        public boolean willChangeBounds() {
+	            return true;
+	        }
+	    };
+
+	    // 1dp/ms
+	    a.setDuration((int)(targetHeightInPx / v.getContext().getResources().getDisplayMetrics().density));
+	    v.startAnimation(a);
+	}
+	
 }

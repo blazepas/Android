@@ -28,6 +28,7 @@ import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
 import android.view.View.OnKeyListener;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -47,7 +48,7 @@ import com.mareklatuszek.utilities.FinalVariables;
 public class FragmentDodaj extends SherlockFragment implements OnClickListener, OnKeyListener, FinalVariables {
 	
 	boolean takePictureStat = false;
-	boolean dodatkoweIsShown = false;
+	boolean dodatkoweIsVisible = false;
 	boolean isFullVersion = true;
 	boolean isScanned = false;
 	int tempSpinnOkresPos = 0;
@@ -112,7 +113,7 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 	
 		Product productToSave = prepareDataToStore();
 		
-		if (dodatkoweIsShown) { 
+		if (dodatkoweIsVisible) { 
 			bundle.putBoolean("dodatkowe", true);
 
 		} else {
@@ -339,9 +340,9 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 	}
 			
 	private void showDodatkowe() {
-		dodatkoweIsShown = true;
-		utilities.expandLinearLayout(dodatkowe);
-		dodatkoweButton.setVisibility(View.GONE);
+		dodatkoweIsVisible = true;
+        utilities.expandLinearLayout(dodatkowe);
+        dodatkoweButton.setVisibility(View.GONE);
 	}
 		
 	public void takePhoto() {	
@@ -745,7 +746,7 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 				dbAdapter.open();
 				Product product = dbAdapter.getProduct(code);
 				dbAdapter.close();
-				switchToEditFragment(product);
+				switchToShowFragment(product);
 			}
 			
 		});
@@ -778,5 +779,9 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 	
 	private void switchToEditFragment(Product product) {
 		((MainActivity) getActivity()).selectFragmentToEditProduct(product);
+	}
+	
+	private void switchToShowFragment(Product product) {
+		((MainActivity) getActivity()).selectFragmentToShowProduct(product);
 	}
 }

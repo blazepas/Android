@@ -1,6 +1,7 @@
 package com.mareklatuszek.datywaznosci;
 
 import java.io.File;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -15,11 +16,15 @@ import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.MeasureSpec;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
+import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
+import android.view.animation.ScaleAnimation;
 import android.view.animation.Transformation;
+import android.view.animation.TranslateAnimation;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
@@ -31,6 +36,9 @@ import com.mareklatuszek.utilities.BitmapLoader;
 import com.mareklatuszek.utilities.CommonUtilities;
 
 public class AdapterProductList extends BaseAdapter {
+	
+	private int detailsHeightInDps = 50;
+	float scale;
 	
 	private LayoutInflater inflater=null;
 	private Activity mActivity;
@@ -53,6 +61,7 @@ public class AdapterProductList extends BaseAdapter {
 		this.fragmentManager = fragmentManager;
 		this.fragmentId = fragmentId;
 		
+		scale = mActivity.getResources().getDisplayMetrics().density;
 		inflater = (LayoutInflater) mActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		isExpanded = new Boolean[products.size()];
 		Arrays.fill(isExpanded, false);
@@ -155,12 +164,22 @@ public class AdapterProductList extends BaseAdapter {
 		boolean expanded = isExpanded[position];
 		
 		if (expanded) {
-	    	rotateView(expandImage, 0f, 90f, 250);   		
-	    	detailsLay.setVisibility(View.VISIBLE);	
+	    	rotateView(expandImage, 0f, 90f, 250); 
+	    	
+	    	if (position == clickedPos){
+	    		expandItem(detailsLay);
+		    } else {
+		    	detailsLay.setVisibility(View.VISIBLE);	
+		    }
+
 		} else {    	
 		    rotateView(expandImage, 90f, 0f, 250);
-		    Log.i("initAnim", position+" gone");
-		    detailsLay.setVisibility(View.GONE);	
+		    if (position == clickedPos){
+		    	collapseItem(detailsLay);
+		    } else {
+			    detailsLay.setVisibility(View.GONE);
+		    }
+		    
 		}
 	}
 	
@@ -178,7 +197,7 @@ public class AdapterProductList extends BaseAdapter {
 		FragmentProdukty fragmentProdukty = (FragmentProdukty) fragmentManager.findFragmentById(fragmentId);
 		fragmentProdukty.deleteProduct(product);
 	}
-	
+		
 	private void showProduct(int position) {
 		FragmentProdukty fragmentProdukty = (FragmentProdukty) fragmentManager.findFragmentById(fragmentId);
 		fragmentProdukty.switchToProductFragment(position);
@@ -206,5 +225,14 @@ public class AdapterProductList extends BaseAdapter {
 
 		dialog.show();
 	}
-			
+	
+	private void expandItem(View v) {
+		final int targtetHeight = (int) (detailsHeightInDps * scale + 0.5f); //przelicza dps na px
+    	utilities.expandView(v, targtetHeight);
+	}
+	
+	private void collapseItem(View v) {
+		utilities.collapseView(v);
+	}
+
 }

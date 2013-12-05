@@ -50,7 +50,8 @@
         android:id="@+id/detailsLay"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="#20ffffff" >
+        android:background="#20ffffff"
+        android:visibility="visible">
 
         <LinearLayout
             android:layout_width="143dp"
