@@ -47,6 +47,7 @@ public class AdapterProductList extends BaseAdapter {
 	int fragmentId;
 	
 	private Boolean[] isExpanded;
+	private View[] views;
 	private int clickedPos = -1;
 	private CommonUtilities utilities = new CommonUtilities();
 	
@@ -61,9 +62,10 @@ public class AdapterProductList extends BaseAdapter {
 		this.fragmentManager = fragmentManager;
 		this.fragmentId = fragmentId;
 		
-		scale = mActivity.getResources().getDisplayMetrics().density;
+		scale = mActivity.getResources().getDisplayMetrics().density; //oblicza skalę px do dps
 		inflater = (LayoutInflater) mActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		isExpanded = new Boolean[products.size()];
+		views = new View[products.size()];
 		Arrays.fill(isExpanded, false);
 	}
 
@@ -83,10 +85,11 @@ public class AdapterProductList extends BaseAdapter {
 	}
 
 	@Override
-	public View getView(final int position, View convertView, ViewGroup parent) {
-
-		boolean convertViewStatus = (convertView == null);
+	public View getView(final int position, View convertView, ViewGroup parent) {	
 		
+		convertView = views[position];//TODO convertView przechowuje niepoprawne view dlatego pobierane jest z tablicy	
+		boolean convertViewStatus = (convertView == null); 
+
 		if (clickedPos == position | convertViewStatus){
 			View vi;
 			if (convertViewStatus) {
@@ -126,7 +129,7 @@ public class AdapterProductList extends BaseAdapter {
 	        	}	
 			}
 	        
-	        initAnimations(position);
+	        initAnimations(position); // animacje rozsuwania i chowania dodatkowych
 	                
 	        basicLay.setOnClickListener(new OnClickListener() {
 				
@@ -153,10 +156,11 @@ public class AdapterProductList extends BaseAdapter {
 					showProduct(position);				
 				}
 			});
-
+	        
+	        views[position] = vi;
 	        return vi;
 		} else {
-			return convertView;
+			return convertView;			
 		}
 	}
 	
@@ -199,6 +203,7 @@ public class AdapterProductList extends BaseAdapter {
 	}
 		
 	private void showProduct(int position) {
+		Log.i("show product", position+"");
 		FragmentProdukty fragmentProdukty = (FragmentProdukty) fragmentManager.findFragmentById(fragmentId);
 		fragmentProdukty.switchToProductFragment(position);
 	}
@@ -234,5 +239,5 @@ public class AdapterProductList extends BaseAdapter {
 	private void collapseItem(View v) {
 		utilities.collapseView(v);
 	}
-
+	
 }

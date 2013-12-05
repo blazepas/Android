@@ -717,6 +717,7 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 			Product product = prepareDataToStore();
 			this.code = utilities.getJsonFromProduct(product);
 			this.codeFormat = product.getCodeFormat();
+			save();
 		} else {
 			saveData();
 		}	

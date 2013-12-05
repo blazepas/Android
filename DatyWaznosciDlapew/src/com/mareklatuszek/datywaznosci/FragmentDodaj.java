@@ -723,8 +723,15 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 			Toast.makeText(getActivity(), "Należy podać nazwę i okres ważności", 1500).show();
 		} else if (code.equals("")) {	
 			Product product = prepareDataToStore();
-			DialogGeneruj dialogGen = new DialogGeneruj(getActivity(),product , getFragmentManager(), getId());
-			dialogGen.show();	
+//			DialogGeneruj dialogGen = new DialogGeneruj(getActivity(),product , getFragmentManager(), getId());
+//			dialogGen.show();	
+			
+//			TODO wyłączony dialog z generowaniem, za miast niego mozna dać opcję zapytania o wygenerowanie
+//			aktualnie generuje kod w tle
+			
+			this.code = utilities.getJsonFromProduct(product);
+			this.codeFormat = product.getCodeFormat();
+			save();
 		} else {
 			saveData();
 		}	

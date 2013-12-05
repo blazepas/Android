@@ -28,18 +28,19 @@ public class DialogShare extends Dialog implements android.view.View.OnClickList
 		super(mActivity);
 		this.products = products;
 		this.mActivity = mActivity;
+		setTitle("Wyślij listę produktów");
 	}
 	
 	public DialogShare(FragmentActivity mActivity, Product product) {
 		super(mActivity);
 		this.product = product;
 		this.mActivity = mActivity;
+		setTitle("Udostępnij produkt");
 	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setTitle("Wyślij listę produktów");
 		setContentView(R.layout.dialog_share);
 		
 		emailTxtBox = (EditText) findViewById(R.id.emailTxtBox);
