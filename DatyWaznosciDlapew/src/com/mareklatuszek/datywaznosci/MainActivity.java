@@ -35,6 +35,7 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
 	boolean backIsDoublePressed = false;
 	public static int currentFragmentPos = 2;
 	public static int currentFragmentId;
+	int menuPos = -1;
 	public static Uri imageUri = new Uri.Builder().build();
 	public static boolean notification = false;
 	
@@ -74,12 +75,24 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
 		getSupportActionBar().setHomeButtonEnabled(true);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-		initMenu();
-		
 		if (savedInstanceState == null) {
+			Log.i("main", "bundle null " + menuPos);
+			initMenu();
 			selectFragment(2);	
 			menu.toggle();
+		} else {
+			
+			menuPos = savedInstanceState.getInt("menuPos");
+			Log.i("main", "bundle full " + menuPos);
+			initMenu();
 		}
+	}
+	
+	@Override
+	public void onSaveInstanceState(Bundle bundle) {
+		super.onSaveInstanceState(bundle);
+
+		bundle.putInt("menuPos", menuPos);    
 	}
 
 	@Override
@@ -177,8 +190,7 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
 	}
 	
 
-	private class MenuItemClickListener implements
-			ListView.OnItemClickListener {
+	private class MenuItemClickListener implements ListView.OnItemClickListener {
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {		
 			selectFragment(position);
@@ -197,15 +209,19 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
 		case 1:
 			fragmentDodaj = new FragmentDodaj();
 			ft.replace(R.id.content_frame, fragmentDodaj);
+			selectItemMenu(position);
 			break;
 		case 2:
 			ft.replace(R.id.content_frame, fragmentProdukty);
+			selectItemMenu(position);
 			break;
 		case 3:
 			ft.replace(R.id.content_frame, fragmentKategorie);
+			selectItemMenu(position);
 			break;
 		case 4:
 			ft.replace(R.id.content_frame, fragmentPrzypomnienia);
+			selectItemMenu(position);
 			break;
 		case 5:
 			ft.replace(R.id.content_frame, fragmentProdukt);
@@ -217,6 +233,12 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
 			return;
 		}
 		ft.commit();	
+	}
+	
+	private void selectItemMenu(int position) {
+		menuPos = position;
+		menuAdapter.setClickedPos(position);
+		menuAdapter.notifyDataSetChanged();
 	}
 	
 	private void onNotification(String productId, String alarmTime) {	
@@ -282,7 +304,7 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
 		LayoutInflater li = getLayoutInflater();
 		FrameLayout menuFrame = (FrameLayout) li.inflate(R.layout.menu_frame, null);
 
-		menuAdapter = new AdapterMenu(MainActivity.this, title, subtitle, icon);
+		menuAdapter = new AdapterMenu(MainActivity.this, title, subtitle, icon, menuPos);
 		
 		menuList = (ListView) menuFrame.findViewById(R.id.listview_drawer);
 		menuList.setAdapter(menuAdapter);

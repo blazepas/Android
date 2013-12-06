@@ -70,16 +70,6 @@ public class AdapterProductList extends BaseAdapter {
 	}
 	
 	@Override
-    public int getItemViewType(int position) {
-        return position;
-    }
-
-    @Override
-    public int getViewTypeCount() {
-        return getCount();
-    }
-
-	@Override
 	public int getCount() {
 		return products.size();
 	}
