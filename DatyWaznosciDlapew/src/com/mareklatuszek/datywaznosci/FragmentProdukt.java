@@ -3,6 +3,8 @@ package com.mareklatuszek.datywaznosci;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -13,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.view.Menu;
@@ -73,6 +76,10 @@ public class FragmentProdukt extends SherlockFragment implements OnClickListener
           case R.id.shareMenuButton:
         	  DialogShare dialogShare = new DialogShare(getActivity(), product);
         	  dialogShare.show();
+            break;
+          case R.id.delete:
+          case R.id.deleteMenuButton:
+        	 showChoiceDeleteDialog(product);
             break;
        }
        return true;
@@ -167,8 +174,53 @@ public class FragmentProdukt extends SherlockFragment implements OnClickListener
 		}
 	}
 	
+	private void showChoiceDeleteDialog(final Product product) {
+		AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
+		dialog.setTitle("Usuwanie");
+		dialog.setMessage("Czy na pewno usunąć " + product.getNazwa() + "?");
+		dialog.setPositiveButton("Tak",new DialogInterface.OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				deleteProduct(product);
+			}
+		});
+
+		dialog.setNegativeButton("Anuluj",new DialogInterface.OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				dialog.dismiss();
+			}
+		});
+
+		dialog.show();
+	}
+	
 	private void switchToEditFragment(Product product) {
 		((MainActivity) getActivity()).selectFragmentToEditProduct(product);
 	}
+	
+	private void switchToProductsFragment() {
+		((MainActivity) getActivity()).selectFragment(2);;
+	}
+	
+	private void deleteProduct(Product product) {
+		AdapterDB dbAdapter = new AdapterDB(getActivity());
+		dbAdapter.open();
+		boolean deleteStatus = dbAdapter.deleteProduct(product);
+		dbAdapter.close();
 		
+		if (deleteStatus) {
+			ArrayList<HashMap<String, String>> przypomnienia = product.getPrzypomnienia();
+			String codeId = product.getCode();
+			utilities.cancelAlarms(przypomnienia, codeId, getActivity());
+			Toast.makeText(getActivity(), "Usunięto " + product.getNazwa(), 2000).show();
+			
+			switchToProductsFragment();
+		} else {
+			Toast.makeText(getActivity(), "Usuwanie zakończone niepowodzeniem", 2000).show();
+		}
+	}
+
 }

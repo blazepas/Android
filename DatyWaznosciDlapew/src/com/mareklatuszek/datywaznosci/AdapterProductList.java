@@ -20,6 +20,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.MeasureSpec;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
@@ -37,7 +38,7 @@ import android.widget.TextView;
 import com.mareklatuszek.utilities.BitmapLoader;
 import com.mareklatuszek.utilities.CommonUtilities;
 
-public class AdapterProductList extends BaseAdapter {
+public class AdapterProductList extends BaseAdapter implements OnLongClickListener {
 		
 	private int detailsHeightInDps = 50;
 	float scale;
@@ -104,6 +105,13 @@ public class AdapterProductList extends BaseAdapter {
         }
 	}
 	
+	@Override
+	public boolean onLongClick(View v) {
+		v.showContextMenu();
+		return true;
+	}
+	
+	
 	private void initAnimations(int position) {
 		boolean expanded = isExpanded[position];
 		
@@ -125,59 +133,6 @@ public class AdapterProductList extends BaseAdapter {
 		    }
 		    
 		}
-	}
-	
-	private void rotateView(View view, float fromDegree, float toDegree, int duration) {
-	    final RotateAnimation rotateAnim = new RotateAnimation(fromDegree, toDegree,
-	            RotateAnimation.RELATIVE_TO_SELF, 0.5f,
-	            RotateAnimation.RELATIVE_TO_SELF, 0.5f);
-
-	    rotateAnim.setDuration(duration);
-	    rotateAnim.setFillAfter(true);
-	    view.startAnimation(rotateAnim);
-	}
-	
-	private void deleteProduct(Product product) {
-		FragmentProdukty fragmentProdukty = (FragmentProdukty) fragmentManager.findFragmentById(fragmentId);
-		fragmentProdukty.deleteProduct(product);
-	}
-		
-	private void showProduct(int position) {
-		Log.i("show product", position+"");
-		FragmentProdukty fragmentProdukty = (FragmentProdukty) fragmentManager.findFragmentById(fragmentId);
-		fragmentProdukty.switchToProductFragment(position);
-	}
-	
-	private void showChoiceDialog(final Product product) {
-		AlertDialog.Builder dialog = new AlertDialog.Builder(mActivity);
-		dialog.setTitle("Usuwanie");
-		dialog.setMessage("Czy na pewno usunąć produkt?");
-		dialog.setPositiveButton("Tak",new DialogInterface.OnClickListener() {
-
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				deleteProduct(product);
-			}
-		});
-
-		dialog.setNegativeButton("Anuluj",new DialogInterface.OnClickListener() {
-
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				dialog.dismiss();
-			}
-		});
-
-		dialog.show();
-	}
-	
-	private void expandItem(View v) {
-		final int targtetHeight = (int) (detailsHeightInDps * scale + 0.5f); //przelicza dps na px
-    	utilities.expandView(v, targtetHeight);
-	}
-	
-	private void collapseItem(View v) {
-		utilities.collapseView(v);
 	}
 	
 	private View initRow(View vi) {
@@ -215,7 +170,13 @@ public class AdapterProductList extends BaseAdapter {
 		}
         
         initAnimations(pos); // animacje rozsuwania i chowania dodatkowych
-                
+         
+        //przypisywanie menu kontekstowego
+        vi.setOnLongClickListener(this);
+        basicLay.setOnLongClickListener(this);
+        deleteLay.setOnLongClickListener(this);
+        showProdLay.setOnLongClickListener(this);
+        
         basicLay.setOnClickListener(new OnClickListener() {
 			
 			@Override
@@ -226,8 +187,7 @@ public class AdapterProductList extends BaseAdapter {
 				AdapterProductList.this.notifyDataSetChanged();
 			}
 		});
-
-        
+    
         deleteLay.setOnClickListener(new OnClickListener() {
 			
 			@Override
@@ -235,6 +195,7 @@ public class AdapterProductList extends BaseAdapter {
 				showChoiceDialog(product);
 			}
 		});
+        
         showProdLay.setOnClickListener(new OnClickListener() {
 			
 			@Override
@@ -246,4 +207,56 @@ public class AdapterProductList extends BaseAdapter {
         return vi;
 	}
 	
+	private void rotateView(View view, float fromDegree, float toDegree, int duration) {
+	    final RotateAnimation rotateAnim = new RotateAnimation(fromDegree, toDegree,
+	            RotateAnimation.RELATIVE_TO_SELF, 0.5f,
+	            RotateAnimation.RELATIVE_TO_SELF, 0.5f);
+
+	    rotateAnim.setDuration(duration);
+	    rotateAnim.setFillAfter(true);
+	    view.startAnimation(rotateAnim);
+	}
+	
+	private void deleteProduct(Product product) {
+		FragmentProdukty fragmentProdukty = (FragmentProdukty) fragmentManager.findFragmentById(fragmentId);
+		fragmentProdukty.deleteProduct(product);
+	}
+		
+	private void showProduct(int position) {
+		Log.i("show product", position+"");
+		FragmentProdukty fragmentProdukty = (FragmentProdukty) fragmentManager.findFragmentById(fragmentId);
+		fragmentProdukty.switchToProductFragment(position);
+	}
+	
+	private void showChoiceDialog(final Product product) {
+		AlertDialog.Builder dialog = new AlertDialog.Builder(mActivity);
+		dialog.setTitle("Usuwanie");
+		dialog.setMessage("Czy na pewno usunąć " + product.getNazwa() + "?");
+		dialog.setPositiveButton("Tak",new DialogInterface.OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				deleteProduct(product);
+			}
+		});
+
+		dialog.setNegativeButton("Anuluj",new DialogInterface.OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				dialog.dismiss();
+			}
+		});
+
+		dialog.show();
+	}
+	
+	private void expandItem(View v) {
+		final int targtetHeight = (int) (detailsHeightInDps * scale + 0.5f); //przelicza dps na px
+    	utilities.expandView(v, targtetHeight);
+	}
+	
+	private void collapseItem(View v) {
+		utilities.collapseView(v);
+	}
 }

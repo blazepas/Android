@@ -203,11 +203,15 @@ public class FragmentProdukty extends SherlockFragment {
 		if (deleteStatus) {
 			products.remove(product);
 			listAdapter.notifyDataSetChanged();
+			
 			ArrayList<HashMap<String, String>> przypomnienia = product.getPrzypomnienia();
 			String codeId = product.getCode();
 			removeAlarms(przypomnienia, codeId);
+			
 			listAdapter = new AdapterProductList(getActivity(), products, getFragmentManager(), getId());
 			productsList.setAdapter(listAdapter);
+			
+			Toast.makeText(getActivity(), "Usunięto " + product.getNazwa(), 2000).show();
 		} else {
 			Toast.makeText(getActivity(), "Usuwanie zakończone niepowodzeniem", 2000).show();
 		}

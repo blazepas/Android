@@ -1,0 +1,4 @@
+include ':library'
+include ':ABS2'
+include ':DatyWaznosciDlapew'
+include ':ZXingLib'
