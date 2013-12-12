@@ -91,7 +91,7 @@ public class AdapterDB implements FinalVariables {
 	    
 		Log.i("delCat", categoryToDelete);
 		
-	    return caategoryStatus & productStatus;
+	    return caategoryStatus;
 	}
 	
 	public boolean deletePrzypomnienie(String productCode, String alarmTimeInMillis){

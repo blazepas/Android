@@ -4,6 +4,7 @@ import jim.h.common.android.lib.zxing.integrator.IntentIntegrator;
 import jim.h.common.android.lib.zxing.integrator.IntentResult;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.content.res.TypedArray;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -139,7 +140,6 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
 		        }
 	        }
 		}
-
 	}
 	
 	@Override
@@ -296,15 +296,14 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
 	
 
 	private FrameLayout getMenuList() {
-		String[] title = getResources().getStringArray(R.array.array_menu_titles);
-		String[] subtitle = getResources().getStringArray(R.array.array_menu_subtitles);
-		int[] icon = new int[] { R.drawable.collections_cloud, R.drawable.collections_cloud,
-				R.drawable.collections_cloud, R.drawable.collections_cloud, R.drawable.collections_cloud };
+		String[] titles = getResources().getStringArray(R.array.array_menu_titles);
+		TypedArray icons = getResources().obtainTypedArray(R.array.array_menu_icons);
+		TypedArray colors = getResources().obtainTypedArray(R.array.array_menu_background_colors);
 		
 		LayoutInflater li = getLayoutInflater();
 		FrameLayout menuFrame = (FrameLayout) li.inflate(R.layout.menu_frame, null);
 
-		menuAdapter = new AdapterMenu(MainActivity.this, title, subtitle, icon, menuPos);
+		menuAdapter = new AdapterMenu(MainActivity.this, titles, icons, colors, menuPos);
 		
 		menuList = (ListView) menuFrame.findViewById(R.id.listview_drawer);
 		menuList.setAdapter(menuAdapter);

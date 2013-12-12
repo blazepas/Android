@@ -1,7 +1,11 @@
 package com.mareklatuszek.datywaznosci;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.provider.CalendarContract.Colors;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,28 +16,31 @@ import android.widget.TextView;
 public class AdapterMenu extends BaseAdapter {
 
 	Context context;
-	String[] mTitle;
-	String[] mSubTitle;
-	int[] mIcon;
-	LayoutInflater inflater;
+	String[] titles;
+	TypedArray icons;
+	TypedArray colors;
 	int clickedPos = -1;
+	
+	LayoutInflater inflater;
+	TextView txtTitle;
+	ImageView imgIcon;
 
-	public AdapterMenu(Context context, String[] title, String[] subtitle, int[] icon, int menuPos) {
+	public AdapterMenu(Context context, String[] titles, TypedArray icons, TypedArray colors, int menuPos) {
 		this.context = context;
-		this.mTitle = title;
-		this.mSubTitle = subtitle;
-		this.mIcon = icon;
+		this.titles = titles;
+		this.icons = icons;
+		this.colors = colors;
 		this.clickedPos = menuPos;
 	}
 
 	@Override
 	public int getCount() {
-		return mTitle.length;
+		return titles.length;
 	}
 
 	@Override
 	public Object getItem(int position) {
-		return mTitle[position];
+		return titles[position];
 	}
 
 	@Override
@@ -43,39 +50,43 @@ public class AdapterMenu extends BaseAdapter {
 
 	public View getView(int position, View convertView, ViewGroup parent) {
 		if (convertView == null) {
-			TextView txtTitle;
-			TextView txtSubTitle;
-			ImageView imgIcon;
 
 			inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			View itemView = inflater.inflate(R.layout.listview_menu, parent, false);
 
-			txtTitle = (TextView) itemView.findViewById(R.id.title);
-			txtSubTitle = (TextView) itemView.findViewById(R.id.subtitle);
-
 			imgIcon = (ImageView) itemView.findViewById(R.id.icon);
+			txtTitle = (TextView) itemView.findViewById(R.id.title);
 
-			txtTitle.setText(mTitle[position]);
-			txtSubTitle.setText(mSubTitle[position]);
+			imgIcon.setImageResource(icons.getResourceId(position, R.drawable.collections_cloud));
+			txtTitle.setText(titles[position]);
 
-			imgIcon.setImageResource(mIcon[position]);
-			
 			if (position == clickedPos) {
-				itemView.setBackgroundColor(Color.parseColor("#10ffffff"));
+				int pressedColor = context.getResources().getColor(R.color.menu_item_pressed);
+				itemView.setBackgroundColor(pressedColor);
+			} else {
+				int backgroundColor = getItemBackgroundColor(position);
+				itemView.setBackgroundColor(backgroundColor);
 			}
 			
 			return itemView;	
 		} else if (position == clickedPos) {
-			convertView.setBackgroundColor(Color.parseColor("#10ffffff"));
+			int pressedColor = context.getResources().getColor(R.color.menu_item_pressed);
+			convertView.setBackgroundColor(pressedColor);
 			return convertView;
 		} else {
-			convertView.setBackgroundColor(Color.parseColor("#00ffffff"));
+			int backgroundColor = getItemBackgroundColor(position);
+			convertView.setBackgroundColor(backgroundColor);
 			return convertView;
 		}
 	}
 	
 	public void setClickedPos(int clickedPos) {
 		this.clickedPos = clickedPos;
+	}
+	
+	private int getItemBackgroundColor(int position) {
+		int color = colors.getColor(position, R.color.menu_background);
+		return color;
 	}
 
 }

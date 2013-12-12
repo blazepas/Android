@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/new_prod_clicable"
     android:orientation="vertical" >
 
     <TextView
@@ -10,6 +11,8 @@
         android:layout_height="wrap_content"
         android:padding="10dp"
         android:text="TextView"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:textAppearance="@style/TPP.Small.TextAppearance"
+        android:textColor="@color/light_text_view"
+        android:textSize="@dimen/text_view_small_size" />
 
 </LinearLayout>

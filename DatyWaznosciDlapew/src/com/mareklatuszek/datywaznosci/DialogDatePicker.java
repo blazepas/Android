@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.mareklatuszek.utilities.CommonUtilities;
@@ -63,15 +64,15 @@ public class DialogDatePicker extends Dialog implements android.view.View.OnClic
 	private void setChosenDate() {
 		String choosenDate = getChosenDate();
 		switch (viewToSetDate.getId()) {
-		case R.id.dataOtwButton:
-			((Button) viewToSetDate).setText(choosenDate);
+		case R.id.dataOtwTxtBox:
+			((EditText) viewToSetDate).setText(choosenDate);
 			break;
-		case R.id.terminWazButton:		
-			((Button) viewToSetDate).setText(choosenDate);
+		case R.id.terminWazTextBox:		
+			((EditText) viewToSetDate).setText(choosenDate);
 			setOkresWaz(choosenDate);
 			break;
-		case R.id.dataZuzButton:		
-			((Button) viewToSetDate).setText(choosenDate);
+		case R.id.dataZuzTextBox:		
+			((EditText) viewToSetDate).setText(choosenDate);
 			break;
 		}
 		

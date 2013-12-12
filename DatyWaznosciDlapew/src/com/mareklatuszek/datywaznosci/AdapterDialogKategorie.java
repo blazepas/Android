@@ -1,10 +1,13 @@
 package com.mareklatuszek.datywaznosci;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -20,40 +23,39 @@ import com.mareklatuszek.utilities.CommonUtilities;
 public class AdapterDialogKategorie extends BaseAdapter {
 	
 	private AdapterDB adapterDb;
-	private Activity mActivity;
-	private LayoutInflater inflater=null;
-	private Spinner spinner;
+	private FragmentActivity mActivity;
+	private LayoutInflater inflater = null;
+	private View spinner;
 
-	ArrayList<String> categories = new ArrayList<String>();
+	AdapterCustomSpinner kategorieAdapter;
+	ArrayList<String> kategorie;
 	CommonUtilities utilites = new CommonUtilities();
 	
 	TextView catNameTxtKat;
 	Button usunButtonKat;
 	
-	public AdapterDialogKategorie(Activity mActivity, ArrayList<String> categories, View spinner) {
+	public AdapterDialogKategorie(FragmentActivity mActivity, AdapterCustomSpinner kategorieAdapter, View spinner) {
 		this.mActivity = mActivity;
-		this.categories = categories;
-		this.spinner = (Spinner) spinner;
+		this.kategorieAdapter = kategorieAdapter;
+		this.spinner = spinner;
 
 		inflater = (LayoutInflater)mActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		adapterDb = new AdapterDB(mActivity);
+		kategorie = kategorieAdapter.getArrayListData();
 	}
 
 	@Override
 	public int getCount() {
-		// TODO Auto-generated method stub
-		return categories.size();
+		return kategorie.size();
 	}
 
 	@Override
 	public Object getItem(int position) {
-		// TODO Auto-generated method stub
-		return categories.get(position);
+		return kategorie.get(position);
 	}
 
 	@Override
 	public long getItemId(int position) {
-		// TODO Auto-generated method stub
 		return position;
 	}
 
@@ -65,42 +67,36 @@ public class AdapterDialogKategorie extends BaseAdapter {
         catNameTxtKat = (TextView) vi.findViewById(R.id.catNameTxtKat);
         usunButtonKat = (Button) vi.findViewById(R.id.usunButtonKat);
          
-        final String category = categories.get(position);
+        final String category = kategorie.get(position);
         catNameTxtKat.setText(category);
         
         usunButtonKat.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
-				removeCategory(categories.get(position));
+				
+				removeCategory(category, position);
 			}
 		});
         
         return vi;
 	}
 	
-	public ArrayList<String> getData() {
-		return categories;
+	public List<String> getData() {
+		return kategorie;
 	}
 	
-	public boolean removeCategory(String category) {		
+	public boolean removeCategory(String category, int pos) {		
 		adapterDb.open();
-		categories.remove(category);
 		boolean status = adapterDb.deleteCategory(category);
 		adapterDb.close();
+
 		if(status) {
-			categories.remove(category);
+			kategorie.remove(category);
 		}
+
+		kategorieAdapter.setArrayListData(kategorie);
 		this.notifyDataSetChanged();
-		
-		ArrayList<String> kategorie = new ArrayList<String>();
-		kategorie.add("Brak kategorii");
-		kategorie.addAll(categories);
-		ArrayAdapter<String> spinnerAdapter;
-		spinnerAdapter= new ArrayAdapter<String>(mActivity, android.R.layout.simple_spinner_dropdown_item, kategorie);
-		spinner.setAdapter(spinnerAdapter);
-		
-		spinner.setSelection(0);
 		
 		return status;
 	}

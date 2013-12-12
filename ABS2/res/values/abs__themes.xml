@@ -223,4 +223,5 @@
         <item name="windowActionBar">false</item>
         <item name="windowContentOverlay">@null</item>
     </style>
+    
 </resources>

@@ -1,11 +1,13 @@
 package com.mareklatuszek.datywaznosci;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import android.app.Activity;
 import android.app.Dialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,18 +18,18 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class DialogKategorie extends Dialog implements android.view.View.OnClickListener {	
 	
 	AdapterDB adapterDb;
 	AdapterDialogKategorie adapterCat;
+	AdapterCustomSpinner kategorieAdapter;
 	ArrayList<String> categories = new ArrayList<String>();
-	Activity mActivity;
-	FragmentManager fragmentManager; 
-	int fragmentId;
+	FragmentActivity mActivity;
 	
-	View viewToSetKat;
+	LinearLayout viewToSetKat;
 	LinearLayout kategorieRoot;
 	LinearLayout kategorieChild;
 	EditText categoryTxtBoxKat;
@@ -35,12 +37,12 @@ public class DialogKategorie extends Dialog implements android.view.View.OnClick
 	ListView categoryList;
 	Button okButton;
 
-	public DialogKategorie(Activity mActivity, View viewToSetKat, FragmentManager fragmentManager, int fragmentId) {
+	public DialogKategorie(FragmentActivity mActivity, LinearLayout viewToSetKat, AdapterCustomSpinner kategorieAdapter) {
 		super(mActivity);
 		this.viewToSetKat = viewToSetKat;
 		this.mActivity = mActivity;
-		this.fragmentManager = fragmentManager;
-		this.fragmentId = fragmentId;
+		this.kategorieAdapter = kategorieAdapter;
+		this.categories = kategorieAdapter.getArrayListData();
 	}
 
 	@Override
@@ -115,7 +117,7 @@ public class DialogKategorie extends Dialog implements android.view.View.OnClick
 			
 			@Override
 			protected void onPostExecute(Void v) {
-				adapterCat = new AdapterDialogKategorie(mActivity, categories, viewToSetKat);
+				adapterCat = new AdapterDialogKategorie(mActivity, kategorieAdapter, viewToSetKat);
 				categoryList.setAdapter(adapterCat);
 			}
 		}.execute();
@@ -127,6 +129,7 @@ public class DialogKategorie extends Dialog implements android.view.View.OnClick
 		adapterDb.close();
 		if (status) {
 			categories.add(0, category);
+			kategorieAdapter.setArrayListData(categories);
 			adapterCat.notifyDataSetChanged();
 			setSpinner();
 			dismiss();
@@ -136,19 +139,17 @@ public class DialogKategorie extends Dialog implements android.view.View.OnClick
 	}
 	
 	private void setSpinner() {
-		Spinner spinner = (Spinner) viewToSetKat;
+		String title = categoryTxtBoxKat.getText().toString();
 		
-		ArrayList<String> kategorie = new ArrayList<String>();
-		kategorie.add("Brak kategorii");
-		kategorie.addAll(adapterCat.getData());
-		ArrayAdapter<String> spinnerAdapter;
-		spinnerAdapter= new ArrayAdapter<String>(mActivity, android.R.layout.simple_spinner_dropdown_item, kategorie);
-		spinner.setAdapter(spinnerAdapter);
+		LayoutInflater inflater = LayoutInflater.from(mActivity);
+		LinearLayout spinner = (LinearLayout) inflater.inflate(R.layout.spinner_button, null);
 		
-		if (kategorie.size() > 0) {
-			spinner.setSelection(1);
-		}
+		TextView spinnerTxt = (TextView) spinner.findViewById(R.id.spinnerTxt);
+		spinnerTxt.setText(title);
+		
+		viewToSetKat.removeAllViewsInLayout();
+		viewToSetKat.addView(spinner);
 	}
-	
+
 		
 }

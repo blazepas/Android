@@ -1,7 +1,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    android:background="@color/fragment_background" >
 
     <ScrollView
         android:id="@+id/ScrollView1"
@@ -21,103 +22,238 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                android:background="#20ffffff"
+                android:gravity="center_horizontal"
                 android:orientation="vertical"
                 android:padding="5dp" >
 
-                <TextView
-                    android:id="@+id/nazwaText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Podstawowe dane"
-                    android:textAppearance="?android:attr/textAppearanceMedium" />
-
                 <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="#10ffffff"
+                    android:layout_width="250dp"
+                    android:layout_height="wrap_content"
                     android:orientation="vertical" >
 
-                </LinearLayout>
+                    <LinearLayout
+                        android:id="@+id/nazwa"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="bottom|center_horizontal"
+                        android:orientation="vertical" >
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="100dp"
-                    android:gravity="bottom" >
+                        <TextView
+                            android:id="@+id/nazwaTxt"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:gravity="bottom"
+                            android:text="Nazwa produktu"
+                            android:textAppearance="@style/TPP.Normal.TextAppearance"
+                            android:textColorHint="@color/dark_text_view"
+                            android:typeface="normal" />
+
+                        <EditText
+                            android:id="@+id/nazwaTextBox"
+                            android:layout_width="225dp"
+                            android:layout_height="36dp"
+                            android:layout_marginTop="5dp"
+                            android:background="@drawable/edittext_background"
+                            android:ems="10"
+                            android:gravity="center"
+                            android:hint="NAZWA"
+                            android:textAppearance="@style/TPP.Normal.TextAppearance"
+                            android:textColor="@color/dark_text_view"
+                            android:textColorHint="@color/hint" >
+                        </EditText>
+                    </LinearLayout>
 
                     <LinearLayout
-                        android:layout_width="194dp"
+                        android:id="@+id/okres"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:gravity="center_horizontal"
                         android:orientation="vertical" >
+
+                        <TextView
+                            android:id="@+id/textView4"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:gravity="bottom"
+                            android:text="Okres ważności"
+                            android:textAppearance="@style/TPP.Normal.TextAppearance"
+                            android:textColorHint="@color/dark_text_view" />
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp" >
+
+                            <EditText
+                                android:id="@+id/okresWazTextBox"
+                                android:layout_width="90dp"
+                                android:layout_height="36dp"
+                                android:layout_alignParentBottom="true"
+                                android:background="@drawable/edittext_background"
+                                android:ems="10"
+                                android:gravity="center"
+                                android:hint="np. 2"
+                                android:inputType="number"
+                                android:textAppearance="@style/TPP.Normal.TextAppearance"
+                                android:textColor="@color/dark_text_view"
+                                android:textColorHint="@color/hint" >
+                            </EditText>
+
+                            <ImageView
+                                android:id="@+id/okresInfoImage"
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:layout_alignParentRight="true"
+                                android:layout_centerVertical="true"
+                                android:layout_marginLeft="5dp"
+                                android:src="@drawable/info" />
+
+                            <LinearLayout
+                                android:id="@+id/okresWazDropDown"
+                                android:layout_width="120dp"
+                                android:layout_height="36dp"
+                                android:layout_centerVertical="true"
+                                android:layout_toLeftOf="@+id/okresInfoImage"
+                                android:background="@color/new_prod_clicable"
+                                android:clickable="true"
+                                android:gravity="center"
+                                android:orientation="horizontal" >
+                            </LinearLayout>
+
+                        </RelativeLayout>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <RelativeLayout
+                    android:id="@+id/images"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center" >
+
+                    <RelativeLayout
+                        android:id="@+id/barcodeLay"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentTop="true" >
+
+                        <ImageView
+                            android:id="@+id/barcodeImage"
+                            android:layout_width="100dp"
+                            android:layout_height="100dp"
+                            android:background="@color/clicable_views" />
+
+                        <ImageView
+                            android:id="@+id/imageView3"
+                            android:layout_width="match_parent"
+                            android:layout_height="30dp"
+                            android:layout_alignParentBottom="true"
+                            android:layout_alignParentLeft="true"
+                            android:layout_marginBottom="5dp"
+                            android:clickable="true"
+                            android:src="@drawable/background_pick_barcode" />
+
+                        <TextView
+                            android:id="@+id/TextView01"
+                          	android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentTop="true"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginTop="20dp"
+                            android:gravity="center"
+                            android:lines="2"
+                            android:text="QRCode lub\nzdjęcie produktu"
+                            android:textAppearance="@style/TPP.Small.TextAppearance"
+                            android:textColor="@color/dark_text_view" />
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/imageLay"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginRight="60dp"
+                        android:layout_toLeftOf="@+id/barcodeLay" >
+
+                        <ImageView
+                            android:id="@+id/obrazekImage"
+                            android:layout_width="100dp"
+                            android:layout_height="100dp"
+                            android:layout_alignParentLeft="true"
+                            android:layout_alignParentTop="true"
+                            android:background="@color/clicable_views" />
 
                         <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="@dimen/dodaj_sections_height"
-                            android:gravity="bottom" >
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentBottom="true"
+                            android:layout_alignParentLeft="true"
+                            android:layout_marginBottom="5dp"
+                            android:gravity="center"
+                            android:paddingLeft="5dp"
+                            android:paddingRight="5dp" >
 
-                            <TextView
-                                android:id="@+id/nazwaTxt"
-                                android:layout_width="wrap_content"
-                                android:layout_height="match_parent"
-                                android:gravity="bottom"
-                                android:text="Nazwa:" />
+                            <ImageView
+                                android:id="@+id/imageView1"
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:layout_weight="0.5"
+                                android:clickable="true"
+                                android:src="@drawable/background_pick_gallery" />
 
-                            <EditText
-                                android:id="@+id/nazwaTextBox"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:ems="10" >
+                            <ImageView
+                                android:id="@+id/imageView2"
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:layout_weight="0.5"
+                                android:clickable="true"
+                                android:src="@drawable/background_pick_camera" />
 
-                                <requestFocus />
-                            </EditText>
                         </LinearLayout>
-                    </LinearLayout>
 
-                    <ImageView
-                        android:id="@+id/barcodeImage"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:src="@drawable/zxinglib_icon" />
-                </LinearLayout>
+                        <TextView
+                            android:id="@+id/textView1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentTop="true"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginTop="20dp"
+                            android:gravity="center"
+                            android:lines="2"
+                            android:text="Zdjęcie \nproduktu"
+                            android:textAppearance="@style/TPP.Small.TextAppearance"
+                            android:textColor="@color/dark_text_view" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/dodaj_sections_height"
-                    android:layout_marginTop="5dp"
-                    android:gravity="bottom" >
-
-                    <TextView
-                        android:id="@+id/textView4"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:gravity="bottom"
-                        android:text="Okres ważności:" />
-
-                    <EditText
-                        android:id="@+id/okresWazTextBox"
-                        android:layout_width="90dp"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="bottom"
-                        android:layout_weight="1"
-                        android:ems="10"
-                        android:inputType="number" />
-
-                    <Spinner
-                        android:id="@+id/okresWazSpinner"
-                        android:layout_width="84dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:entries="@array/array_date" />
-                </LinearLayout>
+                    </RelativeLayout>
+                </RelativeLayout>
 
             </LinearLayout>
 
-            <Button
-                android:id="@+id/dodatkoweButton"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Dodatkowe dane" />
+                android:gravity="center"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:id="@+id/textView2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="dodatkowe informacje"
+                    android:textAppearance="@style/TPP.Small.TextAppearance"
+                    android:textColor="@color/dark_text_view" />
+
+                <ImageView
+                    android:id="@+id/dodatkoweImage"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/expand_dodatkowe" />
+
+            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/dodatkowe"
@@ -125,7 +261,6 @@
                 android:layout_height="0dp"
                 android:layout_marginTop="10dp"
                 android:orientation="vertical" >
-
             </LinearLayout>
 
             <Button

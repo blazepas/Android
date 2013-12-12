@@ -1,9 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="delete_pressed">#40ffffff</color>
-    <color name="delete_normal">#10ffffff</color>
+    <!-- def -->
+    <color name="light_text_view">#ffffff</color>
+    <color name="dark_text_view">#00242e</color>
+    <color name="hint">#007e8e</color>
+    <color name="item_pressed">#ffbd1f</color>
+    <color name="fragment_background">#d9f0f3</color>
+    <color name="clicable_views">#11a9bb</color>
+    <color name="highlighted_views">#ffbd1f</color>
+    <color name="dropdown">#ffffff</color>
     
+    <!-- action bar -->
+    <color name="action_bar_background">#005b66</color>
+    <color name="action_bar_text">@color/light_text_view</color>
+    <color name="action_bar_item_pressed">@color/item_pressed</color>
+    <color name="action_bar_item_normal">#00ffffff</color>
+    
+    <!-- menu -->
+    <color name="menu_background">#11a9bb</color>
+    <color name="menu_text_view">@color/light_text_view</color> 
+    <color name="menu_item_pressed">@color/item_pressed</color>
+    <color name="menu_item_0_background">#11a9bb</color>  
+    <color name="menu_item_1_background">#108f9e</color>
+    <color name="menu_item_2_background">#0c737f</color>
+    <color name="menu_item_3_background">#09565f</color>
+    <color name="menu_item_4_background">#06363c</color>
+            
+    <!-- fragment produkty -->
+    <color name="delete_pressed">#40ffffff</color>
+    <color name="delete_normal">#10ffffff</color>    
     <color name="show_pressed">#40ffffff</color>
     <color name="show_normal">#00ffffff</color>
     
+    <!-- fragment dodaj/edytuj -->
+    <color name="new_prod_text_view">@color/dark_text_view</color>
+    <color name="new_prod_hint">@color/hint</color>
+    <color name="new_prod_clicable">@color/clicable_views</color>
+    <color name="new_prod_highlighted">@color/highlighted_views</color>
+
 </resources>

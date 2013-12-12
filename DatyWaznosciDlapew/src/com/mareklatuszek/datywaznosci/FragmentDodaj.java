@@ -3,17 +3,23 @@ package com.mareklatuszek.datywaznosci;
 import java.io.File;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -21,22 +27,31 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
 import android.view.View.OnKeyListener;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout.LayoutParams;
+import android.widget.TextView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.PopupMenu;
+import android.widget.PopupWindow;
 import android.widget.AdapterView.AdapterContextMenuInfo;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.PopupMenu.OnMenuItemClickListener;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -60,14 +75,13 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 	CommonUtilities utilities = new CommonUtilities();
 	ArrayAdapter<String> spinnerAdapter;
 	ArrayList<String> kategorie;
-	AdapterSpinnerOkres adapterSpinnerOkres;
+	AdapterCustomSpinner adapterOkresSpinner, adapterKategorieSpinner, adapterPryzpSpinner;
 	
 	View rootView;
-	ImageView barcodeImage, obrazekImage;
-	Button dataOtwButton, terminWazButton, zapiszButton, dodatkoweButton, kategorieButton, dataZuzButton;
-	EditText nazwaTextBox, okresWazTextBox, opisTxtBox;
-	Spinner okresWazSpinner, kategorieSpinner;
-	LinearLayout podstawowe, dodatkowe, przypLayout, latDodatkoweEdit;
+	ImageView barcodeImage, obrazekImage, dodatkoweImage, kategroieImage, okresInfoImage, terminWazInfoImage, dataZuzInfoImage;
+	Button zapiszButton;
+	EditText nazwaTextBox, okresWazTextBox, opisTxtBox, dataOtwTxtBox, terminWazTextBox, dataZuzTextBox;
+	LinearLayout podstawowe, dodatkowe, przypLayout, latDodatkoweEdit, okresWazDropDown, kategorieDropDown;
 	View przypRow;
 	
 	@Override
@@ -176,29 +190,44 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		DialogDatePicker dialogDatePicker = new DialogDatePicker(getActivity(), view, getFragmentManager(), getId());
 		
 		switch (view.getId()) {
+		case R.id.przypDropDown:
+		case R.id.kategorieDropDown:
+		case R.id.okresWazDropDown:
+			getSpinnerPopUp(view).showAsDropDown(view);
+			break;
+		case R.id.okresInfoImage:
+		case R.id.dataZuzInfoImage:
+		case R.id.terminWazInfoImage:
+			showInfoPopUp(view);
+			break;
 		case R.id.barcodeImage:
 			view.showContextMenu();
 			break;
-		case R.id.dataOtwButton:
+		case R.id.dataOtwTxtBox:
         	dialogDatePicker.show();
 			break;
-		case R.id.terminWazButton:
+		case R.id.terminWazTextBox:
         	dialogDatePicker.show();
 			break;
-		case R.id.dataZuzButton:
+		case R.id.dataZuzTextBox:
 			dialogDatePicker.show();
 			break;
 		case R.id.zapiszButton:
 			save();
 			break;
-		case R.id.dodatkoweButton:
-			showDodatkowe();
+		case R.id.dodatkoweImage:	
+			if (dodatkoweIsVisible) {
+				hideDodatkowe();
+			} else {
+				showDodatkowe();
+			}
 			break;	
 		case R.id.obrazekImage:
 			view.showContextMenu();
 			break;
-		case R.id.kategorieButton:
-			DialogKategorie dialogKategorier = new DialogKategorie(getActivity(), kategorieSpinner, getFragmentManager(), getId());
+		case R.id.kategroieImage:
+			DialogKategorie dialogKategorier 
+				= new DialogKategorie(getActivity(), kategorieDropDown, adapterKategorieSpinner);
 			dialogKategorier.show();
 			break;
 		}		
@@ -218,11 +247,13 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 
 		podstawowe = (LinearLayout) rootView.findViewById(R.id.podstawowe);
 		barcodeImage = (ImageView) rootView.findViewById(R.id.barcodeImage);
+		obrazekImage = (ImageView) rootView.findViewById(R.id.obrazekImage);
 		nazwaTextBox = (EditText) rootView.findViewById(R.id.nazwaTextBox);
 		okresWazTextBox = (EditText) rootView.findViewById(R.id.okresWazTextBox);
-		okresWazSpinner = (Spinner) rootView.findViewById(R.id.okresWazSpinner);
+		okresWazDropDown = (LinearLayout) rootView.findViewById(R.id.okresWazDropDown);
 		zapiszButton = (Button) rootView.findViewById(R.id.zapiszButton);
-		dodatkoweButton = (Button) rootView.findViewById(R.id.dodatkoweButton);
+		dodatkoweImage = (ImageView) rootView.findViewById(R.id.dodatkoweImage);
+		okresInfoImage = (ImageView) rootView.findViewById(R.id.okresInfoImage);
 		
 		Bundle extras = getArguments(); // TODO jesli zeskanuje
 		if (extras != null) {
@@ -230,15 +261,19 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 			codeFormat = extras.getString("scanResultCodeFormat");
 			setDataFromScan(code, codeFormat); 
 		}
-
-		registerForContextMenu(barcodeImage);
-		barcodeImage.setOnClickListener(this);
-		zapiszButton.setOnClickListener(this);	
-		dodatkoweButton.setOnClickListener(this);
-		okresWazTextBox.setOnKeyListener(this);
 		
-		adapterSpinnerOkres = new AdapterSpinnerOkres(getActivity(), MainActivity.currentFragmentPos, getId());
-		okresWazSpinner.setAdapter(adapterSpinnerOkres);
+		initSpinnerOkres();
+		
+		registerForContextMenu(barcodeImage);
+		registerForContextMenu(obrazekImage);
+		
+		barcodeImage.setOnClickListener(this);
+		obrazekImage.setOnClickListener(this);
+		okresInfoImage.setOnClickListener(this);
+		zapiszButton.setOnClickListener(this);	
+		okresWazDropDown.setOnClickListener(this);
+		dodatkoweImage.setOnClickListener(this);
+		okresWazTextBox.setOnKeyListener(this);
 	}
 	
 	private void initDodatkowe() {		
@@ -247,40 +282,52 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		dodatkowe = (LinearLayout) rootView.findViewById(R.id.dodatkowe);	
 		dodatkowe.addView(latDodatkoweEdit);
 		
-		dataOtwButton = (Button) dodatkowe.findViewById(R.id.dataOtwButton);
-		terminWazButton = (Button) dodatkowe.findViewById(R.id.terminWazButton);
-		kategorieButton = (Button) dodatkowe.findViewById(R.id.kategorieButton);
-		kategorieSpinner = (Spinner) dodatkowe.findViewById(R.id.kategorieSpinner);
+		dataOtwTxtBox = (EditText) dodatkowe.findViewById(R.id.dataOtwTxtBox);
+		terminWazTextBox = (EditText) dodatkowe.findViewById(R.id.terminWazTextBox);
+		kategroieImage = (ImageView) dodatkowe.findViewById(R.id.kategroieImage);
+		kategorieDropDown = (LinearLayout) dodatkowe.findViewById(R.id.kategorieDropDown);
 		opisTxtBox = (EditText) dodatkowe.findViewById(R.id.opisTxtBox);
-		obrazekImage = (ImageView) dodatkowe.findViewById(R.id.obrazekImage);
 		przypLayout = (LinearLayout) dodatkowe.findViewById(R.id.przypomnieniaLayout);
-		dataZuzButton = (Button) dodatkowe.findViewById(R.id.dataZuzButton);
+		dataZuzTextBox = (EditText) dodatkowe.findViewById(R.id.dataZuzTextBox);
+		terminWazInfoImage = (ImageView) dodatkowe.findViewById(R.id.terminWazInfoImage);
+		dataZuzInfoImage = (ImageView) dodatkowe.findViewById(R.id.dataZuzInfoImage);
+	
+		dataOtwTxtBox.setOnClickListener(this);
+		terminWazTextBox.setOnClickListener(this);
+		kategroieImage.setOnClickListener(this);
+		dataZuzTextBox.setOnClickListener(this);
+		kategorieDropDown.setOnClickListener(this);
+		terminWazInfoImage.setOnClickListener(this);
+		dataZuzInfoImage.setOnClickListener(this);
 		
-		registerForContextMenu(obrazekImage);
-		obrazekImage.setOnClickListener(this);
-		dataOtwButton.setOnClickListener(this);
-		terminWazButton.setOnClickListener(this);
-		kategorieButton.setOnClickListener(this);
-		dataZuzButton.setOnClickListener(this);
+		dataOtwTxtBox.setText(currentDate);
 		
-//		initObrazek();
-		dataOtwButton.setText(currentDate);
-		
-		initKategorie();
+		initSpinnerKategorie();
 		initPrzypomnienia();
+		initSpinnerPrzypList();
 	}
 	
-	private void initKategorie() {
+	private void initSpinnerKategorie() {
 		kategorie = new ArrayList<String>();
 		
 		dbAdapter.open();
 		kategorie.addAll(dbAdapter.getAllCategories());
-		kategorie.add("Brak kategorii");
 		Collections.reverse(kategorie);
 		dbAdapter.close();
+		
+		setCustomSpinner("wybierz kategorię", kategorieDropDown);
+		adapterKategorieSpinner = new AdapterCustomSpinner(getActivity(), kategorie);
+	}
 	
-		spinnerAdapter= new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, kategorie);
-		kategorieSpinner.setAdapter(spinnerAdapter);
+	private void initSpinnerOkres() {
+		setCustomSpinner(SPINNER_OKRES, okresWazDropDown);
+		String[] okresSpinnData = getResources().getStringArray(R.array.array_date);
+		adapterOkresSpinner = new AdapterCustomSpinner(getActivity(), okresSpinnData);
+	}
+	
+	private void initSpinnerPrzypList() {
+		String[] pryzpSpinnData = getResources().getStringArray(R.array.array_date);
+		adapterPryzpSpinner = new AdapterCustomSpinner(getActivity(), pryzpSpinnData);
 	}
 	
 	private void initPrzypomnienia() {
@@ -289,6 +336,11 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		Button removePrzypButton = (Button) row.findViewById(R.id.removePrzypButton);
 		Button addPrzypButton = (Button) row.findViewById(R.id.addPrzypButton);
 		Button godzButton = (Button) row.findViewById(R.id.godzButton);
+		LinearLayout przypDropDown = (LinearLayout) row.findViewById(R.id.przypDropDown);
+		
+		setCustomSpinner(SPINNER_PRZPOMNIENIE, przypDropDown);
+		
+		przypDropDown.setOnClickListener(this);
 		
 		removePrzypButton.setOnClickListener(new OnClickListener() {
 			
@@ -328,21 +380,19 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		});
 		przypLayout.addView(row);
 	}
-	
-	private void initObrazek() {
-		if(MainActivity.imageUri.toString().equals("")) {
-			Log.i("uri", "null");
-		} else {
-			String path = utilities.getRealPathFromURI(MainActivity.imageUri, getActivity());
-			Bitmap bm = BitmapLoader.loadBitmap(path, 100, 100);
-			obrazekImage.setImageBitmap(bm);
-		}
-	}
-			
+		
 	private void showDodatkowe() {
 		dodatkoweIsVisible = true;
+		Drawable backg = getResources().getDrawable(R.drawable.collapse_dodatkowe);
+		dodatkoweImage.setImageDrawable(backg);
         utilities.expandLinearLayout(dodatkowe);
-        dodatkoweButton.setVisibility(View.GONE);
+	}
+	
+	private void hideDodatkowe() {		
+		dodatkoweIsVisible = false;
+		Drawable backg = getResources().getDrawable(R.drawable.expand_dodatkowe);		
+		dodatkoweImage.setImageDrawable(backg);
+        dodatkowe.setVisibility(View.GONE);
 	}
 		
 	public void takePhoto() {	
@@ -366,7 +416,7 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		Product product = new Product();
 		
 		String nazwa = nazwaTextBox.getText().toString();
-		String okresWaznosci = getPeriodFromBoxAndSpinner(okresWazTextBox, okresWazSpinner);
+		String okresWaznosci = getPeriodFromBoxAndSpinner(okresWazTextBox, okresWazDropDown);
 		String kod = code;
 		String typKodu = codeFormat;
 		
@@ -376,10 +426,10 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		product.setCodeFormat(typKodu);	
 		product.setIsScanned(isScanned);
 
-		String dataOtwarcia = dataOtwButton.getText().toString();			
+		String dataOtwarcia = dataOtwTxtBox.getText().toString();			
 		String terminWaznosci = getTerminWaznosci();
 		String kategoria = getKategoria();
-		String dataZuz = dataZuzButton.getText().toString();
+		String dataZuz = dataZuzTextBox.getText().toString();
 		String image = utilities.getRealPathFromURI(MainActivity.imageUri, getActivity());
 		String opis = opisTxtBox.getText().toString();
 		ArrayList<HashMap<String, String>> przypomnienia = getPrzypomnienia();
@@ -451,11 +501,10 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		String typKodu = product.getCodeFormat();
 		String okresText = utilities.getFirstValue(okresWaznosci);
 		String okresSpinnVal = utilities.getSecondValue(okresWaznosci);
-		int okresSpinPos = utilities.getPosInSpinner(okresSpinnVal, okresWazSpinner);
 		
 		nazwaTextBox.setText(nazwa);
 		okresWazTextBox.setText(okresText);
-		okresWazSpinner.setSelection(okresSpinPos);
+		setCustomSpinner(okresSpinnVal, okresWazDropDown);
 		if (!kod.equals("")) {
 			setCodeImage(kod, typKodu);
 		}	
@@ -463,21 +512,19 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		String dataOtwarcia = product.getDataOtwarcia();			
 		String terminWaznosci = product.getTerminWaznosci();
 		String kategoria = product.getKategoria();
-		int kategoriaId = utilities.getPosInSpinner(kategoria, kategorieSpinner);
 		String dataZuz = product.getDataZuzycia();
 		String imagePath = product.getImage();
 		Bitmap imageBmp = BitmapLoader.loadBitmap(imagePath, 100, 100);
 		String opis = product.getOpis();
 		ArrayList<HashMap<String, String>> przypomnienia = product.getPrzypomnienia();
 		
-		dataOtwButton.setText(dataOtwarcia);
-		terminWazButton.setText(terminWaznosci);
-		kategorieSpinner.setSelection(kategoriaId);
-		Log.i("set image", "setViews");
+		dataOtwTxtBox.setText(dataOtwarcia);
+		terminWazTextBox.setText(terminWaznosci);
+		setKategorieSpinner(kategoria);
 		obrazekImage.setImageBitmap(imageBmp);
 		opisTxtBox.setText(opis);
 		setPrzypomnienia(przypomnienia);	
-		dataZuzButton.setText(dataZuz);
+		dataZuzTextBox.setText(dataZuz);
 	}
 	
 	private void setPrzypomnienia(ArrayList<HashMap<String, String>> przypomnienia) { //TODO naprawić, dubluje sie
@@ -495,18 +542,17 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 			LayoutInflater inflater =  getActivity().getLayoutInflater();		
 			String boxTxt = przypomnienie.get(PRZYP_TEXT_BOX);
 			String spinner = przypomnienie.get(PRZYP_SPINNER);
-			int spinnerPos = Integer.parseInt(spinner);
-			String przypHour = przypomnienie.get(PRZYP_HOUR);//TODO	
+			String przypHour = przypomnienie.get(PRZYP_HOUR);
 						
 			final LinearLayout row = (LinearLayout) inflater.inflate(R.layout.listview_add_powiadomienia, null);
 			EditText przypTextBox = (EditText) row.findViewById(R.id.przypTextBox);
-			Spinner przypSpinner = (Spinner) row.findViewById(R.id.przypSpinner);
 			Button removePrzypButton = (Button) row.findViewById(R.id.removePrzypButton);
 			Button przypButton = (Button) row.findViewById(R.id.addPrzypButton);
 			Button godzButton = (Button) row.findViewById(R.id.godzButton);
-			
+			LinearLayout przypDropDown = (LinearLayout) row.findViewById(R.id.przypDropDown);
+
 			przypTextBox.setText(boxTxt);
-			przypSpinner.setSelection(spinnerPos);
+			setCustomSpinner(spinner, przypDropDown);
 			godzButton.setText(przypHour);
 					
 //			EditText temp = new EditText(getActivity());
@@ -515,6 +561,8 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 //			temp.setText(boxTxt);
 //			row.addView(temp);		
 						
+			przypDropDown.setOnClickListener(this);
+			
 			removePrzypButton.setOnClickListener(new OnClickListener() {
 				
 				@Override
@@ -561,16 +609,16 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 	}
 	
 	private void setTerminWaz() {
-		String peroid = getPeriodFromBoxAndSpinner(okresWazTextBox, okresWazSpinner);
+		String peroid = getPeriodFromBoxAndSpinner(okresWazTextBox, okresWazDropDown);
 		String date = utilities.parseOkresToDate(peroid);
-		terminWazButton.setText(date);
+		terminWazTextBox.setText(date);
 	}
 	
 	public void setTerminWazFromAdapter(String spinnText) {
 		String txtBoxOkres = okresWazTextBox.getText().toString();
 		String peroid = txtBoxOkres + ":" + spinnText;
 		String date = utilities.parseOkresToDate(peroid);
-		terminWazButton.setText(date);
+		terminWazTextBox.setText(date);
 	}
 	
 	public void setDataFromScan(String code, String codeFormat) {		
@@ -644,10 +692,9 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		String okres = utilities.parseDateToOkres(choosenDate);
 		String box = utilities.getFirstValue(okres);
 		String spinnItem = utilities.getSecondValue(okres);
-		int spinnPos = utilities.getPosInSpinner(spinnItem, okresWazSpinner);
 		
 		okresWazTextBox.setText(box);
-		okresWazSpinner.setSelection(spinnPos);	
+		setCustomSpinner(spinnItem, okresWazDropDown);
 		
 		okresWazTextBox.setOnKeyListener(this);
 	}
@@ -656,16 +703,37 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		utilities.startAlarms(przypomnienia, nazwa, productCode, getActivity());
 	}
 	
-	private String getKategoria() {
-		int chosenKategoriaPos = kategorieSpinner.getSelectedItemPosition();
-		String chosenKategoria = (String) kategorieSpinner.getItemAtPosition(chosenKategoriaPos);
+	private void setCustomSpinner(String title, LinearLayout viewToSet) {
+		LayoutInflater inflater = LayoutInflater.from(getActivity());
+		LinearLayout spinner = (LinearLayout) inflater.inflate(R.layout.spinner_button, null);
 		
-		return chosenKategoria;
+		TextView spinnerTxt = (TextView) spinner.findViewById(R.id.spinnerTxt);
+		spinnerTxt.setText(title);
+		
+		viewToSet.removeAllViewsInLayout();
+		viewToSet.addView(spinner);
+	}
+	
+	private void setKategorieSpinner(String kategoria) {
+		if (kategoria.equals("")) {
+			setCustomSpinner(SPINNER_KATEGORIE, kategorieDropDown);
+		} else {
+			setCustomSpinner(kategoria, kategorieDropDown);
+		}
+	}
+	
+	private String getKategoria() {
+		String chosenKategoria = getChoiceFromCustomSpinner(kategorieDropDown);	
+		if(chosenKategoria.equals(SPINNER_KATEGORIE)) {
+			return "";
+		} else {
+			return chosenKategoria;
+		}
 	}
 	
 	private String getTerminWaznosci() {
 
-		return terminWazButton.getText().toString();
+		return terminWazTextBox.getText().toString();
 	}
 	
 	private ArrayList<HashMap<String, String>> getPrzypomnienia() {
@@ -676,26 +744,26 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 			HashMap<String, String> przypomnienie = new HashMap<String, String>();
 			View row = przypLayout.getChildAt(i);
 			
+			LinearLayout przypDropDown = (LinearLayout) row.findViewById(R.id.przypDropDown);
 			EditText przypTextBox = (EditText) row.findViewById(R.id.przypTextBox);
-			Spinner przypSpinner = (Spinner) row.findViewById(R.id.przypSpinner);
 			Button godzButton = (Button) row.findViewById(R.id.godzButton);
 			
 			String boxTxt = przypTextBox.getText().toString();
 			
-			if (boxTxt.length() != 0 & !boxTxt.equals("0")) {
-				String spinnerPos = String.valueOf(przypSpinner.getSelectedItemPosition());
+			if (boxTxt.length() != 0 & !boxTxt.equals("0") & !boxTxt.equals(SPINNER_PRZPOMNIENIE)) {
+				String spinnerChoice = getChoiceFromCustomSpinner(przypDropDown);
 				String przypHour = godzButton.getText().toString();
-				String terminWaz = terminWazButton.getText().toString();
+				String terminWaz = terminWazTextBox.getText().toString();
 				String przypDate = "0";
 				try {
-					long dateInMillis = utilities.parsePrzypmnienieToDate(boxTxt, spinnerPos, terminWaz, przypHour);
+					long dateInMillis = utilities.parsePrzypmnienieToDate(boxTxt, spinnerChoice, terminWaz, przypHour);
 					przypDate = String.valueOf(dateInMillis);
 				} catch (ParseException e) {
 					Log.i("getPrzypomnienia", "parse to date error");
 				}
 				
 				przypomnienie.put(PRZYP_TEXT_BOX, boxTxt);
-				przypomnienie.put(PRZYP_SPINNER, spinnerPos);
+				przypomnienie.put(PRZYP_SPINNER, spinnerChoice);
 				przypomnienie.put(PRZYP_HOUR, przypHour);
 				przypomnienie.put(PRZYP_DATE, przypDate);
 				
@@ -706,17 +774,127 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		return przypomnienia;
 	}
 	
-	private String getPeriodFromBoxAndSpinner(EditText box, Spinner spinner) {
-		String[] formatArray = getResources().getStringArray(R.array.array_date);
-		int chosenFormatPos = spinner.getSelectedItemPosition();
-		
+	private String getPeriodFromBoxAndSpinner(EditText box, LinearLayout okresWazDropDown) {		
 		String value = box.getText().toString();
-		String format = formatArray[chosenFormatPos];
+		String format = getChoiceFromCustomSpinner(okresWazDropDown);
 		
 		String peroid = value + ":" + format;
 		
 		return peroid;
 	}
+	
+	private String getChoiceFromCustomSpinner(LinearLayout customSpinner) {
+		TextView spinnetTxt = (TextView) customSpinner.findViewById(R.id.spinnerTxt);
+		String choice = spinnetTxt.getText().toString();
+		
+		return choice;
+	}
+	
+	private PopupWindow getSpinnerPopUp(final View clickedView) {
+
+        final PopupWindow popupWindow = new PopupWindow(getActivity());
+        ListView spinnerList = new ListView(getActivity());
+        ColorDrawable background = new ColorDrawable(getResources().getColor(R.color.dropdown));
+        
+        switch (clickedView.getId()) {
+        case R.id.okresWazDropDown:
+        	spinnerList.setAdapter(adapterOkresSpinner);
+        	spinnerList.setOnItemClickListener(new OnItemClickListener() {
+
+    			@Override
+    			public void onItemClick(AdapterView<?> arg0, View view, int arg2,long arg3) 
+    			{
+    				String choice = (String) view.getTag();
+    				setTerminWazFromAdapter(choice);
+    				setCustomSpinner(choice, okresWazDropDown);
+    				popupWindow.dismiss();
+    			}
+    		});
+        	break;
+        	
+	 	case R.id.kategorieDropDown:
+	     	spinnerList.setAdapter(adapterKategorieSpinner);
+	     	spinnerList.setOnItemClickListener(new OnItemClickListener() {
+	
+	 			@Override
+	 			public void onItemClick(AdapterView<?> arg0, View view, int arg2,long arg3) 
+	 			{
+	 				String choice = (String) view.getTag();
+	 				setCustomSpinner(choice, kategorieDropDown);
+	 				popupWindow.dismiss();
+	 			}
+	 		});
+	     	break;
+	     	
+	 	case R.id.przypDropDown:
+	 		spinnerList.setAdapter(adapterPryzpSpinner);
+	     	spinnerList.setOnItemClickListener(new OnItemClickListener() {
+	
+	 			@Override
+	 			public void onItemClick(AdapterView<?> arg0, View view, int arg2,long arg3) 
+	 			{
+	 				LinearLayout viewToSet = (LinearLayout) clickedView;
+	 				String choice = (String) view.getTag();
+	 				setCustomSpinner(choice, viewToSet);
+	 				popupWindow.dismiss();
+	 			}
+	 		});
+	 		break;
+        }
+
+        popupWindow.setFocusable(true); 
+        popupWindow.setBackgroundDrawable(background); //TODO
+        popupWindow.setHeight(WindowManager.LayoutParams.WRAP_CONTENT);
+        popupWindow.setWidth(clickedView.getLayoutParams().width);
+        popupWindow.setContentView(spinnerList);
+
+        return popupWindow;
+    }
+	
+	private void showInfoPopUp(View clickedView) {
+
+        final PopupWindow popupWindow = new PopupWindow(getActivity());
+        LayoutInflater inflater = LayoutInflater.from(getActivity());
+        Drawable background = getResources().getDrawable(R.drawable.back_info_popup);
+        int layoutId = R.layout.popup_info_right;
+        int wrapContent = WindowManager.LayoutParams.WRAP_CONTENT;
+        int posX = -265;
+        int posY = -35;
+        boolean leftSide = false;
+        String message = "";
+
+        switch (clickedView.getId()) {
+        case R.id.okresInfoImage:
+        	leftSide = false;
+        	message = INFO_OKRES;
+        	break;
+        case R.id.terminWazInfoImage:
+        	leftSide = true;
+        	message = INFO_TERMIN_WAZNOSCI;
+        	break;
+        case R.id.dataZuzInfoImage:
+        	leftSide = true;
+        	message = INFO_DATA_ZUZYCIA;
+        }
+        
+        if (leftSide) {
+            layoutId = R.layout.popup_info_left;
+            posX = -5;
+            posY = -35;
+        }
+        
+        RelativeLayout popupLay = (RelativeLayout) inflater.inflate(layoutId, null);
+        TextView popupTxt = (TextView) popupLay.findViewById(R.id.popupTxt);
+        popupTxt.setText(message);
+        
+        popupWindow.setFocusable(true); 
+        popupWindow.setBackgroundDrawable(background); //TODO
+        popupWindow.setHeight(wrapContent);
+        popupWindow.setWidth(300);
+        popupWindow.setContentView(popupLay);
+        popupWindow.showAsDropDown(clickedView, posX, posY);
+
+    }
 							
 	private void save() {		
 		if (!checkFormIsFill()) {
@@ -775,7 +953,7 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 	
 	private boolean checkFormIsFill() {
 		String nazwa = nazwaTextBox.getText().toString();
-		String termin = terminWazButton.getText().toString();
+		String termin = terminWazTextBox.getText().toString();
 		
 		if (nazwa.equals("") || termin.equals("") || termin.equals("Wprowadź datę")) {
 			return false;
@@ -791,4 +969,5 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 	private void switchToShowFragment(Product product) {
 		((MainActivity) getActivity()).selectFragmentToShowProduct(product);
 	}
+	
 }

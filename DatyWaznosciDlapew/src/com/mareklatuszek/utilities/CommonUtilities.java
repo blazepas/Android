@@ -29,6 +29,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Intent;
@@ -77,22 +78,21 @@ public class CommonUtilities implements FinalVariables {
 		return progress;		
 	}
 	
-	public long parsePrzypmnienieToDate(String boxVal, String spinnerVal, String terminWaz, String notifHour) throws ParseException {
+	public long parsePrzypmnienieToDate(String boxVal, String spinnerChoice, String terminWaz, String notifHour) throws ParseException {
 		if(boxVal.equals("")) {
 			return 0;
 		} else {
 			int dateVal = Integer.parseInt(boxVal);
-			int dateFormatVal = Integer.parseInt(spinnerVal);
 			long endDate = parseDate(terminWaz);
 			
 			Calendar notifTime = Calendar.getInstance();
 			notifTime.setTimeInMillis(endDate);
 			
-			if (dateFormatVal == 0) { //jesli dzien (kolejnosc z resource arrays "array_date" - trzyma� si� tej kolejnosci!)
+			if (spinnerChoice.equals(SPINNER_DATE_DAY)) { //jesli dzien (kolejnosc z resource arrays "array_date" - trzyma� si� tej kolejnosci!)
 				notifTime.add(Calendar.DAY_OF_YEAR, -dateVal);
-			} else if (dateFormatVal == 1) { //jesli miesi�c
+			} else if (spinnerChoice.equals(SPINNER_DATE_MONTH)) {
 				notifTime.add(Calendar.MONTH, -dateVal );
-			} else if (dateFormatVal == 2) { //jesli rok
+			} else if (spinnerChoice.equals(SPINNER_DATE_YEAR)) { 
 				notifTime.add(Calendar.YEAR, -dateVal);
 			}
 			
@@ -574,6 +574,12 @@ public class CommonUtilities implements FinalVariables {
 	    int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
 	    cursor.moveToFirst();
 	    return cursor.getString(column_index);
+	}
+	
+	public int getPixelsFromDp(int dp, Activity mActivity) {
+		float scale = mActivity.getResources().getDisplayMetrics().density;
+		int pixels = (int) (dp * scale + 0.5f);
+		return pixels;
 	}
 	
 	public boolean validateCode(String code, String codeFormat) {
