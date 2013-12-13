@@ -20,7 +20,7 @@
             android:gravity="center_vertical"
             android:orientation="horizontal" >
 
-            <TextView
+            <com.mareklatuszek.utilities.TextViewBariol
                 android:id="@+id/textView3"
                 android:layout_width="95dp"
                 android:layout_height="wrap_content"
@@ -29,7 +29,7 @@
                 android:textAppearance="@style/TPP.Small.TextAppearance"
                 android:textColor="@color/dark_text_view" />
 
-            <EditText
+            <com.mareklatuszek.utilities.EditTextBariol
                 android:id="@+id/dataOtwTxtBox"
                 android:layout_width="150dp"
                 android:layout_height="36dp"
@@ -57,7 +57,7 @@
                 android:layout_marginRight="5dp"
                 android:src="@drawable/info" />
 
-            <TextView
+            <com.mareklatuszek.utilities.TextViewBariol
                 android:id="@+id/textView7"
                 android:layout_width="95dp"
                 android:layout_height="wrap_content"
@@ -65,7 +65,7 @@
                 android:textAppearance="@style/TPP.Small.TextAppearance"
                 android:textColor="@color/dark_text_view" />
 
-            <EditText
+            <com.mareklatuszek.utilities.EditTextBariol
                 android:id="@+id/terminWazTextBox"
                 android:layout_width="150dp"
                 android:layout_height="36dp"
@@ -86,7 +86,7 @@
             android:layout_marginTop="5dp"
             android:gravity="center_vertical" >
 
-            <TextView
+            <com.mareklatuszek.utilities.TextViewBariol
                 android:id="@+id/textView5"
                 android:layout_width="95dp"
                 android:layout_height="wrap_content"
@@ -131,7 +131,7 @@
                 android:layout_marginRight="5dp"
                 android:src="@drawable/info" />
 
-            <TextView
+            <com.mareklatuszek.utilities.TextViewBariol
                 android:id="@+id/TextView01"
                 android:layout_width="95dp"
                 android:layout_height="wrap_content"
@@ -139,7 +139,7 @@
                 android:textAppearance="@style/TPP.Small.TextAppearance"
                 android:textColor="@color/dark_text_view" />
 
-            <EditText
+            <com.mareklatuszek.utilities.EditTextBariol
                 android:id="@+id/dataZuzTextBox"
                 android:layout_width="150dp"
                 android:layout_height="36dp"
@@ -168,17 +168,14 @@
             android:gravity="center"
             android:orientation="horizontal" >
 
-            <EditText
+            <com.mareklatuszek.utilities.EditTextBariol
                 android:id="@+id/opisTxtBox"
                 android:layout_width="159dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.50"
                 android:ems="10"
                 android:inputType="textMultiLine"
-                android:text="Opis..." >
-
-                <requestFocus />
-            </EditText>
+                android:text="Opis..." />
         </LinearLayout>
 
     </LinearLayout>

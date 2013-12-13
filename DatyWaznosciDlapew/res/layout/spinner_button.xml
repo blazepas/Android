@@ -11,7 +11,7 @@
         android:background="@color/new_prod_clicable"
         android:orientation="horizontal" >
 
-        <TextView
+        <com.mareklatuszek.utilities.TextViewBariol
             android:id="@+id/spinnerTxt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

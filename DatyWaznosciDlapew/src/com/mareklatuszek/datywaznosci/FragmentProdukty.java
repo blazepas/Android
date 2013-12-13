@@ -29,7 +29,7 @@ import com.actionbarsherlock.view.MenuItem;
 import com.mareklatuszek.utilities.CommonUtilities;
 import com.mareklatuszek.utilities.JavaMail;
 
-public class FragmentProdukty extends SherlockFragment {
+public class FragmentProdukty extends SherlockFragment implements OnClickListener {
 	
 	AdapterDB dbAdapter;
 	AdapterProductList listAdapter;
@@ -38,7 +38,7 @@ public class FragmentProdukty extends SherlockFragment {
 	
 	ListView productsList;
 	View rootView;
-	LinearLayout footer;
+	LinearLayout dodajLay;
 		
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -48,6 +48,8 @@ public class FragmentProdukty extends SherlockFragment {
 		getSherlockActivity().getSupportActionBar().setTitle("Lista produktów");
 		
 		rootView = inflater.inflate(R.layout.fragment_produkty, container, false);
+		dodajLay = (LinearLayout) rootView.findViewById(R.id.dodajLay);
+		dodajLay.setOnClickListener(this);
 
 		new InitList().execute();
 		
@@ -115,13 +117,21 @@ public class FragmentProdukty extends SherlockFragment {
        return true;
     }
     
+	@Override
+	public void onClick(View v) {
+		switch (v.getId()) {
+		case R.id.dodajLay:
+			selectFragmentDodaj();
+			break;
+		}
+		
+	}
+    
     private class InitList extends AsyncTask<Void, Void, Void> {
 		
 		@Override
 		protected void onPreExecute() {
 			productsList = (ListView) rootView.findViewById(R.id.productsList);
-			footer = initFooter();
-			productsList.addFooterView(footer);
 		}
 
 		@Override
@@ -149,41 +159,6 @@ public class FragmentProdukty extends SherlockFragment {
 				registerForContextMenu(productsList); // TODO prawdopodobnie nie bedzie uzywane
 			}
 		}
-	}
-	
-	private LinearLayout initFooter() {
-		
-		//TODO zrobic oddzielny layout
-		
-		LinearLayout footerLay = new LinearLayout(getActivity());
-		Button skanowanieButton = new Button(getActivity());
-		Button wlasnyButton = new Button(getActivity());
-		
-		footerLay.setOrientation(LinearLayout.VERTICAL);
-		
-		skanowanieButton.setText("Skanowanie produktu");
-		wlasnyButton.setText("Własny produkt");
-		
-		skanowanieButton.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				scanCode();
-			}
-		});
-		
-		wlasnyButton.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				selectFragmentDodaj();
-			}
-		});
-		
-		footerLay.addView(skanowanieButton);
-		footerLay.addView(wlasnyButton);
-		
-		return footerLay;
 	}
     
 	public void switchToProductFragment(int positon) {

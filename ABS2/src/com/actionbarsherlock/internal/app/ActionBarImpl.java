@@ -18,11 +18,13 @@ package com.actionbarsherlock.internal.app;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Handler;
@@ -34,6 +36,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.SpinnerAdapter;
+
 import com.actionbarsherlock.R;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
@@ -54,6 +57,7 @@ import com.actionbarsherlock.view.ActionMode;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+
 import static com.actionbarsherlock.internal.ResourcesCompat.getResources_getBoolean;
 
 /**
@@ -347,6 +351,12 @@ public class ActionBarImpl extends ActionBar {
     public void setSubtitle(CharSequence subtitle) {
         mActionView.setSubtitle(subtitle);
     }
+    
+    public void setTitleTypeface(Typeface TF) {
+        mActionView.setTitleTypeface(TF);     }
+
+    public void setSubtitleTypeface(Typeface TF) {
+        mActionView.setSubtitleTypeface(TF);    }
 
     public void setDisplayOptions(int options) {
         mActionView.setDisplayOptions(options);

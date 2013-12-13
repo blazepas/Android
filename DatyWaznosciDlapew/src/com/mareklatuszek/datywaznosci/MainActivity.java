@@ -4,6 +4,7 @@ import jim.h.common.android.lib.zxing.integrator.IntentIntegrator;
 import jim.h.common.android.lib.zxing.integrator.IntentResult;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.net.Uri;
 import android.os.Bundle;
@@ -18,12 +19,15 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.MenuItem;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.mareklatuszek.utilities.FinalVariables;
+import com.mareklatuszek.utilities.FontBariol;
+import com.mareklatuszek.utilities.TextViewBariol;
 
 
 public class MainActivity extends SherlockFragmentActivity implements FinalVariables {
@@ -70,11 +74,12 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
 		super.onCreate(savedInstanceState);
 		this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 		adapterDb = new AdapterDB(this);
-				
-		setContentView(R.layout.main_frame);
-	
+		
 		getSupportActionBar().setHomeButtonEnabled(true);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		setActionBarTypeface();
+		
+		setContentView(R.layout.main_frame);
 
 		if (savedInstanceState == null) {
 			Log.i("main", "bundle null " + menuPos);
@@ -96,6 +101,7 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
 		bundle.putInt("menuPos", menuPos);    
 	}
 
+	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -110,25 +116,25 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
 	public void onActivityResult(int requestCode, int resultCode, Intent intent) {   
 		if (resultCode == RESULT_OK) {
 			if (requestCode == CAMERA_ADD_RQ_CODE) {
-				Uri selectedImage = intent.getData();
-				imageUri = selectedImage;
-				
-				setPictureInFragmentDodaj(selectedImage);
+				if (intent != null) {
+					imageUri = intent.getData();
+				}
+				setPictureInFragmentDodaj(imageUri);
 			} else if (requestCode == GALLERY_ADD_RQ_CODE) {
-				Uri selectedImage = intent.getData();
-				imageUri = selectedImage;
-				
-				setPictureInFragmentDodaj(selectedImage);
+				if (intent != null) {
+					imageUri = intent.getData();
+				}
+				setPictureInFragmentDodaj(imageUri);
 			} else if (requestCode == CAMERA_EDIT_RQ_CODE) {
-				Uri selectedImage = intent.getData();
-				imageUri = selectedImage;
-				
-				setPictureInFragmentEdytuj(selectedImage);
+				if (intent != null) {
+					imageUri = intent.getData();
+				}
+				setPictureInFragmentEdytuj(imageUri);
 			} else if (requestCode == GALLERY_EDIT_RQ_CODE) {
-				Uri selectedImage = intent.getData();
-				imageUri = selectedImage;
-				
-				setPictureInFragmentEdytuj(selectedImage);
+				if (intent != null) {
+					imageUri = intent.getData();
+				}
+				setPictureInFragmentEdytuj(imageUri);
 	        } else {
 	        	IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
 		        if (scanResult != null) {
@@ -294,6 +300,17 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
         actualFragment.setCameraResult(selectedImage);      
 	}
 	
+	private void setActionBarTypeface() {
+		if (android.os.Build.VERSION.SDK_INT>=android.os.Build.VERSION_CODES.HONEYCOMB) {  //API Level 11+
+			int actionBarTitle = Resources.getSystem().getIdentifier("action_bar_title", "id", "android");
+			TextView actionBarTitleView = (TextView) getWindow().findViewById(actionBarTitle);
+			if(actionBarTitleView != null){
+			    actionBarTitleView.setTypeface(FontBariol.getInstance(this).getTypeFace());
+			}
+		} else {
+			getSupportActionBar().setTitleTypeface(FontBariol.getInstance(this).getTypeFace());
+		}
+	}
 
 	private FrameLayout getMenuList() {
 		String[] titles = getResources().getStringArray(R.array.array_menu_titles);

@@ -19,7 +19,7 @@
             android:adjustViewBounds="true"
             android:src="@drawable/collections_cloud" />
 
-        <TextView
+        <com.mareklatuszek.utilities.TextViewBariol
             android:id="@+id/title"
             style="?attr/spinnerDropDownItemStyle"
             android:layout_width="wrap_content"

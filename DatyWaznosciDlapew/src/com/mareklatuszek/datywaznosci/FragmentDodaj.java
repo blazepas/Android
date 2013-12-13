@@ -400,7 +400,7 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		directory.mkdirs();
 		
 		Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        File f = new File(android.os.Environment.getExternalStorageDirectory(), "TPP" + File.separator 
+        File f = new File(android.os.Environment.getExternalStorageDirectory(),File.separator + "TPP" + File.separator 
         		+ (System.currentTimeMillis()/1000) + ".jpg");
         MainActivity.imageUri = Uri.fromFile(f);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));

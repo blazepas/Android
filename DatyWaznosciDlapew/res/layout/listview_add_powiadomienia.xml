@@ -10,12 +10,12 @@
         android:layout_height="wrap_content"
         android:gravity="center_vertical" >
 
-        <TextView
+        <com.mareklatuszek.utilities.TextViewBariol
             android:id="@+id/testTxt"
             android:layout_width="95dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="25dp"
-            android:text="Przypomnienie "
+            android:text="Przypomnienie"
             android:textAppearance="@style/TPP.Small.TextAppearance"
             android:textColor="@color/dark_text_view" />
 
@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:gravity="center_vertical" >
 
-            <EditText
+            <com.mareklatuszek.utilities.EditTextBariol
                 android:id="@+id/przypTextBox"
                 android:layout_width="54dp"
                 android:layout_height="36dp"
@@ -71,7 +71,7 @@
         android:layout_height="wrap_content"
         android:gravity="center_vertical" >
 
-        <TextView
+        <com.mareklatuszek.utilities.TextViewBariol
             android:id="@+id/nazwaTxtList"
             android:layout_width="95dp"
             android:layout_height="wrap_content"

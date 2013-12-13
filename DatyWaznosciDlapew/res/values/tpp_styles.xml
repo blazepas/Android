@@ -60,6 +60,12 @@
         <item name="android:textAllCaps">false</item>
     </style>
     
+    <style name="TPP.Large.TextAppearance" parent="Widget">
+        <item name="android:textSize">@dimen/text_view_large_size</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+    
     <style name="TPP.Normal.TextAppearance" parent="Widget">
         <item name="android:textSize">@dimen/text_view_normal_size</item>
         <item name="android:textStyle">normal</item>
@@ -68,6 +74,12 @@
     
     <style name="TPP.Small.TextAppearance" parent="Widget">
         <item name="android:textSize">@dimen/text_view_small_size</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+    
+    <style name="TPP.XSmall.TextAppearance" parent="Widget">
+        <item name="android:textSize">@dimen/text_view_xsmall_size</item>
         <item name="android:textStyle">normal</item>
         <item name="android:textAllCaps">false</item>
     </style>

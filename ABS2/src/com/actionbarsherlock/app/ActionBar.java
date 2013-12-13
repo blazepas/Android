@@ -17,6 +17,7 @@
 package com.actionbarsherlock.app;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.support.v4.app.FragmentTransaction;
 import android.util.AttributeSet;
@@ -314,7 +315,8 @@ public abstract class ActionBar {
      * @see #setSubtitle(int)
      * @see #setDisplayOptions(int, int)
      */
-    public abstract void setSubtitle(CharSequence subtitle);
+    
+    public abstract void setSubtitle(CharSequence subtitle);   
 
     /**
      * Set the action bar's subtitle. This will only be displayed if
@@ -326,6 +328,18 @@ public abstract class ActionBar {
      * @see #setDisplayOptions(int, int)
      */
     public abstract void setSubtitle(int resId);
+    
+    /**
+     * Set the action bar's title typeface. 
+     *
+     */
+    public abstract void setTitleTypeface(Typeface TF);
+    
+    /**
+     * Set the action bar's subtitle typeface. 
+     *
+     */
+    public abstract void setSubtitleTypeface(Typeface TF);
 
     /**
      * Set display options. This changes all display option bits at once. To change

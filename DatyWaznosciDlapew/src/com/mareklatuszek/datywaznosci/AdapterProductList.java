@@ -14,6 +14,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -40,7 +43,7 @@ import com.mareklatuszek.utilities.CommonUtilities;
 
 public class AdapterProductList extends BaseAdapter implements OnLongClickListener {
 		
-	private int detailsHeightInDps = 50;
+	private int detailsHeightInDps = 70;
 	float scale;
 	
 	private LayoutInflater inflater=null;
@@ -50,13 +53,14 @@ public class AdapterProductList extends BaseAdapter implements OnLongClickListen
 	int fragmentId;
 	
 	private Boolean[] isExpanded;
+	private View[] views;
 	private int clickedPos = -1;
 	private CommonUtilities utilities = new CommonUtilities();
 	
 	TextView nazwaTxtList, dataOtwTxtList, terminWazTxtList;	
 	ProgressBar pozostaloPrgsList;
-	ImageView expandImage, obrazekImage;
-	LinearLayout detailsLay, basicLay, deleteLay, showProdLay;
+	ImageView obrazekImage;
+	LinearLayout detailsLay, basicLay, deleteLay, showProdLay, expandLay;
 	
 	public AdapterProductList(Activity mActivity, ArrayList<Product> products, FragmentManager fragmentManager, int fragmentId) {
 		this.mActivity = mActivity;
@@ -67,6 +71,7 @@ public class AdapterProductList extends BaseAdapter implements OnLongClickListen
 		scale = mActivity.getResources().getDisplayMetrics().density; //oblicza skalę px do dps
 		inflater = (LayoutInflater) mActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		isExpanded = new Boolean[products.size()];
+		views = new View[products.size()];//TODO
 		Arrays.fill(isExpanded, false);
 	}
 	
@@ -87,6 +92,7 @@ public class AdapterProductList extends BaseAdapter implements OnLongClickListen
 
 	@Override
 	public View getView(final int position, View convertView, ViewGroup parent) {	
+		convertView = views[position];
         boolean convertViewStatus = (convertView == null); 
 
         if (clickedPos == position | convertViewStatus){
@@ -96,12 +102,19 @@ public class AdapterProductList extends BaseAdapter implements OnLongClickListen
 	        } else {
                 vi = convertView;
 	        }
-	        vi.setTag(position);
-	        vi = initRow(vi);
+	        vi = initRow(vi, position);
+	        views[position] = vi;
 	        return vi;
         } else {
-        	convertView.setTag(position);
-            return convertView;                        
+        	if (convertView.getTag() == null) {
+        		 convertView = initRow(convertView, position);
+        		 views[position] = convertView;
+        		 return convertView;
+        	} else {
+        		convertView = views[position];
+                return convertView;    
+        	}
+        	                    
         }
 	}
 	
@@ -116,7 +129,7 @@ public class AdapterProductList extends BaseAdapter implements OnLongClickListen
 		boolean expanded = isExpanded[position];
 		
 		if (expanded) {
-	    	rotateView(expandImage, 0f, 90f, 250); 
+//	    	rotateView(expandImage, 0f, 90f, 250); 
 	    	
 	    	if (position == clickedPos){
 	    		expandItem(detailsLay);
@@ -125,7 +138,7 @@ public class AdapterProductList extends BaseAdapter implements OnLongClickListen
 		    }
 
 		} else {    	
-		    rotateView(expandImage, 90f, 0f, 250);
+//		    rotateView(expandImage, 90f, 0f, 250);
 		    if (position == clickedPos){
 		    	collapseItem(detailsLay);
 		    } else {
@@ -135,14 +148,25 @@ public class AdapterProductList extends BaseAdapter implements OnLongClickListen
 		}
 	}
 	
-	private View initRow(View vi) {
-		final int pos = (Integer) vi.getTag();
+	private View initRow(View vi, final int pos) {
+		int rowBackground;
+		int expandLayBg;
+		
+		if((pos % 2) == 0) { // produkt parzysty lub nie
+			rowBackground = R.color.products_even;
+			expandLayBg = R.color.products_expand_even_bg;
+		} else {
+			rowBackground = R.color.products_odd;
+			expandLayBg = R.color.products_expand_odd_bg;
+		}
+		
+		
 		
         nazwaTxtList = (TextView) vi.findViewById(R.id.nazwaTxtList);
         dataOtwTxtList = (TextView) vi.findViewById(R.id.dataOtwTxtList);
         terminWazTxtList = (TextView) vi.findViewById(R.id.terminWazTxtList);
         pozostaloPrgsList = (ProgressBar) vi.findViewById(R.id.pozostaloPrgsList);
-        expandImage = (ImageView) vi.findViewById(R.id.expandImage);
+        expandLay = (LinearLayout) vi.findViewById(R.id.expandLay);
         obrazekImage = (ImageView) vi.findViewById(R.id.obrazekImage);
         detailsLay = (LinearLayout) vi.findViewById(R.id.detailsLay);
         basicLay = (LinearLayout) vi.findViewById(R.id.basicLay);
@@ -155,11 +179,16 @@ public class AdapterProductList extends BaseAdapter implements OnLongClickListen
         String terminWaz = product.getTerminWaznosci();
         String image = product.getImage();
         int progress = utilities.getProgress(dataOtw, terminWaz);
+        Drawable progressDrawable = mActivity.getResources().getDrawable(R.drawable.progress_bar_bg);
         
+        vi.setTag(pos);
+        vi.setBackgroundResource(rowBackground);
+		expandLay.setBackgroundResource(expandLayBg);
         nazwaTxtList.setText(nazwa);
         dataOtwTxtList.setText(dataOtw);
         terminWazTxtList.setText(terminWaz);
         pozostaloPrgsList.setProgress(progress);
+        pozostaloPrgsList.setProgressDrawable(progressDrawable);
         
         if (!image.equals("")) {
         	File imgFile = new  File(image + "thumb");
@@ -177,7 +206,7 @@ public class AdapterProductList extends BaseAdapter implements OnLongClickListen
         deleteLay.setOnLongClickListener(this);
         showProdLay.setOnLongClickListener(this);
         
-        basicLay.setOnClickListener(new OnClickListener() {
+        expandLay.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
@@ -252,7 +281,7 @@ public class AdapterProductList extends BaseAdapter implements OnLongClickListen
 	}
 	
 	private void expandItem(View v) {
-		final int targtetHeight = (int) (detailsHeightInDps * scale + 0.5f); //przelicza dps na px
+		final int targtetHeight = (int) (detailsHeightInDps * scale + 0.5f);
     	utilities.expandView(v, targtetHeight);
 	}
 	

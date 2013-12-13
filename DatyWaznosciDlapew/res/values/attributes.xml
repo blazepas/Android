@@ -3,14 +3,20 @@
     
     <!-- main -->
     <dimen name="text_view_font_size">18sp</dimen>
-    <dimen name="text_view_normal_size">15sp</dimen>
+    <dimen name="text_view_large_size">16sp</dimen>
+    <dimen name="text_view_normal_size">14sp</dimen>
     <dimen name="text_view_small_size">12sp</dimen>
+    <dimen name="text_view_xsmall_size">10sp</dimen>
 
     <!-- Action Bar -->
     <dimen name="action_bar_font_size">20sp</dimen>
     
     <!-- Menu -->
     <dimen name="menu_font_size">@dimen/text_view_font_size</dimen>
+    
+    <!-- Product List -->
+    <dimen name="products_item_height">70dp</dimen>
+    <dimen name="products_details_height">70dp</dimen>
         
     <dimen name="dodaj_sections_height">50dp</dimen>
     <dimen name="slidingmenu_offset">0dp</dimen>

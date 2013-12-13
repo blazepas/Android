@@ -5,7 +5,7 @@
     android:background="@color/new_prod_clicable"
     android:orientation="vertical" >
 
-    <TextView
+    <com.mareklatuszek.utilities.TextViewBariol
         android:id="@+id/okres"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

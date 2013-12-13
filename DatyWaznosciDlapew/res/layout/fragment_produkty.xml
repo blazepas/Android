@@ -5,10 +5,43 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
+    <LinearLayout
+        android:id="@+id/dodajLay"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:background="@color/products_add"
+        android:gravity="center" >
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center" >
+
+            <ImageView
+                android:id="@+id/imageView1"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginRight="7dp"
+                android:src="@drawable/add_image" />
+
+            <com.mareklatuszek.utilities.TextViewBariol
+                android:id="@+id/textView1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="DODAJ PRODUKT"
+                android:textAppearance="@style/TPP.Normal.TextAppearance"
+                android:textColor="@color/light_text_view" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
     <ListView
         android:id="@+id/productsList"
         android:layout_width="match_parent"
-        android:layout_height="fill_parent" >
+        android:layout_height="fill_parent"
+        android:divider="@null"
+		android:dividerHeight="0dp" >
     </ListView>
 
 </LinearLayout>

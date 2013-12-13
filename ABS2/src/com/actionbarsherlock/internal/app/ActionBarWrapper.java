@@ -5,6 +5,7 @@ import java.util.Set;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
@@ -193,6 +194,12 @@ public class ActionBarWrapper extends ActionBar implements android.app.ActionBar
     public CharSequence getSubtitle() {
         return mActionBar.getSubtitle();
     }
+    
+    @Override
+    public void setTitleTypeface(Typeface TF) {}
+    
+    @Override
+    public void setSubtitleTypeface(Typeface TF) {}
 
     @Override
     public int getNavigationMode() {

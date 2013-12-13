@@ -17,6 +17,7 @@
 package com.actionbarsherlock.internal.widget;
 
 import org.xmlpull.v1.XmlPullParser;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
@@ -26,6 +27,7 @@ import android.content.res.AssetManager;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.content.res.XmlResourceParser;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Parcel;
@@ -571,7 +573,15 @@ public class ActionBarView extends AbsActionBarView {
         mUserTitle = true;
         setTitleImpl(title);
     }
+    
+    public void setTitleTypeface(Typeface TF){
+        mTitleView.setTypeface(TF);
+    }
 
+    public void setSubtitleTypeface(Typeface TF){
+        mSubtitleView.setTypeface(TF);
+    }
+    
     /**
      * Set the window title. A window title will always be replaced or overridden by a user title.
      * @param title Title to set
