@@ -2,6 +2,7 @@ package com.mareklatuszek.utilities;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.util.Log;
 
 public class FontBariol {
 	private Context context;

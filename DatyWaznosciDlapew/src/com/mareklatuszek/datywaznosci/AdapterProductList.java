@@ -92,29 +92,23 @@ public class AdapterProductList extends BaseAdapter implements OnLongClickListen
 
 	@Override
 	public View getView(final int position, View convertView, ViewGroup parent) {	
-		convertView = views[position];
-        boolean convertViewStatus = (convertView == null); 
+		View vi = views[position];
+        boolean convertViewStatus = (vi == null); 
 
-        if (clickedPos == position | convertViewStatus){
-	        View vi;
-	        if (convertViewStatus) {
-                vi = inflater.inflate(R.layout.listview_products, null);
-	        } else {
-                vi = convertView;
-	        }
-	        vi = initRow(vi, position);
-	        views[position] = vi;
+        if (clickedPos == position){
+	        
+	        vi = views[position];
+	        detailsLay = (LinearLayout) vi.findViewById(R.id.detailsLay);
+	        initAnimations(position);
+        	        
 	        return vi;
+        } else if (convertViewStatus) {
+        	vi = inflater.inflate(R.layout.listview_products, null);
+ 	        vi = initRow(vi, position);
+ 	        views[position] = vi;
+ 	        return vi;
         } else {
-        	if (convertView.getTag() == null) {
-        		 convertView = initRow(convertView, position);
-        		 views[position] = convertView;
-        		 return convertView;
-        	} else {
-        		convertView = views[position];
-                return convertView;    
-        	}
-        	                    
+            return views[position];                    
         }
 	}
 	
@@ -159,8 +153,6 @@ public class AdapterProductList extends BaseAdapter implements OnLongClickListen
 			rowBackground = R.color.products_odd;
 			expandLayBg = R.color.products_expand_odd_bg;
 		}
-		
-		
 		
         nazwaTxtList = (TextView) vi.findViewById(R.id.nazwaTxtList);
         dataOtwTxtList = (TextView) vi.findViewById(R.id.dataOtwTxtList);
