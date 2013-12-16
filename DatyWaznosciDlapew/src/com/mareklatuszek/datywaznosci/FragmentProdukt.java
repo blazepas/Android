@@ -10,6 +10,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -59,6 +60,13 @@ public class FragmentProdukt extends SherlockFragment implements OnClickListener
 	@Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
       inflater.inflate(R.menu.items_product, menu);
+      
+      boolean deviceHasMenuButton = ViewConfiguration.get(getActivity()).hasPermanentMenuKey();
+      if (!deviceHasMenuButton) {
+    	  menu.removeItem(R.id.editMenuButton);
+    	  menu.removeItem(R.id.shareMenuButton);
+    	  menu.removeItem(R.id.deleteMenuButton);
+      }
 
       super.onCreateOptionsMenu(menu, inflater);
     }

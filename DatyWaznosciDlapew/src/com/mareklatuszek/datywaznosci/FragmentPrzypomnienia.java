@@ -32,14 +32,14 @@ public class FragmentPrzypomnienia extends SherlockFragment implements FinalVari
 	AdapterPrzypomnienia adapterPrzyp;
 	ArrayList<HashMap<String, String>> dataToAdpter = new ArrayList<HashMap<String,String>>();
 	ArrayList<Product> products = new ArrayList<Product>();
-	CommonUtilities utiliteis = new CommonUtilities();	
+	CommonUtilities utilities = new CommonUtilities();	
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		rootView = inflater.inflate(R.layout.fragment_przypomnienia, container, false);
 		adapterDb = new AdapterDB(getActivity());
 		
-		getSherlockActivity().getSupportActionBar().setTitle("Przypomnienia");
+		utilities.setActionBarTitle("Przypomnienia", getSherlockActivity());
 		
 		initList();
 		
@@ -101,7 +101,7 @@ public class FragmentPrzypomnienia extends SherlockFragment implements FinalVari
 				adapterDb.open();
 				products = adapterDb.getAllProducts();
 				adapterDb.close();
-				dataToAdpter = utiliteis.sortPrzypomnieniaAll(fillPrzypomnienia(products));
+				dataToAdpter = utilities.sortPrzypomnieniaAll(fillPrzypomnienia(products));
 				adapterPrzyp = new AdapterPrzypomnienia(getActivity(), dataToAdpter);
 				return null;
 			}
@@ -156,7 +156,7 @@ public class FragmentPrzypomnienia extends SherlockFragment implements FinalVari
 		adapterDb.close();
 		
 		if (removeStatus) {
-			utiliteis.cancelAlarm(alarmTime, productId, getActivity());
+			utilities.cancelAlarm(alarmTime, productId, getActivity());
 			initList();
 		}
 	}

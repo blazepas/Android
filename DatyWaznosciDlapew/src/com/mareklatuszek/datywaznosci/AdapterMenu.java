@@ -1,5 +1,7 @@
 package com.mareklatuszek.datywaznosci;
 
+import com.mareklatuszek.utilities.PremiumUtilities;
+
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
@@ -35,7 +37,11 @@ public class AdapterMenu extends BaseAdapter {
 
 	@Override
 	public int getCount() {
-		return titles.length;
+		if (!PremiumUtilities.APP_VERSION_PREMIUM){
+			return titles.length;
+		} else {
+			return titles.length - 1;
+		}		
 	}
 
 	@Override
@@ -67,7 +73,7 @@ public class AdapterMenu extends BaseAdapter {
 				int backgroundColor = getItemBackgroundColor(position);
 				itemView.setBackgroundColor(backgroundColor);
 			}
-			
+					
 			return itemView;	
 		} else if (position == clickedPos) {
 			int pressedColor = context.getResources().getColor(R.color.menu_item_pressed);

@@ -7,30 +7,47 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+import android.view.GestureDetector;
+import android.view.GestureDetector.SimpleOnGestureListener;
+import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.MenuItem;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.mareklatuszek.utilities.FinalVariables;
 import com.mareklatuszek.utilities.FontBariol;
+import com.mareklatuszek.utilities.PremiumUtilities;
 import com.mareklatuszek.utilities.TextViewBariol;
+import com.sun.mail.imap.Utility;
 
 
-public class MainActivity extends SherlockFragmentActivity implements FinalVariables {
+public class MainActivity extends SherlockFragmentActivity implements FinalVariables, OnClickListener {
+	
+	private static final int SWIPE_MIN_DISTANCE = 50;
+    private static final int SWIPE_MAX_OFF_PATH = 250;
+    private static final int SWIPE_THRESHOLD_VELOCITY = 200;
+    private GestureDetector gestureDetector;
+    View.OnTouchListener gestureListener;
 
 	ListView menuList;
 	AdapterMenu menuAdapter;
@@ -76,22 +93,19 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
 		adapterDb = new AdapterDB(this);
 		
 		getSupportActionBar().setHomeButtonEnabled(true);
-		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		setActionBarTypeface();
-		
 		setContentView(R.layout.main_frame);
 
 		if (savedInstanceState == null) {
-			Log.i("main", "bundle null " + menuPos);
 			initMenu();
 			selectFragment(2);	
 			menu.toggle();
 		} else {
-			
 			menuPos = savedInstanceState.getInt("menuPos");
-			Log.i("main", "bundle full " + menuPos);
 			initMenu();
 		}
+		
+		new InitVersion().execute();
 	}
 	
 	@Override
@@ -183,6 +197,13 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
 	        }, 2000);
 		}
     } 
+	
+
+	@Override
+	public void onClick(View v) {
+		// TODO Auto-generated method stub
+		
+	}
 	
 	private void initMenu() {
 		menu = new SlidingMenu(this);
@@ -301,27 +322,40 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
 	}
 	
 	private void setActionBarTypeface() {
-		if (android.os.Build.VERSION.SDK_INT>=android.os.Build.VERSION_CODES.HONEYCOMB) {  //API Level 11+
-			int actionBarTitle = Resources.getSystem().getIdentifier("action_bar_title", "id", "android");
-			TextView actionBarTitleView = (TextView) getWindow().findViewById(actionBarTitle);
-			if(actionBarTitleView != null){
-			    actionBarTitleView.setTypeface(FontBariol.getInstance(this).getTypeFace());
-			}
-		} else {
-			getSupportActionBar().setTitleTypeface(FontBariol.getInstance(this).getTypeFace());
-		}
+//		if (android.os.Build.VERSION.SDK_INT>=android.os.Build.VERSION_CODES.HONEYCOMB) {  //API Level 11+
+//			int actionBarTitle = Resources.getSystem().getIdentifier("action_bar_title", "id", "android");
+//			TextView actionBarTitleView = (TextView) getWindow().findViewById(actionBarTitle);
+//			if(actionBarTitleView != null){
+//			    actionBarTitleView.setTypeface(FontBariol.getInstance(this).getTypeFace());
+//			}
+//		} else {
+//			getSupportActionBar().setTitleTypeface(FontBariol.getInstance(this).getTypeFace());
+//		}
+		
+		getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM | ActionBar.DISPLAY_SHOW_HOME);
+		getSupportActionBar().setCustomView(R.layout.actionbar_title);
 	}
 
 	private FrameLayout getMenuList() {
+		//reakcja na przesunięcie palcem menu
+		gestureDetector = new GestureDetector(this, new MyGestureDetector());
+        gestureListener = new View.OnTouchListener() {
+            public boolean onTouch(View v, MotionEvent event) {
+                return gestureDetector.onTouchEvent(event);
+            }
+        };
+		
 		String[] titles = getResources().getStringArray(R.array.array_menu_titles);
 		TypedArray icons = getResources().obtainTypedArray(R.array.array_menu_icons);
 		TypedArray colors = getResources().obtainTypedArray(R.array.array_menu_background_colors);
 		
 		LayoutInflater li = getLayoutInflater();
 		FrameLayout menuFrame = (FrameLayout) li.inflate(R.layout.menu_frame, null);
-
-		menuAdapter = new AdapterMenu(MainActivity.this, titles, icons, colors, menuPos);
 		
+		menuFrame.setOnClickListener(this); 
+		menuFrame.setOnTouchListener(gestureListener);
+		
+		menuAdapter = new AdapterMenu(MainActivity.this, titles, icons, colors, menuPos);
 		menuList = (ListView) menuFrame.findViewById(R.id.listview_drawer);
 		menuList.setAdapter(menuAdapter);
 		menuList.setOnItemClickListener(new MenuItemClickListener());
@@ -364,5 +398,92 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
 		adapterDb.close();
 		return status;
 	}
+	
+	private class MyGestureDetector extends SimpleOnGestureListener {
+        @Override
+        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+            try {
+                if (Math.abs(e1.getY() - e2.getY()) > SWIPE_MAX_OFF_PATH)
+                    return false;
+                if(e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE
+                		&& Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) { // w lewo
+                    menu.toggle();
+                   
+                }  else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE 
+                		&& Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) { // w prawo
+                  
+                }
+            } catch (Exception e) {
+            	Log.i("menu gesture detector", "error");
+            }
+            return false;
+        }
+    }
+	
+	private class InitVersion extends AsyncTask<Void, Void, Void> {
+		boolean isTrial = false;
+		boolean isPremium = false;
+		boolean isPremiumInstalled = false;
+		boolean isVerificated = false;
+		boolean isFirstRun = false;
+		
+		PremiumUtilities premUtils = new PremiumUtilities(MainActivity.this);
+
+		@Override
+		protected Void doInBackground(Void... params) {
 			
+			isPremium = premUtils.isPremium();
+			
+			if (isPremium) {
+				return null;
+			} else {
+				isPremiumInstalled = premUtils.isPremiumInstalled();
+				
+				if(isPremiumInstalled) {
+					isVerificated = premUtils.isVerificated();
+					if (isVerificated) {					
+						premUtils.setPremium();
+						isPremium = true;
+						isTrial = false;
+						return null;
+					}
+				}
+			}
+			
+			isFirstRun = premUtils.isFirstRun();
+			
+			if (isFirstRun) {
+				premUtils.setFirstRunFalse();
+				premUtils.setTrial();
+				isTrial = true;
+			} else {
+				isTrial = premUtils.isTrial();
+			}
+			
+			return null;
+		}
+		
+		@Override
+		protected void onPostExecute(Void v) {
+			
+			if (isTrial) {
+				Log.i("init version", "trial");
+				PremiumUtilities.APP_VERSION_TRIAL = true;
+				PremiumUtilities.APP_VERSION_PREMIUM = false;
+				PremiumUtilities.APP_VERSION_NONE = false;
+			} else if (isPremium) {
+				Log.i("init version", "premium");
+				PremiumUtilities.APP_VERSION_TRIAL = false;
+				PremiumUtilities.APP_VERSION_PREMIUM = true;
+				PremiumUtilities.APP_VERSION_NONE = false;
+			} else {
+				Log.i("init version", "trial is over");
+				PremiumUtilities.APP_VERSION_TRIAL = false;
+				PremiumUtilities.APP_VERSION_PREMIUM = false;
+				PremiumUtilities.APP_VERSION_NONE = true;
+			}
+			
+			menuAdapter.notifyDataSetChanged();
+		}
+	}		
 }

@@ -69,8 +69,11 @@ public class JavaMail extends javax.mail.Authenticator {
         }
     } 
     
-    public synchronized void sendMailWithProduct(String subject, String body, String imagePath, String codePath,
-    			String recipients) throws Exception {   
+    public synchronized boolean sendMailWithProduct(String subject, String body, String imagePath, String codePath,
+    			String recipients) throws Exception {  
+    	
+    	Log.i("image path", imagePath);
+    	Log.i("code path", codePath);
     	
         try{
         	
@@ -90,12 +93,14 @@ public class JavaMail extends javax.mail.Authenticator {
 	        multipart.addBodyPart(messageBodyPart);
 	        
 	        // obrazek
-	        messageBodyPart = new MimeBodyPart();
-	        DataSource fds = new FileDataSource(imagePath);
-	        messageBodyPart.setDataHandler(new DataHandler(fds));
-	        messageBodyPart.setHeader("Content-ID","<image>");
-	        multipart.addBodyPart(messageBodyPart);
-	        
+	        if (imagePath != null && !imagePath.isEmpty()) {
+	        	messageBodyPart = new MimeBodyPart();
+	  	        DataSource fds = new FileDataSource(imagePath);
+	  	        messageBodyPart.setDataHandler(new DataHandler(fds));
+	  	        messageBodyPart.setHeader("Content-ID","<image>");
+	  	        multipart.addBodyPart(messageBodyPart);
+	        }
+ 
 	        //QR code
 	        messageBodyPart = new MimeBodyPart();
 	        DataSource fds2 = new FileDataSource(codePath);
@@ -108,8 +113,11 @@ public class JavaMail extends javax.mail.Authenticator {
 	        
 	        Transport.send(message);   
         }catch(Exception e){
-        	// TODO
+        	Log.i("sendMailWithProduct", "error");
+        	return false;
         }
+        
+        return true;
     } 
 
     protected PasswordAuthentication getPasswordAuthentication() {   

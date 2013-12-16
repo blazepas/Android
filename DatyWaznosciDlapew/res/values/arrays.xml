@@ -24,9 +24,11 @@
         <item>Lista produktów</item>
         <item>Kategorie produktów</item>
         <item>Przypomnienia</item>
+        <item>Kup premium</item>
     </string-array>
     
     <string-array name="array_menu_icons">
+        <item>@drawable/collections_cloud</item>
         <item>@drawable/collections_cloud</item>
         <item>@drawable/collections_cloud</item>
         <item>@drawable/collections_cloud</item>
@@ -40,6 +42,7 @@
         <item>@color/menu_item_2_background</item>
         <item>@color/menu_item_3_background</item>
         <item>@color/menu_item_4_background</item>
+        <item>@color/menu_item_0_background</item>
     </string-array>
     
 </resources>

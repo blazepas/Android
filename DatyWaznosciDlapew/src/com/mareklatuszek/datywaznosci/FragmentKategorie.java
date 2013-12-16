@@ -18,6 +18,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragment;
+import com.mareklatuszek.utilities.CommonUtilities;
 
 public class FragmentKategorie extends SherlockFragment implements OnClickListener, OnItemLongClickListener{
 	
@@ -34,7 +35,8 @@ public class FragmentKategorie extends SherlockFragment implements OnClickListen
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		rootView = inflater.inflate(R.layout.fragment_kategorie, container, false);
 		
-		getSherlockActivity().getSupportActionBar().setTitle("Kategorie");
+		CommonUtilities utilities = new CommonUtilities();
+		utilities.setActionBarTitle("Kategorie", getSherlockActivity());
 		
 		categoryTxtBoxKat = (EditText) rootView.findViewById(R.id.categoryTxtBoxKat);
 		dodajButtonKat = (Button) rootView.findViewById(R.id.dodajButtonKat);

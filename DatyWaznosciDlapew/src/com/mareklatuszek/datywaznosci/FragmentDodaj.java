@@ -90,8 +90,8 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		rootView = inflater.inflate(R.layout.fragment_dodaj, container, false);
 		currentDate = utilities.getCurrentDate();
 		dbAdapter = new AdapterDB(getActivity());
-		
-		getSherlockActivity().getSupportActionBar().setTitle("Dodaj produkt");
+
+		utilities.setActionBarTitle("Dodaj produkt", getSherlockActivity());
 		
 		initPodstawowe();
 		initDodatkowe();

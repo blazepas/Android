@@ -12,6 +12,7 @@ import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
@@ -44,8 +45,8 @@ public class FragmentProdukty extends SherlockFragment implements OnClickListene
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		super.onCreateView(inflater, container, savedInstanceState);
 		setHasOptionsMenu(true);
-		
-		getSherlockActivity().getSupportActionBar().setTitle("Lista produktów");
+
+		utilities.setActionBarTitle("Lista produktów", getSherlockActivity());
 		
 		rootView = inflater.inflate(R.layout.fragment_produkty, container, false);
 		dodajLay = (LinearLayout) rootView.findViewById(R.id.dodajLay);
@@ -92,6 +93,12 @@ public class FragmentProdukty extends SherlockFragment implements OnClickListene
 	@Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
       inflater.inflate(R.menu.items_product_list, menu);
+      boolean deviceHasMenuButton = ViewConfiguration.get(getActivity()).hasPermanentMenuKey();
+      if (!deviceHasMenuButton) {
+    	  menu.removeItem(R.id.shareMenuButton);
+    	  menu.removeItem(R.id.scanMenuButton);
+    	  menu.removeItem(R.id.addMenuButton);
+      }
 
       super.onCreateOptionsMenu(menu, inflater);
     }

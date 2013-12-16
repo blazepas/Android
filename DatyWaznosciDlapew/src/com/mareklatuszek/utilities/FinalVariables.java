@@ -1,6 +1,8 @@
 package com.mareklatuszek.utilities;
 
 public interface FinalVariables {
+	
+	public static final String PREMIUM_APP_URI = "com.mareklatuszek.datywaznosci.premium";
 
 	public static final int DB_VERSION = 2;
 	public static final String DB_DEBUG_TAG = "Product database"; 

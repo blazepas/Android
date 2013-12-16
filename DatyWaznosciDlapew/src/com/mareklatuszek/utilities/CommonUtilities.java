@@ -43,14 +43,17 @@ import android.provider.MediaStore;
 import android.support.v4.app.FragmentActivity;
 import android.text.Html;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.google.zxing.WriterException;
 import com.mareklatuszek.datywaznosci.Product;
 import com.mareklatuszek.datywaznosci.R;
@@ -455,7 +458,7 @@ public class CommonUtilities implements FinalVariables {
 				jObj.put(DB_TERMIN_WAZNOSCI, terminWaz);
 				jObj.put(DB_KATEGORIA, kategoria);
 			} catch (JSONException e) {
-				Log.i("utiliteis", "get product list to email");
+				Log.i("utilities", "get product list to email");
 			}
 		    
 		    lista.put(jObj);
@@ -582,6 +585,14 @@ public class CommonUtilities implements FinalVariables {
 		return pixels;
 	}
 	
+	public void setActionBarTitle(String title, SherlockFragmentActivity mActivity) {
+		LinearLayout actionBarLayout = (LinearLayout) mActivity.getSupportActionBar().getCustomView();
+		actionBarLayout.setOrientation(LinearLayout.VERTICAL);
+		TextView titleTxt = (TextView) actionBarLayout.findViewById(R.id.title);
+		titleTxt.setText(title);
+		mActivity.getSupportActionBar().setCustomView(actionBarLayout);
+	}
+	
 	public boolean validateCode(String code, String codeFormat) {
 		if(codeFormat.equals("QR_CODE")){
 			try {
@@ -646,10 +657,14 @@ public class CommonUtilities implements FinalVariables {
 	}
 	
 	public boolean sendEmailWithSingleProduct(String email, Product product, FragmentActivity mActivity) {
+		boolean sendStatus = false;
 		try {  
 			String table = getProductTableHTML(product);
-			String imagePath = product.getImage() + "thumb";
-			
+			String imagePath = product.getImage();
+			if (imagePath != null && !imagePath.isEmpty()) {
+				imagePath += "thumb";
+				
+			}	
 			String productJson = getJsonFromProduct(product);
 			Bitmap bitmap = encodeCodeToBitmap(productJson, "QR_CODE", mActivity);
 			Uri u = null;
@@ -659,11 +674,12 @@ public class CommonUtilities implements FinalVariables {
 			String codePath = getRealPathFromURI(u, mActivity);
 			
             JavaMail sender = new JavaMail();
-            sender.sendMailWithProduct("Mój produkt", table, imagePath, codePath, email);
+            sendStatus = sender.sendMailWithProduct("Mój produkt", table, imagePath, codePath, email);
         } catch (Exception e) {   
-             return false; 
+        	Log.i("sendEmailWithSingleProduct", "error");
+             return sendStatus; 
         } 
-		return true;
+		return sendStatus;
 	}
 			
 	public File savebitmap(Bitmap bmp) throws IOException {
@@ -752,21 +768,7 @@ public class CommonUtilities implements FinalVariables {
 		
 		return przypomnienia;
 	}
-		
-	private boolean appInstalledOrNot(String uri, FragmentActivity mActivity)
-    {
-        PackageManager pm = mActivity.getPackageManager();
-        boolean app_installed = false;
-        try {
-               pm.getPackageInfo(uri, PackageManager.GET_ACTIVITIES);
-               app_installed = true;
-        }
-        catch (PackageManager.NameNotFoundException e) {
-               app_installed = false;
-        }
-        return app_installed ;
-    }
-	
+
 	public boolean postData(String email, JSONArray json, String url) {
 	    HttpClient httpclient = new DefaultHttpClient();
 

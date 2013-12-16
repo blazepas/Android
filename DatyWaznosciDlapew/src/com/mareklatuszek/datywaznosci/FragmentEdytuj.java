@@ -83,7 +83,7 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 		currentDate = utilities.getCurrentDate();
 		dbAdapter = new AdapterDB(getActivity());	
 		
-		getSherlockActivity().getSupportActionBar().setTitle("Edycja produktu");
+		utilities.setActionBarTitle("Edycja produktu", getSherlockActivity());
 				
 		initPodstawowe();
 		initDodatkowe();
