@@ -42,10 +42,6 @@ import com.sun.mail.imap.Utility;
 
 
 public class MainActivity extends SherlockFragmentActivity implements FinalVariables, OnClickListener {
-	
-	private static final int SWIPE_MIN_DISTANCE = 50;
-    private static final int SWIPE_MAX_OFF_PATH = 250;
-    private static final int SWIPE_THRESHOLD_VELOCITY = 200;
     private GestureDetector gestureDetector;
     View.OnTouchListener gestureListener;
 
@@ -69,16 +65,13 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
 	Fragment fragmentEdytuj;
 	
     @Override   
-    public void onResume()
-    {
-    	super.onResume();
-    	
+    public void onResume() {
+    	super.onResume();    	
     	if(notification) {
     		String productCode = getIntent().getStringExtra("productCode");
             String timeInMillis = getIntent().getStringExtra("timeInMillis");
             notification = false;
             if (productCode != null & timeInMillis != null) {
-            	
         		onNotification(productCode, timeInMillis);
             } else {
             	//TODO
@@ -92,8 +85,7 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
 		this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 		adapterDb = new AdapterDB(this);
 		
-		getSupportActionBar().setHomeButtonEnabled(true);
-		setActionBarTypeface();
+		initActionBar();
 		setContentView(R.layout.main_frame);
 
 		if (savedInstanceState == null) {
@@ -103,18 +95,15 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
 		} else {
 			menuPos = savedInstanceState.getInt("menuPos");
 			initMenu();
-		}
-		
+		}		
 		new InitVersion().execute();
 	}
 	
 	@Override
 	public void onSaveInstanceState(Bundle bundle) {
 		super.onSaveInstanceState(bundle);
-
 		bundle.putInt("menuPos", menuPos);    
 	}
-
 	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
@@ -171,16 +160,16 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
 	@Override
     public void onBackPressed() {		
 		if (currentFragmentPos == 6) { // jesli fragment edytuj			
-			Bundle extras = fragmentEdytuj.getArguments();
-			
-			if (extras != null) {
+			if (fragmentEdytuj != null) {
+				Bundle extras = fragmentEdytuj.getArguments();// TODO
 				Product product = (Product) extras.getSerializable("product");
 				selectFragmentToShowProduct(product);
-			}			
+			} else {
+				selectFragment(2);	
+			}
 		} else if (currentFragmentPos == 5) { //jesli fragment produkt			
 			selectFragment(2);			
 		} else {
-			
 	        if (backIsDoublePressed) {
 	            super.onBackPressed();
 	            return;
@@ -200,10 +189,7 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
 	
 
 	@Override
-	public void onClick(View v) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void onClick(View v) {}
 	
 	private void initMenu() {
 		menu = new SlidingMenu(this);
@@ -216,6 +202,11 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
 		menu.setMenu(getMenuList());
 	}
 	
+	private void initActionBar() {		
+		getSupportActionBar().setHomeButtonEnabled(true);
+		getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM | ActionBar.DISPLAY_SHOW_HOME);
+		getSupportActionBar().setCustomView(R.layout.actionbar_title);
+	}
 
 	private class MenuItemClickListener implements ListView.OnItemClickListener {
 		@Override
@@ -305,35 +296,16 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
         }		
 	}
 	
-	private void setPictureInFragmentDodaj(Uri selectedImage) {
-		Log.i("picture", "taken");
-	       
+	private void setPictureInFragmentDodaj(Uri selectedImage) {	       
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentDodaj actualFragment = (FragmentDodaj) fragmentManager.findFragmentById(currentFragmentId);
         actualFragment.setCameraResult(selectedImage);      
 	}
 	
-	private void setPictureInFragmentEdytuj(Uri selectedImage) {
-		Log.i("picture", "taken");
-	       
+	private void setPictureInFragmentEdytuj(Uri selectedImage) {	       
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentEdytuj actualFragment = (FragmentEdytuj) fragmentManager.findFragmentById(currentFragmentId);
         actualFragment.setCameraResult(selectedImage);      
-	}
-	
-	private void setActionBarTypeface() {
-//		if (android.os.Build.VERSION.SDK_INT>=android.os.Build.VERSION_CODES.HONEYCOMB) {  //API Level 11+
-//			int actionBarTitle = Resources.getSystem().getIdentifier("action_bar_title", "id", "android");
-//			TextView actionBarTitleView = (TextView) getWindow().findViewById(actionBarTitle);
-//			if(actionBarTitleView != null){
-//			    actionBarTitleView.setTypeface(FontBariol.getInstance(this).getTypeFace());
-//			}
-//		} else {
-//			getSupportActionBar().setTitleTypeface(FontBariol.getInstance(this).getTypeFace());
-//		}
-		
-		getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM | ActionBar.DISPLAY_SHOW_HOME);
-		getSupportActionBar().setCustomView(R.layout.actionbar_title);
 	}
 
 	private FrameLayout getMenuList() {
@@ -380,8 +352,7 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
         selectFragment(6);		
 	}
 	
-	public void removeFragmentEdytuj() {
-		
+	public void removeFragmentEdytuj() {		
 		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 		ft.remove(fragmentEdytuj).commit();
 	}

@@ -24,6 +24,8 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.mareklatuszek.utilities.BitmapLoader;
 import com.mareklatuszek.utilities.CommonUtilities;
+import com.mareklatuszek.utilities.FinalVariables;
+import com.mareklatuszek.utilities.PremiumUtilities;
 
 public class FragmentProdukt extends SherlockFragment implements OnClickListener {
 	
@@ -39,20 +41,27 @@ public class FragmentProdukt extends SherlockFragment implements OnClickListener
 	Bitmap codeBmp;
 	Bitmap imageBmp;
 	
+	@Override
+	public void onResume() {
+		super.onResume();
+		utilities.setActionBarTitle("Podgląd produktu", getSherlockActivity());
+	}
 		
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		rootView = inflater.inflate(R.layout.fragment_produkt, container, false);
 		
-		getSherlockActivity().getSupportActionBar().setTitle("Podgląd produktu");
-				
 		Bundle extras = getArguments();
-		product = (Product) extras.getSerializable("product");	
-		
-        setHasOptionsMenu(true);
-		
-		initPodstawowe();
-		initDodatkowe();
+		if (extras != null) {
+			product = (Product) extras.getSerializable("product");	
+			
+	        setHasOptionsMenu(true);
+			
+			initPodstawowe();
+			initDodatkowe();
+		} else {
+			switchToProductsFragment();
+		}
 		
 		return rootView;
 	}
@@ -82,8 +91,12 @@ public class FragmentProdukt extends SherlockFragment implements OnClickListener
             break;
           case R.id.share:
           case R.id.shareMenuButton:
-        	  DialogShare dialogShare = new DialogShare(getActivity(), product);
-        	  dialogShare.show();
+        	  if (PremiumUtilities.APP_VERSION_NONE) {
+        		  Toast.makeText(getActivity(), "Aby korzystać z tej funkcji należy wykupic wersję premium", 2000).show();
+        	  } else {
+        		  DialogShare dialogShare = new DialogShare(getActivity(), product);
+            	  dialogShare.show();
+        	  } 
             break;
           case R.id.delete:
           case R.id.deleteMenuButton:

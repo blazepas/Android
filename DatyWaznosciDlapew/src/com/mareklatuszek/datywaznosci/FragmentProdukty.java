@@ -29,6 +29,7 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.mareklatuszek.utilities.CommonUtilities;
 import com.mareklatuszek.utilities.JavaMail;
+import com.mareklatuszek.utilities.PremiumUtilities;
 
 public class FragmentProdukty extends SherlockFragment implements OnClickListener {
 	
@@ -77,8 +78,12 @@ public class FragmentProdukty extends SherlockFragment implements OnClickListene
 	    Product product = products.get(pos);
     	switch (item.getItemId()) {
     	case R.id.udostepnijPopup:
-    		DialogShare dialogShare = new DialogShare(getActivity(), product);
-       	  	dialogShare.show();
+    		if (PremiumUtilities.APP_VERSION_NONE) {
+      		  	Toast.makeText(getActivity(), "Aby korzystać z tej funkcji należy wykupic wersję premium", 2000).show();
+      	  	} else {
+      	  		DialogShare dialogShare = new DialogShare(getActivity(), product);
+      	  		dialogShare.show();
+      	  	} 
     		break;
     	case R.id.edytujPopup:
     		switchToEditFragment(product);

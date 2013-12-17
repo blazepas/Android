@@ -151,9 +151,7 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 	    case R.id.obrazekImage:
 	    	inflater.inflate(R.menu.popup_get_image, menu);
 	    	break;
-	    }
-	    
-	    
+	    }	    
 	}
 	
 	@Override
@@ -445,31 +443,29 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		return product;
 	}
 	
-	private void saveData() {
-		new AsyncTask<Void, Void, Void>() {
-			ProgressDialog progressDialog;
-				
-			@Override
-			protected void onPreExecute() {
-				progressDialog = ProgressDialog.show(getActivity(), "Dodaję", "Dodawanie do bazy");
-			}
+	private class SaveData extends AsyncTask<Void, Void, Void> {
+		ProgressDialog progressDialog;
+		
+		@Override
+		protected void onPreExecute() {
+			progressDialog = ProgressDialog.show(getActivity(), "Dodaję", "Dodawanie do bazy");
+		}
 
-			@Override
-			protected Void doInBackground(Void... params) {
-				storeAllToDatabase();	
-				return null;
-			}
-			
-			@Override
-			protected void onPostExecute(Void v) {
-				//TODO zrobic okienko jesli niepowodzenie
-				progressDialog.dismiss();
-				MainActivity.imageUri = Uri.parse("");
-				((MainActivity) getActivity()).selectFragment(2); // prze��cza a ekran listy produkt�w
-			}
-		}.execute();
+		@Override
+		protected Void doInBackground(Void... params) {
+			storeAllToDatabase();	
+			return null;
+		}
+		
+		@Override
+		protected void onPostExecute(Void v) {
+			//TODO zrobic okienko jesli niepowodzenie
+			progressDialog.dismiss();
+			MainActivity.imageUri = Uri.parse("");
+			((MainActivity) getActivity()).selectFragment(2); // prze��cza a ekran listy produkt�w
+		}
 	}
-	
+		
 	public void saveCodeFromDialogGeneruj(String code, String codeFormat) {
 		this.code = code;
 		this.codeFormat = codeFormat;
@@ -630,9 +626,7 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 			showChoiceDialog(code, codeFormat);
 		} else {
 			setValidateCode(code, codeFormat);
-		}
-		
-		
+		}		
 	}
 	
 	private void setCodeImage(String code, String codeFormat) {
@@ -911,7 +905,7 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 			this.codeFormat = product.getCodeFormat();
 			save();
 		} else {
-			saveData();
+			new SaveData().execute();
 		}	
 	
 	}

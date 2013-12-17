@@ -70,17 +70,18 @@ public class PremiumUtilities {
 
 	public boolean isNetworkOnline() {
 	    boolean status = false;
-	    try{
+	    try {
 	        ConnectivityManager cm = (ConnectivityManager) mActivity.getSystemService(Context.CONNECTIVITY_SERVICE);
 	        NetworkInfo netInfo = cm.getNetworkInfo(0);
 	        if (netInfo != null && netInfo.getState() == NetworkInfo.State.CONNECTED) {
 	            status= true;
-	        }else {
+	        } else {
 	            netInfo = cm.getNetworkInfo(1);
-	            if(netInfo!=null && netInfo.getState() == NetworkInfo.State.CONNECTED)
+	            if(netInfo!=null && netInfo.getState() == NetworkInfo.State.CONNECTED) {
 	                status= true;
+	            }
 	        }
-	    }catch(Exception e){
+	    } catch(Exception e) {
 	        e.printStackTrace();  
 	        return false;
 	    }
@@ -102,13 +103,17 @@ public class PremiumUtilities {
     }
 	
 	public boolean isVerificated() {
-		
-		// symulacja opóźnienia odpowiedzi z serwera
-		try {
-			Thread.sleep(5000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
+		if (!isNetworkOnline()) {
+			return false;
+		} else {
+			// symulacja opóźnienia odpowiedzi z serwera
+			try {
+				Thread.sleep(5000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			return true; //TODO
 		}
-		return true; //TODO
+		
 	}
 }

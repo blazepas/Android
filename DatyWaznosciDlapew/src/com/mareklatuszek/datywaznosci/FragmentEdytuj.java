@@ -126,7 +126,6 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 		
 		if (dodatkoweIsVisible) { 
 			bundle.putBoolean("dodatkowe", true);
-
 		} else {
 			bundle.putBoolean("dodatkowe", false);
 		}
@@ -232,7 +231,6 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 	public boolean onKey(View v, int keyCode, KeyEvent event) {
 		switch (v.getId()) {
 		case R.id.okresWazTextBox:
-			Log.i("box", "onItem");
 	    	setTerminWaz();	    		
 			break;	
 		}
@@ -438,31 +436,30 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 		return product;
 	}
 	
-	private void saveData() {
-		new AsyncTask<Void, Void, Void>() {
-			ProgressDialog progressDialog;
-				
-			@Override
-			protected void onPreExecute() {
-				progressDialog = ProgressDialog.show(getActivity(), "Dodaję", "Zapisywanie do bazy");
-			}
+	private class SaveData extends AsyncTask<Void, Void, Void> {
 
-			@Override
-			protected Void doInBackground(Void... params) {
-				storeAllToDatabase();	
-				return null;
-			}
-			
-			@Override
-			protected void onPostExecute(Void v) {
-				//TODO zrobic okienko jesli niepowodzenie
-				progressDialog.dismiss();
-				MainActivity.imageUri = Uri.parse("");
-				((MainActivity) getActivity()).selectFragment(2); // prze��cza a ekran listy produkt�w
-			}
-		}.execute();
+		ProgressDialog progressDialog;
+		
+		@Override
+		protected void onPreExecute() {
+			progressDialog = ProgressDialog.show(getActivity(), "Dodaję", "Zapisywanie do bazy");
+		}
+
+		@Override
+		protected Void doInBackground(Void... params) {
+			storeAllToDatabase();	
+			return null;
+		}
+		
+		@Override
+		protected void onPostExecute(Void v) {
+			//TODO zrobic okienko jesli niepowodzenie
+			progressDialog.dismiss();
+			MainActivity.imageUri = Uri.parse("");
+			((MainActivity) getActivity()).selectFragment(2); // prze��cza a ekran listy produkt�w
+		}	
 	}
-	
+		
 	public void saveProductFromDialogGeneruj(String code, String codeFormat) {
 		this.code = code;
 		this.codeFormat = codeFormat;
@@ -900,7 +897,7 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 			this.codeFormat = product.getCodeFormat();
 			save();
 		} else {
-			saveData();
+			new SaveData().execute();
 		}	
 	}
 	
@@ -943,9 +940,6 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 		String nazwa = nazwaTextBox.getText().toString();
 		String termin = terminWazTextBox.getText().toString();
 		
-		Log.i("nazwa", nazwa);
-		Log.i("termin", termin);
-		
 		if (nazwa.equals("") || termin.equals("") || termin.equals("Wprowadź datę")) {
 			return false;
 		} else {	
@@ -953,10 +947,6 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 		}
 	}
 	
-	private void switchToEditFragment(Product product) {
-		((MainActivity) getActivity()).selectFragmentToEditProduct(product);
-	}
-
 	private void switchToShowFragment(Product product) {
 		((MainActivity) getActivity()).selectFragmentToShowProduct(product);
 	}
