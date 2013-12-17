@@ -221,4 +221,9 @@ public class Product implements FinalVariables, Serializable {
 
 		this.przypomnienia = przypomnienia;
 	}
+	
+	@Override
+	public String toString() {
+		return nazwa;
+	}
 }

@@ -1,16 +1,20 @@
 package com.mareklatuszek.datywaznosci;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 
 import org.json.JSONArray;
 
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
@@ -21,6 +25,8 @@ import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.PopupWindow;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragment;
@@ -35,12 +41,15 @@ public class FragmentProdukty extends SherlockFragment implements OnClickListene
 	
 	AdapterDB dbAdapter;
 	AdapterProductList listAdapter;
+	AdapterCustomSpinner adapterKategorieSpinner;
 	ArrayList<Product> products = new ArrayList<Product>();
+	ArrayList<Product> productsTemp = new ArrayList<Product>();
+	ArrayList<String> categories = new ArrayList<String>();
 	CommonUtilities utilities = new CommonUtilities();
 	
 	ListView productsList;
 	View rootView;
-	LinearLayout dodajLay;
+	LinearLayout dodajLay, kategorieDropDown;
 		
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -53,7 +62,7 @@ public class FragmentProdukty extends SherlockFragment implements OnClickListene
 		dodajLay = (LinearLayout) rootView.findViewById(R.id.dodajLay);
 		dodajLay.setOnClickListener(this);
 
-		new InitList().execute();
+		new InitList().execute(); //TODO dodać synchronizację do adapterDb
 		
 		return rootView;
 	}
@@ -98,12 +107,17 @@ public class FragmentProdukty extends SherlockFragment implements OnClickListene
 	@Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
       inflater.inflate(R.menu.items_product_list, menu);
-      boolean deviceHasMenuButton = ViewConfiguration.get(getActivity()).hasPermanentMenuKey();
-      if (!deviceHasMenuButton) {
-    	  menu.removeItem(R.id.shareMenuButton);
-    	  menu.removeItem(R.id.scanMenuButton);
-    	  menu.removeItem(R.id.addMenuButton);
+      try {
+    	  boolean deviceHasMenuButton = ViewConfiguration.get(getActivity()).hasPermanentMenuKey();
+          if (!deviceHasMenuButton) {
+        	  menu.removeItem(R.id.shareMenuButton);
+        	  menu.removeItem(R.id.scanMenuButton);
+        	  menu.removeItem(R.id.addMenuButton);
+          }
+      } catch (NoSuchMethodError e) {
+    	  Log.i("Fragment Produkty", "onCreateOptionsMenu ERROR");
       }
+      
 
       super.onCreateOptionsMenu(menu, inflater);
     }
@@ -135,8 +149,87 @@ public class FragmentProdukty extends SherlockFragment implements OnClickListene
 		case R.id.dodajLay:
 			selectFragmentDodaj();
 			break;
+		case R.id.kategorieDropDown:
+			showSpinnerPopUp(v);
+			break;
 		}
 		
+	}
+	
+	private ArrayList<Product> getSortedList(String choice) {
+		ArrayList<Product> sorted = new ArrayList<Product>();
+		for (int i = 0; i < productsTemp.size(); i++) {
+			Product product = productsTemp.get(i);
+			String category = product.getKategoria();
+			if (category.equals(choice)) {
+				sorted.add(product);
+			}
+		}
+		return sorted;
+	}
+	
+	private void showSpinnerPopUp(final View clickedView) {
+
+        final PopupWindow popupWindow = new PopupWindow(getActivity());
+        ListView spinnerList = new ListView(getActivity());
+        ColorDrawable background = new ColorDrawable(getResources().getColor(R.color.dropdown));
+        
+        switch (clickedView.getId()) {
+	 	case R.id.kategorieDropDown:
+	     	spinnerList.setAdapter(adapterKategorieSpinner);
+	     	spinnerList.setOnItemClickListener(new OnItemClickListener() {
+	
+	 			@Override
+	 			public void onItemClick(AdapterView<?> arg0, View view, int arg2,long arg3) 
+	 			{
+	 				String choice = (String) view.getTag();
+	 				setCustomSpinner(choice, kategorieDropDown);
+	 				popupWindow.dismiss();
+	 				products = getSortedList(choice);
+	 				listAdapter = new AdapterProductList(getActivity(), products, getFragmentManager(), getId());
+					productsList.setAdapter(listAdapter);
+	 			}
+	 		});
+	     	break;
+        }
+
+        popupWindow.setFocusable(true); 
+        popupWindow.setBackgroundDrawable(background); //TODO
+        popupWindow.setHeight(WindowManager.LayoutParams.WRAP_CONTENT);
+        popupWindow.setWidth(clickedView.getLayoutParams().width);
+        popupWindow.setContentView(spinnerList);
+
+        popupWindow.showAsDropDown(clickedView);
+    }
+	
+	private class InitSort extends AsyncTask<Void, Void, Void> {
+		
+		@Override
+		protected void onPreExecute() {			
+			kategorieDropDown = (LinearLayout) rootView.findViewById(R.id.kategorieDropDown);
+		}
+
+		@Override
+		protected Void doInBackground(Void... params) {
+			try {
+
+				dbAdapter = new AdapterDB(getActivity());
+				dbAdapter.open();
+				categories = dbAdapter.getAllCategories();
+				dbAdapter.close();
+				
+			} catch (Exception e) {
+				// TODO
+			}
+			return null;
+		}
+		
+		@Override
+		protected void onPostExecute(Void v) {
+			setCustomSpinner("wybierz kategorię", kategorieDropDown);
+			adapterKategorieSpinner = new AdapterCustomSpinner(getActivity(), categories);
+			kategorieDropDown.setOnClickListener(FragmentProdukty.this);
+		}
 	}
     
     private class InitList extends AsyncTask<Void, Void, Void> {
@@ -148,10 +241,16 @@ public class FragmentProdukty extends SherlockFragment implements OnClickListene
 
 		@Override
 		protected Void doInBackground(Void... params) {
-			dbAdapter = new AdapterDB(getActivity());
-			dbAdapter.open();
-			products = dbAdapter.getAllProducts();
-			dbAdapter.close();
+			try {
+				dbAdapter = new AdapterDB(getActivity());
+				dbAdapter.open();
+				products = dbAdapter.getAllProducts();
+				productsTemp = products;
+				dbAdapter.close();
+			} catch (Exception e) {
+				// TODO
+			}
+			
 			return null;
 		}
 		
@@ -169,10 +268,23 @@ public class FragmentProdukty extends SherlockFragment implements OnClickListene
 //				});
 				
 				registerForContextMenu(productsList); // TODO prawdopodobnie nie bedzie uzywane
+				
+				new InitSort().execute();
 			}
 		}
 	}
     
+	private void setCustomSpinner(String title, LinearLayout viewToSet) {
+		LayoutInflater inflater = LayoutInflater.from(getActivity());
+		LinearLayout spinner = (LinearLayout) inflater.inflate(R.layout.spinner_button, null);
+		
+		TextView spinnerTxt = (TextView) spinner.findViewById(R.id.spinnerTxt);
+		spinnerTxt.setText(title);
+		
+		viewToSet.removeAllViewsInLayout();
+		viewToSet.addView(spinner);
+	}
+        
 	public void switchToProductFragment(int positon) {
 		Product product = products.get(positon);
 		((MainActivity) getActivity()).selectFragmentToShowProduct(product);

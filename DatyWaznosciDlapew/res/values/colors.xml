@@ -40,6 +40,7 @@
     
     <!-- fragment produkty -->
     <color name="products_add">#0a8594</color>
+    <color name="products_sort">#24acbd</color>
     <color name="products_even">@color/fragment_background</color>
     <color name="products_odd">#a4e1e9</color>
     <color name="products_expand_even_bg">#82ced7</color>

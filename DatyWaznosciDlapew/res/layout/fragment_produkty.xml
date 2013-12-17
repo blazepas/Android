@@ -36,6 +36,33 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@color/products_sort"
+        android:gravity="center" >
+
+        <com.mareklatuszek.utilities.TextViewBariol
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="SORTUJ WEDŁUG: "
+            android:textAppearance="@style/TPP.Small.TextAppearance"
+            android:textColor="@color/light_text_view" />
+
+        <LinearLayout
+            android:id="@+id/kategorieDropDown"
+            android:layout_width="120dp"
+            android:layout_height="30dp"
+            android:layout_marginLeft="10dp"
+            android:background="@color/clicable_views"
+            android:gravity="center"
+            android:orientation="vertical" >
+
+        </LinearLayout>
+
+    </LinearLayout>
+
     <ListView
         android:id="@+id/productsList"
         android:layout_width="match_parent"

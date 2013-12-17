@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewConfiguration;
@@ -69,13 +70,17 @@ public class FragmentProdukt extends SherlockFragment implements OnClickListener
 	@Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
       inflater.inflate(R.menu.items_product, menu);
-      
-      boolean deviceHasMenuButton = ViewConfiguration.get(getActivity()).hasPermanentMenuKey();
-      if (!deviceHasMenuButton) {
-    	  menu.removeItem(R.id.editMenuButton);
-    	  menu.removeItem(R.id.shareMenuButton);
-    	  menu.removeItem(R.id.deleteMenuButton);
+      try {
+    	  boolean deviceHasMenuButton = ViewConfiguration.get(getActivity()).hasPermanentMenuKey();
+          if (!deviceHasMenuButton) {
+        	  menu.removeItem(R.id.editMenuButton);
+        	  menu.removeItem(R.id.shareMenuButton);
+        	  menu.removeItem(R.id.deleteMenuButton);
+          }
+      } catch (NoSuchMethodError e) {
+    	  Log.i("Fragment Produkt", "onCreateOptionsMenu ERROR");
       }
+      
 
       super.onCreateOptionsMenu(menu, inflater);
     }
