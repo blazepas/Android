@@ -65,8 +65,8 @@ public class BitmapLoader
 		   int requiredWidth,int requiredHeight){
 		  
 		 
-		  BitmapFactory.Options options= getOptions(filePath,
-		     requiredWidth, requiredHeight);
+		  BitmapFactory.Options options = getOptions(filePath, requiredWidth, requiredHeight);
+		  options.inSampleSize = 5;
 		   
 		  return BitmapFactory.decodeFile(filePath,options);
 		 }

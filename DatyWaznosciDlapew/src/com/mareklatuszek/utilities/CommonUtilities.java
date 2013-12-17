@@ -37,6 +37,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.BitmapFactory.Options;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -744,8 +745,7 @@ public class CommonUtilities implements FinalVariables {
 	    PendingIntent pendingIntent = PendingIntent.getService(mActivity, intentId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 	    alarmManager.cancel(pendingIntent);
 	            
-	    Log.i("Alarm usuniety", drukujCzas(cal));
-        
+	    Log.i("Alarm usuniety", drukujCzas(cal));  
 	}
 	
 	public String drukujCzas(Calendar kalendarz) {
@@ -795,8 +795,10 @@ public class CommonUtilities implements FinalVariables {
 	}
 	
 	public void createThumb(String path) {
-        try {
-        	Bitmap b = BitmapFactory.decodeFile(path);
+        try {       	
+        	BitmapFactory.Options options = new Options();
+        	options.inSampleSize = 5;
+        	Bitmap b = BitmapFactory.decodeFile(path, options);
     		Bitmap out = Bitmap.createScaledBitmap(b, 50, 50, false);
 
             File file = new File(path + "thumb");
@@ -806,9 +808,11 @@ public class CommonUtilities implements FinalVariables {
             fOut.close();
             b.recycle();
             out.recycle();
-
+            
         } catch (Exception e) { // TODO
         	Log.i("utilities", "create thumb error");
+        } catch (OutOfMemoryError e) {
+        	Log.i("utilities", "create thumb out of memory");
         }
 	}
 	

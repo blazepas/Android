@@ -128,8 +128,13 @@ public class FragmentProdukty extends SherlockFragment implements OnClickListene
        switch (item.getItemId()) {
           case R.id.share:
           case R.id.shareMenuButton:
-          	  DialogShare dialogShare = new DialogShare(getActivity(), products);
-          	  dialogShare.show();
+        	  if (products.size() > 0) {
+        		  DialogShare dialogShare = new DialogShare(getActivity(), products);
+              	  dialogShare.show();
+        	  } else {
+        		  Toast.makeText(getActivity(), "Brak produktów do udostępnienia", 2000).show();
+        	  }
+          	  
             break;
           case R.id.scan:
           case R.id.scanMenuButton:
@@ -268,9 +273,9 @@ public class FragmentProdukty extends SherlockFragment implements OnClickListene
 //				});
 				
 				registerForContextMenu(productsList); // TODO prawdopodobnie nie bedzie uzywane
-				
-				new InitSort().execute();
 			}
+			
+			new InitSort().execute();
 		}
 	}
     

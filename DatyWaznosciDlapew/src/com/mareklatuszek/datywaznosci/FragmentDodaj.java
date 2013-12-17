@@ -459,7 +459,6 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		
 		@Override
 		protected void onPostExecute(Void v) {
-			//TODO zrobic okienko jesli niepowodzenie
 			progressDialog.dismiss();
 			MainActivity.imageUri = Uri.parse("");
 			((MainActivity) getActivity()).selectFragment(2); // prze��cza a ekran listy produkt�w
@@ -666,7 +665,6 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		
 	public void setCameraResult(Uri selectedImage) { 
         getActivity().getContentResolver().notifyChange(selectedImage, null);
-        ContentResolver cr = getActivity().getContentResolver();
         Bitmap bitmap;
         try {
         	String path = utilities.getRealPathFromURI(selectedImage, getActivity());
