@@ -266,11 +266,13 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		barcodeImage = (ImageView) rootView.findViewById(R.id.barcodeImage);
 		obrazekImage = (ImageView) rootView.findViewById(R.id.obrazekImage);
 		nazwaTextBox = (EditText) rootView.findViewById(R.id.nazwaTextBox);
+		terminWazTextBox = (EditText) rootView.findViewById(R.id.terminWazTextBox);
+		terminWazInfoImage = (ImageView) rootView.findViewById(R.id.terminWazInfoImage);
 		okresWazTextBox = (EditText) rootView.findViewById(R.id.okresWazTextBox);
 		okresWazDropDown = (LinearLayout) rootView.findViewById(R.id.okresWazDropDown);
-		zapiszButton = (Button) rootView.findViewById(R.id.zapiszButton);
-		dodatkoweImage = (ImageView) rootView.findViewById(R.id.dodatkoweImage);
 		okresInfoImage = (ImageView) rootView.findViewById(R.id.okresInfoImage);
+		zapiszButton = (Button) rootView.findViewById(R.id.zapiszButton);
+		dodatkoweImage = (ImageView) rootView.findViewById(R.id.dodatkoweImage);		
 		
 		Bundle extras = getArguments(); // TODO jesli zeskanuje
 		if (extras != null) {
@@ -286,11 +288,14 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		
 		barcodeImage.setOnClickListener(this);
 		obrazekImage.setOnClickListener(this);
+		terminWazTextBox.setOnClickListener(this);
+		terminWazInfoImage.setOnClickListener(this);
 		okresInfoImage.setOnClickListener(this);
-		zapiszButton.setOnClickListener(this);	
 		okresWazDropDown.setOnClickListener(this);
-		dodatkoweImage.setOnClickListener(this);
 		okresWazTextBox.setOnKeyListener(this);
+		zapiszButton.setOnClickListener(this);		
+		dodatkoweImage.setOnClickListener(this);
+		
 	}
 	
 	private void initDodatkowe() {		
@@ -299,22 +304,18 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		dodatkowe = (LinearLayout) rootView.findViewById(R.id.dodatkowe);	
 		dodatkowe.addView(latDodatkoweEdit);
 		
-		dataOtwTxtBox = (EditText) dodatkowe.findViewById(R.id.dataOtwTxtBox);
-		terminWazTextBox = (EditText) dodatkowe.findViewById(R.id.terminWazTextBox);
+		dataOtwTxtBox = (EditText) dodatkowe.findViewById(R.id.dataOtwTxtBox);		
 		kategroieImage = (ImageView) dodatkowe.findViewById(R.id.kategroieImage);
 		kategorieDropDown = (LinearLayout) dodatkowe.findViewById(R.id.kategorieDropDown);
 		opisTxtBox = (EditText) dodatkowe.findViewById(R.id.opisTxtBox);
 		przypLayout = (LinearLayout) dodatkowe.findViewById(R.id.przypomnieniaLayout);
-		dataZuzTextBox = (EditText) dodatkowe.findViewById(R.id.dataZuzTextBox);
-		terminWazInfoImage = (ImageView) dodatkowe.findViewById(R.id.terminWazInfoImage);
+		dataZuzTextBox = (EditText) dodatkowe.findViewById(R.id.dataZuzTextBox);		
 		dataZuzInfoImage = (ImageView) dodatkowe.findViewById(R.id.dataZuzInfoImage);
 	
-		dataOtwTxtBox.setOnClickListener(this);
-		terminWazTextBox.setOnClickListener(this);
+		dataOtwTxtBox.setOnClickListener(this);		
 		kategroieImage.setOnClickListener(this);
 		dataZuzTextBox.setOnClickListener(this);
 		kategorieDropDown.setOnClickListener(this);
-		terminWazInfoImage.setOnClickListener(this);
 		dataZuzInfoImage.setOnClickListener(this);
 		
 		dataOtwTxtBox.setText(currentDate);

@@ -51,7 +51,7 @@ public class FragmentProdukty extends SherlockFragment implements OnClickListene
 	
 	ListView productsList;
 	View rootView;
-	LinearLayout dodajLay, kategorieDropDown;
+	LinearLayout dodajLay, kategorieDropDown, scanLay;
 		
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -63,7 +63,10 @@ public class FragmentProdukty extends SherlockFragment implements OnClickListene
 		
 		rootView = inflater.inflate(R.layout.fragment_produkty, container, false);
 		dodajLay = (LinearLayout) rootView.findViewById(R.id.dodajLay);
+		scanLay = (LinearLayout) rootView.findViewById(R.id.scanLay);
+		
 		dodajLay.setOnClickListener(this);
+		scanLay.setOnClickListener(this);
 
 		new InitList().execute(); //TODO dodać synchronizację do adapterDb
 		
@@ -161,6 +164,8 @@ public class FragmentProdukty extends SherlockFragment implements OnClickListene
 		case R.id.kategorieDropDown:
 			showSpinnerPopUp(v);
 			break;
+		case R.id.scanLay:
+			scanCode();
 		}
 		
 	}
