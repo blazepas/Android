@@ -3,6 +3,7 @@ package com.mareklatuszek.utilities;
 public interface FinalVariables {
 	
 	public static final String PREMIUM_APP_URI = "com.mareklatuszek.datywaznosci.premium";
+	public static final String IMAGE_DIRECTORY_NAME = "TPP";
 
 	public static final int DB_VERSION = 2;
 	public static final String DB_DEBUG_TAG = "Product database"; 
@@ -58,6 +59,7 @@ public interface FinalVariables {
 	
 	//wartości z array_date w array resources
 	public static final String SPINNER_DATE_DAY = "Dzień"; 
+	public static final String SPINNER_DATE_WEEK = "Tydzień"; 
 	public static final String SPINNER_DATE_MONTH = "Miesiąc"; 
 	public static final String SPINNER_DATE_YEAR = "Rok"; 
 	

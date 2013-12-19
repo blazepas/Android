@@ -17,6 +17,7 @@
     <!-- Product List -->
     <dimen name="products_item_height">70dp</dimen>
     <dimen name="products_details_height">70dp</dimen>
+    <integer name="products_item_expand_duration">500</integer>
         
     <dimen name="dodaj_sections_height">50dp</dimen>
     <dimen name="slidingmenu_offset">50dp</dimen>

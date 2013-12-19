@@ -1,11 +1,15 @@
 package com.mareklatuszek.datywaznosci;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -13,6 +17,7 @@ import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -64,7 +69,7 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 	
 	boolean takePictureStat = false;
 	boolean dodatkoweIsVisible = false;
-	boolean isFullVersion = true;
+	boolean orientationChanged = false;
 	boolean isScanned = false;
 	int tempSpinnOkresPos = 0;
 	String currentDate = "";
@@ -83,13 +88,14 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 	EditText nazwaTextBox, okresWazTextBox, opisTxtBox, dataOtwTxtBox, terminWazTextBox, dataZuzTextBox;
 	LinearLayout podstawowe, dodatkowe, przypLayout, latDodatkoweEdit, okresWazDropDown, kategorieDropDown;
 	View przypRow;
-	
+		
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		super.onCreateView(inflater, container, savedInstanceState);
 		rootView = inflater.inflate(R.layout.fragment_dodaj, container, false);
 		currentDate = utilities.getCurrentDate();
 		dbAdapter = new AdapterDB(getActivity());
+		orientationChanged = false;
 
 		utilities.setActionBarTitle("Dodaj produkt", getSherlockActivity());
 		
@@ -122,9 +128,21 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 	}
 	
 	@Override
+	public void onDetach() {
+		super.onDetach();
+//		Log.i("onDetach", "onDetach");
+//		if (!orientationChanged) {
+//			Log.i("usun zdj", "usun zdj");
+//			// TODO usuwa tylko zdj 
+//			getActivity().getContentResolver().delete(MainActivity.imageUri, null, null);
+//		}
+	}
+		
+	@Override
 	public void onSaveInstanceState(Bundle bundle) {
 		super.onSaveInstanceState(bundle);
-	
+		
+	    orientationChanged = true;	
 		Product productToSave = prepareDataToStore();
 		
 		if (dodatkoweIsVisible) { 
@@ -191,12 +209,13 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		case R.id.przypDropDown:
 		case R.id.kategorieDropDown:
 		case R.id.okresWazDropDown:
-			getSpinnerPopUp(view).showAsDropDown(view);
+			showSpinnerPopUp(view).showAsDropDown(view);
 			break;
 		case R.id.okresInfoImage:
 		case R.id.dataZuzInfoImage:
 		case R.id.terminWazInfoImage:
-			showInfoPopUp(view);
+			PopUpInfo popUpInfo = new PopUpInfo(getActivity(), view);
+			popUpInfo.showPopUp();
 			break;
 		case R.id.barcodeImage:
 			view.showContextMenu();
@@ -394,15 +413,15 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 	}
 		
 	public void takePhoto() {	
-		File directory = new File(Environment.getExternalStorageDirectory()+File.separator+"TPP");
-		directory.mkdirs();
-		
 		Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        File f = new File(android.os.Environment.getExternalStorageDirectory(),File.separator + "TPP" + File.separator 
-        		+ (System.currentTimeMillis()/1000) + ".jpg");
-        MainActivity.imageUri = Uri.fromFile(f);
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
-        getActivity().startActivityForResult(intent, CAMERA_ADD_RQ_CODE);
+        File f = utilities.getImageMediaFile();
+        if (f != null) {
+        	MainActivity.imageUri = Uri.fromFile(f);
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
+            getActivity().startActivityForResult(intent, CAMERA_ADD_RQ_CODE);	
+        } else {
+        	//TODO
+        } 
     }
 	
 	public void pickImageFromGallery() {
@@ -782,7 +801,7 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		return choice;
 	}
 	
-	private PopupWindow getSpinnerPopUp(final View clickedView) {
+	private PopupWindow showSpinnerPopUp(final View clickedView) {
 
         final PopupWindow popupWindow = new PopupWindow(getActivity());
         ListView spinnerList = new ListView(getActivity());
@@ -842,52 +861,7 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 
         return popupWindow;
     }
-	
-	private void showInfoPopUp(View clickedView) {
-
-        final PopupWindow popupWindow = new PopupWindow(getActivity());
-        LayoutInflater inflater = LayoutInflater.from(getActivity());
-        Drawable background = getResources().getDrawable(R.drawable.back_info_popup);
-        int layoutId = R.layout.popup_info_right;
-        int wrapContent = WindowManager.LayoutParams.WRAP_CONTENT;
-        int posX = -265;
-        int posY = -35;
-        boolean leftSide = false;
-        String message = "";
-
-        switch (clickedView.getId()) {
-        case R.id.okresInfoImage:
-        	leftSide = false;
-        	message = INFO_OKRES;
-        	break;
-        case R.id.terminWazInfoImage:
-        	leftSide = true;
-        	message = INFO_TERMIN_WAZNOSCI;
-        	break;
-        case R.id.dataZuzInfoImage:
-        	leftSide = true;
-        	message = INFO_DATA_ZUZYCIA;
-        }
-        
-        if (leftSide) {
-            layoutId = R.layout.popup_info_left;
-            posX = -5;
-            posY = -35;
-        }
-        
-        RelativeLayout popupLay = (RelativeLayout) inflater.inflate(layoutId, null);
-        TextView popupTxt = (TextView) popupLay.findViewById(R.id.popupTxt);
-        popupTxt.setText(message);
-        
-        popupWindow.setFocusable(true); 
-        popupWindow.setBackgroundDrawable(background); //TODO
-        popupWindow.setHeight(wrapContent);
-        popupWindow.setWidth(300);
-        popupWindow.setContentView(popupLay);
-        popupWindow.showAsDropDown(clickedView, posX, posY);
-
-    }
-							
+								
 	private void save() {		
 		if (!checkFormIsFill()) {
 			Toast.makeText(getActivity(), "Należy podać nazwę i okres ważności", 1500).show();
@@ -961,5 +935,7 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 	private void switchToShowFragment(Product product) {
 		((MainActivity) getActivity()).selectFragmentToShowProduct(product);
 	}
+	
+	
 	
 }

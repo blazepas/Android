@@ -9,6 +9,7 @@ import org.json.JSONArray;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -46,6 +47,7 @@ public class FragmentProdukty extends SherlockFragment implements OnClickListene
 	ArrayList<Product> productsTemp = new ArrayList<Product>();
 	ArrayList<String> categories = new ArrayList<String>();
 	CommonUtilities utilities = new CommonUtilities();
+	FragmentManager fM;
 	
 	ListView productsList;
 	View rootView;
@@ -55,6 +57,7 @@ public class FragmentProdukty extends SherlockFragment implements OnClickListene
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		super.onCreateView(inflater, container, savedInstanceState);
 		setHasOptionsMenu(true);
+		fM = getFragmentManager();
 
 		utilities.setActionBarTitle("Lista produktów", getSherlockActivity());
 		
@@ -152,7 +155,8 @@ public class FragmentProdukty extends SherlockFragment implements OnClickListene
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.dodajLay:
-			selectFragmentDodaj();
+			DialogDodajProdukt dialog = new DialogDodajProdukt(getActivity());
+			dialog.show();
 			break;
 		case R.id.kategorieDropDown:
 			showSpinnerPopUp(v);
@@ -185,13 +189,12 @@ public class FragmentProdukty extends SherlockFragment implements OnClickListene
 	     	spinnerList.setOnItemClickListener(new OnItemClickListener() {
 	
 	 			@Override
-	 			public void onItemClick(AdapterView<?> arg0, View view, int arg2,long arg3) 
-	 			{
+	 			public void onItemClick(AdapterView<?> arg0, View view, int arg2,long arg3) {
 	 				String choice = (String) view.getTag();
 	 				setCustomSpinner(choice, kategorieDropDown);
 	 				popupWindow.dismiss();
 	 				products = getSortedList(choice);
-	 				listAdapter = new AdapterProductList(getActivity(), products, getFragmentManager(), getId());
+	 				listAdapter = new AdapterProductList(getActivity(), products, fM, getId(), productsList);
 					productsList.setAdapter(listAdapter);
 	 			}
 	 		});
@@ -262,20 +265,13 @@ public class FragmentProdukty extends SherlockFragment implements OnClickListene
 		@Override
 		protected void onPostExecute(Void v) {
 			if (!products.isEmpty()) {
-				listAdapter = new AdapterProductList(getActivity(), products, getFragmentManager(), getId());
+				listAdapter = new AdapterProductList(getActivity(), products, fM, getId(), productsList);
 				productsList.setAdapter(listAdapter);
-//				productsList.setOnItemClickListener(new OnItemClickListener() {
-//
-//                    @Override
-//                    public void onItemClick(AdapterView<?> arg0, View arg1, int pos, long arg3) {
-//                        switchToProductFragment(pos);
-//                    }
-//				});
 				
 				registerForContextMenu(productsList); // TODO prawdopodobnie nie bedzie uzywane
 			}
 			
-			new InitSort().execute();
+			new InitSort().execute();// lista kategorii
 		}
 	}
     
@@ -312,7 +308,7 @@ public class FragmentProdukty extends SherlockFragment implements OnClickListene
 			String codeId = product.getCode();
 			removeAlarms(przypomnienia, codeId);
 			
-			listAdapter = new AdapterProductList(getActivity(), products, getFragmentManager(), getId());
+			listAdapter = new AdapterProductList(getActivity(), products, fM, getId(), productsList);
 			productsList.setAdapter(listAdapter);
 			
 			Toast.makeText(getActivity(), "Usunięto " + product.getNazwa(), 2000).show();

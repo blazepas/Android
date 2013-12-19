@@ -2,6 +2,7 @@ package com.mareklatuszek.datywaznosci;
 
 import java.io.File;
 import java.lang.reflect.Method;
+import java.security.acl.LastOwnerException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -15,6 +16,7 @@ import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.v4.app.FragmentManager;
@@ -32,16 +34,20 @@ import android.view.animation.ScaleAnimation;
 import android.view.animation.Transformation;
 import android.view.animation.TranslateAnimation;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.mareklatuszek.utilities.BitmapLoader;
 import com.mareklatuszek.utilities.CommonUtilities;
 
-public class AdapterProductList extends BaseAdapter implements OnLongClickListener {
+public class AdapterProductList extends BaseAdapter implements OnClickListener, OnLongClickListener, 
+		OnScrollListener{
 		
 	private int detailsHeightInDps = 70;
 	float scale;
@@ -54,20 +60,27 @@ public class AdapterProductList extends BaseAdapter implements OnLongClickListen
 	
 	private Boolean[] isExpanded;
 	private View[] views;
+	private ListView parentListView;
 	private int clickedPos = -1;
+	private int lastVisible = 0;
 	private CommonUtilities utilities = new CommonUtilities();
 	
 	TextView nazwaTxtList, dataOtwTxtList, terminWazTxtList;	
 	ProgressBar pozostaloPrgsList;
 	ImageView obrazekImage;
 	LinearLayout detailsLay, basicLay, deleteLay, showProdLay, expandLay;
+
 	
-	public AdapterProductList(Activity mActivity, ArrayList<Product> products, FragmentManager fragmentManager, int fragmentId) {
+	public AdapterProductList(Activity mActivity, ArrayList<Product> products, 
+			FragmentManager fM, int fragmentId, ListView parentListView) {
+		
 		this.mActivity = mActivity;
 		this.products = products;
-		this.fragmentManager = fragmentManager;
+		this.fragmentManager = fM;
 		this.fragmentId = fragmentId;
+		this.parentListView = parentListView;
 		
+		parentListView.setOnScrollListener(this);
 		scale = mActivity.getResources().getDisplayMetrics().density; //oblicza skalę px do dps
 		inflater = (LayoutInflater) mActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		isExpanded = new Boolean[products.size()];
@@ -91,7 +104,7 @@ public class AdapterProductList extends BaseAdapter implements OnLongClickListen
 	}
 
 	@Override
-	public View getView(final int position, View convertView, ViewGroup parent) {	
+	public View getView(final int position, View convertView, ViewGroup parent) {
 		View vi = views[position];
         boolean convertViewStatus = (vi == null); 
 
@@ -118,6 +131,28 @@ public class AdapterProductList extends BaseAdapter implements OnLongClickListen
 		return true;
 	}
 	
+	@Override
+	public void onClick(View v) {
+		switch (v.getId()) {
+		case R.id.basicLay:
+		case R.id.expandLay:
+			int pos = (Integer) v.getTag();
+			boolean expanded = isExpanded[pos];
+			isExpanded[pos] = !expanded;
+			clickedPos = pos;
+			AdapterProductList.this.notifyDataSetChanged();
+		}
+		
+	}
+
+	@Override
+	public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+		lastVisible = (firstVisibleItem + visibleItemCount) - 1;
+	}
+
+	@Override
+	public void onScrollStateChanged(AbsListView view, int scrollState) {}
+	
 	
 	private void initAnimations(int position) {
 		boolean expanded = isExpanded[position];
@@ -126,7 +161,9 @@ public class AdapterProductList extends BaseAdapter implements OnLongClickListen
 //	    	rotateView(expandImage, 0f, 90f, 250); 
 	    	
 	    	if (position == clickedPos){
-	    		expandItem(detailsLay);
+	    		
+	    		expandItem(detailsLay, position);
+
 		    } else {
 		    	detailsLay.setVisibility(View.VISIBLE);	
 		    }
@@ -175,6 +212,8 @@ public class AdapterProductList extends BaseAdapter implements OnLongClickListen
         
         vi.setTag(pos);
         vi.setBackgroundResource(rowBackground);
+        basicLay.setTag(pos);
+        expandLay.setTag(pos);
 		expandLay.setBackgroundResource(expandLayBg);
         nazwaTxtList.setText(nazwa);
         dataOtwTxtList.setText(dataOtw);
@@ -198,16 +237,8 @@ public class AdapterProductList extends BaseAdapter implements OnLongClickListen
         deleteLay.setOnLongClickListener(this);
         showProdLay.setOnLongClickListener(this);
         
-        expandLay.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				boolean expanded = isExpanded[pos];
-				isExpanded[pos] = !expanded;
-				clickedPos = pos;
-				AdapterProductList.this.notifyDataSetChanged();
-			}
-		});
+		basicLay.setOnClickListener(this);
+        expandLay.setOnClickListener(this);
     
         deleteLay.setOnClickListener(new OnClickListener() {
 			
@@ -244,7 +275,6 @@ public class AdapterProductList extends BaseAdapter implements OnLongClickListen
 	}
 		
 	private void showProduct(int position) {
-		Log.i("show product", position+"");
 		FragmentProdukty fragmentProdukty = (FragmentProdukty) fragmentManager.findFragmentById(fragmentId);
 		fragmentProdukty.switchToProductFragment(position);
 	}
@@ -272,11 +302,25 @@ public class AdapterProductList extends BaseAdapter implements OnLongClickListen
 		dialog.show();
 	}
 	
-	private void expandItem(View v) {
+	private void expandItem(View v, int position) {
 		final int targtetHeight = (int) (detailsHeightInDps * scale + 0.5f);
-    	utilities.expandView(v, targtetHeight);
+		boolean isLastVisible = position == lastVisible;
+		boolean isBeforeLastVisible = position == lastVisible - 1;
+		
+		if(isLastVisible | isBeforeLastVisible) { // przesuwa listę jeśli produkt niewidoczny
+			v.setVisibility(View.VISIBLE);
+			v.getLayoutParams().height = targtetHeight;
+			if (isLastVisible) {
+				parentListView.smoothScrollToPosition(lastVisible);
+			} else {
+				parentListView.smoothScrollToPosition(lastVisible - 1);
+			}
+			
+		} else {
+			utilities.expandView(v, targtetHeight);
+		}
 	}
-	
+		
 	private void collapseItem(View v) {
 		utilities.collapseView(v);
 	}

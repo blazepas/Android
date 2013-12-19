@@ -45,7 +45,7 @@ public class FragmentProdukt extends SherlockFragment implements OnClickListener
 	@Override
 	public void onResume() {
 		super.onResume();
-		utilities.setActionBarTitle("Podgląd produktu", getSherlockActivity());
+		utilities.setActionBarTitle("Informacje o produkcie", getSherlockActivity());
 	}
 		
 	@Override

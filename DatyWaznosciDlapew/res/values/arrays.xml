@@ -3,17 +3,9 @@
     <string-array name="array_date">
         <!-- kolejnosc musi zostac -->
         <item name="dzien">Dzień</item>
+        <item name="tydzien">Tydzień</item>
         <item name ="miesiac">Miesiąc</item>
         <item name ="rok">Rok</item>
-    </string-array>
-    
-    <string-array name="array_temp_kategorie">
-        <item>Nabiał</item>
-        <item>Wędliny</item>
-        <item>Owoce</item>
-        <item>Ważywa</item>
-        <item>Napoje</item>
-        <item>Słodycze</item>
     </string-array>
     
     <!-- Menu -->

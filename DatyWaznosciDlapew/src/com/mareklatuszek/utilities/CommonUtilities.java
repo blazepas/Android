@@ -15,6 +15,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -94,6 +95,8 @@ public class CommonUtilities implements FinalVariables {
 			
 			if (spinnerChoice.equals(SPINNER_DATE_DAY)) { //jesli dzien (kolejnosc z resource arrays "array_date" - trzyma� si� tej kolejnosci!)
 				notifTime.add(Calendar.DAY_OF_YEAR, -dateVal);
+			} else if (spinnerChoice.equals(SPINNER_DATE_WEEK)) {
+				notifTime.add(Calendar.WEEK_OF_MONTH, -dateVal);
 			} else if (spinnerChoice.equals(SPINNER_DATE_MONTH)) {
 				notifTime.add(Calendar.MONTH, -dateVal );
 			} else if (spinnerChoice.equals(SPINNER_DATE_YEAR)) { 
@@ -183,6 +186,8 @@ public class CommonUtilities implements FinalVariables {
 		
 		if(format.contains(SPINNER_DATE_DAY)) {
 			cal.add(Calendar.DAY_OF_YEAR, val);
+		} else if (format.contains(SPINNER_DATE_WEEK)) {
+			cal.add(Calendar.WEEK_OF_MONTH, val);
 		} else if (format.contains(SPINNER_DATE_MONTH)) {
 			cal.add(Calendar.MONTH, val);
 		} else if (format.contains(SPINNER_DATE_YEAR)) {
@@ -585,6 +590,26 @@ public class CommonUtilities implements FinalVariables {
 		int pixels = (int) (dp * scale + 0.5f);
 		return pixels;
 	}
+	
+	public File getImageMediaFile() {
+		 
+        File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), 
+        		IMAGE_DIRECTORY_NAME);
+        
+        // Tworzy folder na zdjęcia jeśli go nie ma
+        if (!mediaStorageDir.exists()) {
+            if (!mediaStorageDir.mkdirs()) {
+                return null;
+            }
+        }
+ 
+        // Nazwa pliku
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
+        File imageFile = new File(mediaStorageDir.getPath() + File.separator
+                + "TTP_" + timeStamp + ".jpg");
+
+        return imageFile;
+    }
 	
 	public void setActionBarTitle(String title, SherlockFragmentActivity mActivity) {
 		LinearLayout actionBarLayout = (LinearLayout) mActivity.getSupportActionBar().getCustomView();

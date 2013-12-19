@@ -118,6 +118,8 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent intent) {   
 		if (resultCode == RESULT_OK) {
+			sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED,
+					MainActivity.imageUri));
 			if (requestCode == CAMERA_ADD_RQ_CODE) {
 				if (intent != null) {
 					imageUri = intent.getData();
@@ -225,21 +227,21 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
 			startScanner();
 			break;
 		case 1:
+			selectItemMenu(position);
 			fragmentDodaj = new FragmentDodaj();
 			ft.replace(R.id.content_frame, fragmentDodaj);
-			selectItemMenu(position);
 			break;
 		case 2:
-			ft.replace(R.id.content_frame, fragmentProdukty);
 			selectItemMenu(position);
+			ft.replace(R.id.content_frame, fragmentProdukty);
 			break;
 		case 3:
-			ft.replace(R.id.content_frame, fragmentKategorie);
 			selectItemMenu(position);
+			ft.replace(R.id.content_frame, fragmentKategorie);
 			break;
 		case 4:
-			ft.replace(R.id.content_frame, fragmentPrzypomnienia);
 			selectItemMenu(position);
+			ft.replace(R.id.content_frame, fragmentPrzypomnienia);
 			break;
 		case 5:
 			ft.replace(R.id.content_frame, fragmentProdukt);
@@ -273,7 +275,8 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
 	public void startScanner() {
 		if (currentFragmentPos != 1) {
             selectFragment(1);
-        }		
+        }
+		selectItemMenu(0);
 		IntentIntegrator.initiateScan(MainActivity.this);
 	}
 	

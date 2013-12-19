@@ -181,12 +181,13 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 		case R.id.przypDropDown:
 		case R.id.kategorieDropDown:
 		case R.id.okresWazDropDown:
-			getSpinnerPopUp(view).showAsDropDown(view);
+			showSpinnerPopUp(view).showAsDropDown(view);
 			break;
 		case R.id.okresInfoImage:
 		case R.id.dataZuzInfoImage:
 		case R.id.terminWazInfoImage:
-			showInfoPopUp(view);
+			PopUpInfo popUpInfo = new PopUpInfo(getActivity(), view);
+			popUpInfo.showPopUp();
 			break;
 		case R.id.barcodeImage:
 			if (!isScanned) {
@@ -390,12 +391,16 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
         dodatkowe.setVisibility(View.GONE);
 	}
 		
-	public void takePhoto() {
+	public void takePhoto() {        
 		Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        File f = new File(android.os.Environment.getExternalStorageDirectory(), "TPP" + (System.currentTimeMillis()/1000) + ".jpg");
-        MainActivity.imageUri = Uri.fromFile(f);
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
-        getActivity().startActivityForResult(intent, CAMERA_EDIT_RQ_CODE);
+        File f = utilities.getImageMediaFile();
+        if (f != null) {
+        	MainActivity.imageUri = Uri.fromFile(f);
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
+            getActivity().startActivityForResult(intent, CAMERA_EDIT_RQ_CODE);	
+        } else {
+        	//TODO
+        }
     }
 	
 	public void pickImageFromGallery() {
@@ -784,7 +789,7 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 		return choice;
 	}
 	
-	private PopupWindow getSpinnerPopUp(final View clickedView) {
+	private PopupWindow showSpinnerPopUp(final View clickedView) {
 
         final PopupWindow popupWindow = new PopupWindow(getActivity());
         ListView spinnerList = new ListView(getActivity());
@@ -842,52 +847,7 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 
         return popupWindow;
     }
-	
-	private void showInfoPopUp(View clickedView) {
-
-        final PopupWindow popupWindow = new PopupWindow(getActivity());
-        LayoutInflater inflater = LayoutInflater.from(getActivity());
-        Drawable background = getResources().getDrawable(R.drawable.back_info_popup);
-        int layoutId = R.layout.popup_info_right;
-        int wrapContent = WindowManager.LayoutParams.WRAP_CONTENT;
-        int posX = -265;
-        int posY = -35;
-        boolean leftSide = false;
-        String message = "";
-
-        switch (clickedView.getId()) {
-        case R.id.okresInfoImage:
-        	leftSide = false;
-        	message = INFO_OKRES;
-        	break;
-        case R.id.terminWazInfoImage:
-        	leftSide = true;
-        	message = INFO_TERMIN_WAZNOSCI;
-        	break;
-        case R.id.dataZuzInfoImage:
-        	leftSide = true;
-        	message = INFO_DATA_ZUZYCIA;
-        }
-        
-        if (leftSide) {
-            layoutId = R.layout.popup_info_left;
-            posX = -5;
-            posY = -35;
-        }
-        
-        RelativeLayout popupLay = (RelativeLayout) inflater.inflate(layoutId, null);
-        TextView popupTxt = (TextView) popupLay.findViewById(R.id.popupTxt);
-        popupTxt.setText(message);
-        
-        popupWindow.setFocusable(true); 
-        popupWindow.setBackgroundDrawable(background); //TODO
-        popupWindow.setHeight(wrapContent);
-        popupWindow.setWidth(300);
-        popupWindow.setContentView(popupLay);
-        popupWindow.showAsDropDown(clickedView, posX, posY);
-
-    }
-					
+						
 	private void save() {		
 		if (!checkFormIsFill()) {		
 			Toast.makeText(getActivity(), "Należy podać nazwę i okres ważności", 1500).show();
