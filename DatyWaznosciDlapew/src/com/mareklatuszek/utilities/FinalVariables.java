@@ -5,7 +5,7 @@ public interface FinalVariables {
 	public static final String PREMIUM_APP_URI = "com.mareklatuszek.datywaznosci.premium";
 	public static final String IMAGE_DIRECTORY_NAME = "TPP";
 
-	public static final int DB_VERSION = 2;
+	public static final int DB_VERSION = 4;
 	public static final String DB_DEBUG_TAG = "Product database"; 
 	public static final String DB_NAME = "database.db";
 	public static final String DB_PRODUCT_TABLE = "product";
@@ -25,6 +25,7 @@ public interface FinalVariables {
 	public static final String DB_OPIS = "opis";
 	public static final String DB_PRZYPOMNIENIA = "przypomnienia";
 	public static final String DB_DATA_ZUZYCIA = "dataZuz";
+	public static final String DB_END_DATE = "endDate";
 	public static final String DB_IS_SCANNED = "isScanned";
 	
 	public static final String DB_CAT_CATEGORY = "cat_category";
@@ -44,13 +45,13 @@ public interface FinalVariables {
             DB_OPIS + " " + CELL_DEFAULT + ", " +
             DB_PRZYPOMNIENIA + " " + CELL_DEFAULT + ", " +
             DB_IS_SCANNED + " " + CELL_DEFAULT + ", " +
-            DB_DATA_ZUZYCIA + " " + CELL_DEFAULT +
+            DB_DATA_ZUZYCIA + " " + CELL_DEFAULT + ", " +
+            DB_END_DATE + " " + CELL_DEFAULT +
             ");";
 	
 	public static final String DB_CREATE_CATEGORIES_TABLE = "CREATE TABLE " + DB_CATEGORIES_TABLE + "( " +
 			 KEY_ID + " " + ID_OPTIONS + ", " +
-			 DB_CAT_CATEGORY + " " + CELL_DEFAULT + ");";
-	
+			 DB_CAT_CATEGORY + " " + CELL_DEFAULT + ");";	
 	
 	public static final String PRZYP_TEXT_BOX = "przypTextBox";
 	public static final String PRZYP_SPINNER = "przypSpinner";

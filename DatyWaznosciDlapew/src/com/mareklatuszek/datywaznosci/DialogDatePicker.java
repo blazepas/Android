@@ -18,17 +18,11 @@ public class DialogDatePicker extends Dialog implements android.view.View.OnClic
 	View viewToSetDate;
 	DatePicker datePicker;
 	Button okButton, anulujButton;
-	FragmentManager fragmentManager; 
-	int fragmentId;
-	int fragPos;
 	CommonUtilities utilities = new CommonUtilities();
 
-	public DialogDatePicker(Context context, View viewToSetDate, FragmentManager fragmentManager, int fragmentId) {
+	public DialogDatePicker(Context context, View viewToSetDate) {
 		super(context);
 		this.viewToSetDate = viewToSetDate;
-		this.fragmentManager = fragmentManager;
-		this.fragmentId = fragmentId;
-		fragPos = MainActivity.currentFragmentPos;
 	}
 
 	@Override
@@ -43,7 +37,6 @@ public class DialogDatePicker extends Dialog implements android.view.View.OnClic
 		
 		okButton.setOnClickListener(this);
 		anulujButton.setOnClickListener(this);
-
 	}
 	
 	@Override
@@ -69,7 +62,6 @@ public class DialogDatePicker extends Dialog implements android.view.View.OnClic
 			break;
 		case R.id.terminWazTextBox:		
 			((EditText) viewToSetDate).setText(choosenDate);
-			setOkresWaz(choosenDate);
 			break;
 		case R.id.dataZuzTextBox:		
 			((EditText) viewToSetDate).setText(choosenDate);
@@ -82,22 +74,5 @@ public class DialogDatePicker extends Dialog implements android.view.View.OnClic
 		String choosenDate = "";
 		choosenDate = datePicker.getDayOfMonth() + "/" + (datePicker.getMonth() + 1) + "/" + datePicker.getYear();
 		return choosenDate;
-	}
-		
-	private void setOkresWaz(String choosenDate) {
-		switch (fragPos) {
-		case 1:
-			FragmentDodaj fragmentDodaj = (FragmentDodaj) fragmentManager.findFragmentById(fragmentId);
-	    	fragmentDodaj.setOkresWaz(choosenDate);
-			break;
-		case 6:
-			FragmentEdytuj fragmentEdytuj = (FragmentEdytuj) fragmentManager.findFragmentById(fragmentId);
-			fragmentEdytuj.setOkresWaz(choosenDate);
-			break;
-		default:
-			Toast.makeText(getOwnerActivity(), "Nie zapisano daty!", 2000).show();
-		}
-		
-	}
-		
+	}		
 }

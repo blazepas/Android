@@ -65,7 +65,7 @@ import com.mareklatuszek.utilities.BitmapLoader;
 import com.mareklatuszek.utilities.CommonUtilities;
 import com.mareklatuszek.utilities.FinalVariables;
 
-public class FragmentDodaj extends SherlockFragment implements OnClickListener, OnKeyListener, FinalVariables {
+public class FragmentDodaj extends SherlockFragment implements OnClickListener, FinalVariables {
 	
 	boolean takePictureStat = false;
 	boolean dodatkoweIsVisible = false;
@@ -203,7 +203,7 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 	 	
 	@Override
 	public void onClick(View view) {
-		DialogDatePicker dialogDatePicker = new DialogDatePicker(getActivity(), view, getFragmentManager(), getId());
+		DialogDatePicker dialogDatePicker = new DialogDatePicker(getActivity(), view);
 		
 		switch (view.getId()) {
 		case R.id.przypDropDown:
@@ -249,16 +249,6 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 			break;
 		}		
 	}
-	
-	@Override
-	public boolean onKey(View v, int keyCode, KeyEvent event) {
-		switch (v.getId()) {
-		case R.id.okresWazTextBox:
-	    	setTerminWaz();	    		
-			break;
-		}
-		return false;
-	}
 						
 	private void initPodstawowe() {		
 
@@ -292,7 +282,6 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		terminWazInfoImage.setOnClickListener(this);
 		okresInfoImage.setOnClickListener(this);
 		okresWazDropDown.setOnClickListener(this);
-		okresWazTextBox.setOnKeyListener(this);
 		zapiszButton.setOnClickListener(this);		
 		dodatkoweImage.setOnClickListener(this);
 		
@@ -434,6 +423,7 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		Product product = new Product();
 		
 		String nazwa = nazwaTextBox.getText().toString();
+		String terminWaznosci = getTerminWaznosci();
 		String okresWaznosci = getPeriodFromBoxAndSpinner(okresWazTextBox, okresWazDropDown);
 		String kod = code;
 		String typKodu = codeFormat;
@@ -445,12 +435,12 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		product.setIsScanned(isScanned);
 
 		String dataOtwarcia = dataOtwTxtBox.getText().toString();			
-		String terminWaznosci = getTerminWaznosci();
 		String kategoria = getKategoria();
 		String dataZuz = dataZuzTextBox.getText().toString();
 		String image = utilities.getRealPathFromURI(MainActivity.imageUri, getActivity());
 		String opis = opisTxtBox.getText().toString();
-		ArrayList<HashMap<String, String>> przypomnienia = getPrzypomnienia();
+		String endDate = getEndDate(terminWaznosci, okresWaznosci);
+		ArrayList<HashMap<String, String>> przypomnienia = getPrzypomnienia(endDate);
 		
 		product.setDataOtwarcia(dataOtwarcia);	
 		product.setTerminWaznosci(terminWaznosci);
@@ -458,6 +448,7 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		product.setDataZuzycia(dataZuz);
 		product.setImage(image);
 		product.setOpis(opis);
+		product.setEndDate(endDate);
 		product.setPrzypomnienia(przypomnienia);
 	
 		return product;
@@ -492,7 +483,7 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 	
 	private boolean storeAllToDatabase() {
 		Product product = prepareDataToStore();
-		utilities.createThumb(product.getImage());
+		utilities.createThumb(product.getImage());// TODO jesli nie ma
 		dbAdapter.open();		
 		boolean storeStatus = dbAdapter.insertProduct(product);
 		dbAdapter.close();
@@ -623,19 +614,6 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		}	
 	}
 	
-	private void setTerminWaz() {
-		String peroid = getPeriodFromBoxAndSpinner(okresWazTextBox, okresWazDropDown);
-		String date = utilities.parseOkresToDate(peroid);
-		terminWazTextBox.setText(date);
-	}
-	
-	public void setTerminWazFromAdapter(String spinnText) {
-		String txtBoxOkres = okresWazTextBox.getText().toString();
-		String peroid = txtBoxOkres + ":" + spinnText;
-		String date = utilities.parseOkresToDate(peroid);
-		terminWazTextBox.setText(date);
-	}
-	
 	public void setDataFromScan(String code, String codeFormat) {		
 		dbAdapter.open();
 		boolean isInDB = dbAdapter.chckIfProductIsInDB(code);
@@ -699,7 +677,6 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 	}
 	
 	public void setOkresWaz(String choosenDate) {
-		okresWazTextBox.setOnKeyListener(null);
 		
 		String okres = utilities.parseDateToOkres(choosenDate);
 		String box = utilities.getFirstValue(okres);
@@ -707,8 +684,6 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		
 		okresWazTextBox.setText(box);
 		setCustomSpinner(spinnItem, okresWazDropDown);
-		
-		okresWazTextBox.setOnKeyListener(this);
 	}
 	
 	private void setAlarms(ArrayList<HashMap<String, String>> przypomnienia, String nazwa, String productCode) {
@@ -748,7 +723,7 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		return terminWazTextBox.getText().toString();
 	}
 	
-	private ArrayList<HashMap<String, String>> getPrzypomnienia() {
+	private ArrayList<HashMap<String, String>> getPrzypomnienia(String endDate) {
 		ArrayList<HashMap<String, String>> przypomnienia = new ArrayList<HashMap<String,String>>();
 		int przypCount = przypLayout.getChildCount();
 		
@@ -765,10 +740,9 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 			if (boxTxt.length() != 0 & !boxTxt.equals("0") & !boxTxt.equals(SPINNER_PRZPOMNIENIE)) {
 				String spinnerChoice = getChoiceFromCustomSpinner(przypDropDown);
 				String przypHour = godzButton.getText().toString();
-				String terminWaz = terminWazTextBox.getText().toString();
 				String przypDate = "0";
 				try {
-					long dateInMillis = utilities.parsePrzypmnienieToDate(boxTxt, spinnerChoice, terminWaz, przypHour);
+					long dateInMillis = utilities.parsePrzypmnienieToDate(boxTxt, spinnerChoice, endDate, przypHour);
 					przypDate = String.valueOf(dateInMillis);
 				} catch (ParseException e) {
 					Log.i("getPrzypomnienia", "parse to date error");
@@ -802,6 +776,16 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		return choice;
 	}
 	
+	private String getEndDate(String terminWazosci, String okresWaznosci) {	
+		if (terminWazosci.equals("")) {
+			String peroid = getPeriodFromBoxAndSpinner(okresWazTextBox, okresWazDropDown);
+			String date = utilities.parseOkresToDate(peroid);
+			return date;
+		} else {	
+			return terminWazosci;
+		}
+	}
+	
 	private PopupWindow showSpinnerPopUp(final View clickedView) {
 
         final PopupWindow popupWindow = new PopupWindow(getActivity());
@@ -817,7 +801,6 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
     			public void onItemClick(AdapterView<?> arg0, View view, int arg2,long arg3) 
     			{
     				String choice = (String) view.getTag();
-    				setTerminWazFromAdapter(choice);
     				setCustomSpinner(choice, okresWazDropDown);
     				popupWindow.dismiss();
     			}
@@ -864,23 +847,22 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
     }
 								
 	private void save() {		
-		if (!checkFormIsFill()) {
-			Toast.makeText(getActivity(), "Należy podać nazwę i okres ważności", 1500).show();
-		} else if (code.equals("")) {	
-			Product product = prepareDataToStore();
-//			DialogGeneruj dialogGen = new DialogGeneruj(getActivity(),product , getFragmentManager(), getId());
-//			dialogGen.show();	
-			
-//			TODO wyłączony dialog z generowaniem, za miast niego mozna dać opcję zapytania o wygenerowanie
-//			aktualnie generuje kod w tle
-			
-			this.code = utilities.getJsonFromProduct(product);
-			this.codeFormat = product.getCodeFormat();
-			save();
-		} else {
-			new SaveData().execute();
-		}	
-	
+		if (checkFormIsFill()) {
+			if (code.equals("")) {	
+				Product product = prepareDataToStore();
+	//			DialogGeneruj dialogGen = new DialogGeneruj(getActivity(),product , getFragmentManager(), getId());
+	//			dialogGen.show();	
+				
+	//			TODO wyłączony dialog z generowaniem, za miast niego mozna dać opcję zapytania o wygenerowanie
+	//			aktualnie generuje kod w tle
+				
+				this.code = utilities.getJsonFromProduct(product);
+				this.codeFormat = product.getCodeFormat();
+				save();
+			} else {
+				new SaveData().execute();
+			}	
+		}
 	}
 	
 	public void refreshKategorieSpinner(String category) {
@@ -921,10 +903,16 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 	private boolean checkFormIsFill() {
 		String nazwa = nazwaTextBox.getText().toString();
 		String termin = terminWazTextBox.getText().toString();
+		String okres = okresWazTextBox.getText().toString();
+		String okresSpinnChoice = getChoiceFromCustomSpinner(okresWazDropDown);
 		
-		if (nazwa.equals("") || termin.equals("") || termin.equals("Wprowadź datę")) {
+		if (nazwa.equals("")) {
+			Toast.makeText(getActivity(), "Należy podać nazwę produktu", 1500).show();
 			return false;
-		} else {	
+		} else if (termin.equals("") & (okres.equals("") | okresSpinnChoice.equals(SPINNER_OKRES))) {
+			Toast.makeText(getActivity(), "Należy podać termin ważności lub okres trwałości produktu", 2000).show();
+			return false;
+		} else {
 			return true;
 		}
 	}

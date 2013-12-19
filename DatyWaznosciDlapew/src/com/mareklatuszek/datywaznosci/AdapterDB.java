@@ -125,6 +125,7 @@ public class AdapterDB implements FinalVariables {
 		int columnOpis =  cursor.getColumnIndex(DB_OPIS);
 		int columnPrzypomnienia =  cursor.getColumnIndex(DB_PRZYPOMNIENIA);
 		int columnDataZuzycia =  cursor.getColumnIndex(DB_DATA_ZUZYCIA);
+		int columnEndDate =  cursor.getColumnIndex(DB_END_DATE);
 		int columnIsScanned =  cursor.getColumnIndex(DB_IS_SCANNED);
 		
 		while(cursor.moveToNext()) {
@@ -141,6 +142,7 @@ public class AdapterDB implements FinalVariables {
 			String opis = cursor.getString(columnOpis);
 			String przypomnienia = cursor.getString(columnPrzypomnienia);
 			String dataZuz = cursor.getString(columnDataZuzycia);
+			String endDate = cursor.getString(columnEndDate);
 			String isScanned = cursor.getString(columnIsScanned);
 	        
 			product.setNazwa(nazwa);
@@ -154,6 +156,7 @@ public class AdapterDB implements FinalVariables {
 			product.setOpis(opis);
 			product.setPrzypomnieniaFromDB((przypomnienia));
 			product.setDataZuzycia(dataZuz);
+			product.setEndDate(endDate);
 			product.setIsScanned(isScanned);
 			
 			productList.add(product);
@@ -202,6 +205,7 @@ public class AdapterDB implements FinalVariables {
 			String opis = cursor.getString(cursor.getColumnIndex(DB_OPIS));
 			String przypomnienia = cursor.getString(cursor.getColumnIndex(DB_PRZYPOMNIENIA));
 			String dataZuzycia = cursor.getString(cursor.getColumnIndex(DB_DATA_ZUZYCIA));
+			String endDate = cursor.getString(cursor.getColumnIndex(DB_END_DATE));
 			String isScanned = cursor.getString(cursor.getColumnIndex(DB_IS_SCANNED));
 	        
 			product.setNazwa(nazwa);
@@ -215,6 +219,7 @@ public class AdapterDB implements FinalVariables {
 			product.setOpis(opis);
 			product.setPrzypomnieniaFromDB(przypomnienia);
 			product.setDataZuzycia(dataZuzycia);
+			product.setEndDate(endDate);
 			product.setIsScanned(isScanned);
 			
 	    }
@@ -277,6 +282,7 @@ public class AdapterDB implements FinalVariables {
 		String opis = product.getOpis();
 		String przypomnienia = product.getPrzypomnieniaToDB();
 		String dataZuzycia = product.getDataZuzycia();
+		String endDate = product.getEndDate();
 		String isScanned = product.getIsScannedToDB();
 		
 		Log.i("DBPrzypomnienia", przypomnienia);
@@ -292,6 +298,7 @@ public class AdapterDB implements FinalVariables {
 		newProductVal.put(DB_OPIS, opis);
 		newProductVal.put(DB_PRZYPOMNIENIA, przypomnienia);
 		newProductVal.put(DB_DATA_ZUZYCIA, dataZuzycia);
+		newProductVal.put(DB_END_DATE, endDate);
 		newProductVal.put(DB_IS_SCANNED, isScanned);
 		
 		return newProductVal;
