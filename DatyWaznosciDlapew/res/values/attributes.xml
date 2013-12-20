@@ -7,12 +7,36 @@
     <dimen name="text_view_normal_size">14sp</dimen>
     <dimen name="text_view_small_size">12sp</dimen>
     <dimen name="text_view_xsmall_size">10sp</dimen>
+    <dimen name="editbox_height">36dp</dimen>
+    <dimen name="spinner_height">48dp</dimen>
+
 
     <!-- Action Bar -->
     <dimen name="action_bar_font_size">20sp</dimen>
     
     <!-- Menu -->
     <dimen name="menu_font_size">@dimen/text_view_font_size</dimen>
+    
+    <!-- Dodaj/edytuj produkt -->
+    <dimen name="add_edittext_nazwa_width">186dp</dimen>
+    <dimen name="add_edittext_okres_width">68dp</dimen>
+    <dimen name="add_edittext_termin_width">112dp</dimen>
+    <dimen name="add_edittext_dataotw_width">112dp</dimen>
+    <dimen name="add_edittext_przyp_width">422dp</dimen>
+    <dimen name="add_spinner_okres_width">118dp</dimen>
+    <dimen name="add_spinner_kategoria_width">124dp</dimen>
+    <dimen name="add_spinner_przyp_width">100dp</dimen>
+    <dimen name="add_button_normal_height">36dp</dimen>
+    <dimen name="add_button_normal_width">36dp</dimen>
+    <dimen name="add_button_zapisz_height">48dp</dimen>
+    <dimen name="add_button_zapisz_width">148dp</dimen>
+    <dimen name="add_pick_info">20dp</dimen>
+    <dimen name="add_pick_camera">26dp</dimen>
+    <dimen name="add_pick_expand">22dp</dimen>
+    <dimen name="add_image_width">96dp</dimen>
+    <dimen name="add_image_height">80dp</dimen>
+    <dimen name="add_image_back_width">114dp</dimen>
+    <dimen name="add_image_back_height">114dp</dimen>
     
     <!-- Product List -->
     <dimen name="products_item_height">70dp</dimen>

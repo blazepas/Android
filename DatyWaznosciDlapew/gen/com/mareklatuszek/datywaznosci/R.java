@@ -875,22 +875,45 @@ containing a value of this type.
         public static final int abs__dialog_min_width_minor=0x7f0a000a;
         /**  Action Bar 
          */
-        public static final int action_bar_font_size=0x7f0a0011;
+        public static final int action_bar_font_size=0x7f0a0013;
         /**  Minimum width for an action button in the menu area of an action bar 
  Minimum width for an action button in the menu area of an action bar 
          */
         public static final int action_button_min_width=0x7f0a000b;
-        public static final int dodaj_sections_height=0x7f0a0015;
-        public static final int list_padding=0x7f0a0017;
+        public static final int add_button_normal_height=0x7f0a001d;
+        public static final int add_button_normal_width=0x7f0a001e;
+        public static final int add_button_zapisz_height=0x7f0a001f;
+        public static final int add_button_zapisz_width=0x7f0a0020;
+        public static final int add_edittext_dataotw_width=0x7f0a0018;
+        /**  Dodaj/edytuj produkt 
+         */
+        public static final int add_edittext_nazwa_width=0x7f0a0015;
+        public static final int add_edittext_okres_width=0x7f0a0016;
+        public static final int add_edittext_przyp_width=0x7f0a0019;
+        public static final int add_edittext_termin_width=0x7f0a0017;
+        public static final int add_image_back_height=0x7f0a0027;
+        public static final int add_image_back_width=0x7f0a0026;
+        public static final int add_image_height=0x7f0a0025;
+        public static final int add_image_width=0x7f0a0024;
+        public static final int add_pick_camera=0x7f0a0022;
+        public static final int add_pick_expand=0x7f0a0023;
+        public static final int add_pick_info=0x7f0a0021;
+        public static final int add_spinner_kategoria_width=0x7f0a001b;
+        public static final int add_spinner_okres_width=0x7f0a001a;
+        public static final int add_spinner_przyp_width=0x7f0a001c;
+        public static final int dodaj_sections_height=0x7f0a002a;
+        public static final int editbox_height=0x7f0a0011;
+        public static final int list_padding=0x7f0a002c;
         /**  Menu 
          */
-        public static final int menu_font_size=0x7f0a0012;
-        public static final int products_details_height=0x7f0a0014;
+        public static final int menu_font_size=0x7f0a0014;
+        public static final int products_details_height=0x7f0a0029;
         /**  Product List 
          */
-        public static final int products_item_height=0x7f0a0013;
-        public static final int shadow_width=0x7f0a0018;
-        public static final int slidingmenu_offset=0x7f0a0016;
+        public static final int products_item_height=0x7f0a0028;
+        public static final int shadow_width=0x7f0a002d;
+        public static final int slidingmenu_offset=0x7f0a002b;
+        public static final int spinner_height=0x7f0a0012;
         /**  main 
          */
         public static final int text_view_font_size=0x7f0a000c;
@@ -1000,33 +1023,35 @@ containing a value of this type.
         public static final int collapse_dodatkowe=0x7f020061;
         public static final int collections_cloud=0x7f020062;
         public static final int drawer_shadow=0x7f020063;
-        public static final int edittext_background=0x7f020064;
-        public static final int expand_dodatkowe=0x7f020065;
-        public static final int ic_action_delete=0x7f020066;
-        public static final int ic_action_expand=0x7f020067;
-        public static final int ic_action_overflow=0x7f020068;
-        public static final int ic_action_send=0x7f020069;
-        public static final int ic_drawer=0x7f02006a;
-        public static final int ic_launcher=0x7f02006b;
-        public static final int icon=0x7f02006c;
-        public static final int info=0x7f02006d;
-        public static final int info_popup=0x7f02006e;
-        public static final int logo=0x7f02006f;
-        public static final int pick_barcode=0x7f020070;
-        public static final int pick_barcode_clicked=0x7f020071;
-        public static final int pick_camera=0x7f020072;
-        public static final int pick_camera_clicked=0x7f020073;
-        public static final int pick_category=0x7f020074;
-        public static final int pick_expand=0x7f020075;
-        public static final int pick_gallery=0x7f020076;
-        public static final int pick_gallery_clicked=0x7f020077;
-        public static final int pick_show=0x7f020078;
-        public static final int pick_trash=0x7f020079;
-        public static final int progress_bar_bg=0x7f02007a;
-        public static final int settings=0x7f02007b;
-        public static final int shadow=0x7f02007c;
-        public static final int share=0x7f02007d;
-        public static final int zxinglib_icon=0x7f02007e;
+        public static final int editbox_back=0x7f020064;
+        public static final int edittext_background=0x7f020065;
+        public static final int expand_dodatkowe=0x7f020066;
+        public static final int ic_action_delete=0x7f020067;
+        public static final int ic_action_expand=0x7f020068;
+        public static final int ic_action_overflow=0x7f020069;
+        public static final int ic_action_send=0x7f02006a;
+        public static final int ic_drawer=0x7f02006b;
+        public static final int ic_launcher=0x7f02006c;
+        public static final int icon=0x7f02006d;
+        public static final int info=0x7f02006e;
+        public static final int info_popup=0x7f02006f;
+        public static final int logo=0x7f020070;
+        public static final int pick_barcode=0x7f020071;
+        public static final int pick_barcode_clicked=0x7f020072;
+        public static final int pick_camera=0x7f020073;
+        public static final int pick_camera_clicked=0x7f020074;
+        public static final int pick_category=0x7f020075;
+        public static final int pick_expand=0x7f020076;
+        public static final int pick_gallery=0x7f020077;
+        public static final int pick_gallery_clicked=0x7f020078;
+        public static final int pick_show=0x7f020079;
+        public static final int pick_trash=0x7f02007a;
+        public static final int progress_bar_bg=0x7f02007b;
+        public static final int settings=0x7f02007c;
+        public static final int shadow=0x7f02007d;
+        public static final int share=0x7f02007e;
+        public static final int spinner_back=0x7f02007f;
+        public static final int zxinglib_icon=0x7f020080;
     }
     public static final class id {
         public static final int ImageView01=0x7f06003d;
