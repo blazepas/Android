@@ -52,7 +52,7 @@
                         android:id="@+id/scanInfoImage"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
-                        android:src="@drawable/info" />
+                        android:src="@drawable/pick_info" />
 
                 </LinearLayout>
 
@@ -81,7 +81,7 @@
                     android:src="@drawable/add_image" />
 
                 <com.mareklatuszek.utilities.TextViewBariol
-                    android:id="@+id/textView1"
+                    android:id="@+id/estimateTimeTxt"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="3.34"
@@ -99,10 +99,10 @@
                     android:orientation="vertical" >
 
                     <ImageView
-                        android:id="@+id/customInfoImage"
+                        android:id="@+id/wlasnyInfoImage"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
-                        android:src="@drawable/info" />
+                        android:src="@drawable/pick_info" />
 
                 </LinearLayout>
 

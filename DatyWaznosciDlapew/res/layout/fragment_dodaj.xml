@@ -26,29 +26,30 @@
                 android:orientation="vertical"
                 android:padding="5dp" >
 
-                <LinearLayout
-                    android:layout_width="250dp"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical" >
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" >
 
                     <LinearLayout
                         android:id="@+id/nazwa"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerHorizontal="true"
                         android:gravity="bottom|center_horizontal"
                         android:orientation="vertical" >
 
-                        <TextView
+                        <com.mareklatuszek.utilities.TextViewBariol
                             android:id="@+id/nazwaTxt"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
-                            android:gravity="bottom"
+                            android:gravity="center"
                             android:text="Nazwa produktu"
                             android:textAppearance="@style/TPP.Normal.TextAppearance"
                             android:textColorHint="@color/dark_text_view"
                             android:typeface="normal" />
 
-                        <EditText
+                        <com.mareklatuszek.utilities.EditTextBariol
                             android:id="@+id/nazwaTextBox"
                             android:layout_width="@dimen/add_edittext_nazwa_width"
                             android:layout_height="@dimen/editbox_height"
@@ -59,203 +60,216 @@
                             android:hint="NAZWA"
                             android:textAppearance="@style/TPP.Normal.TextAppearance"
                             android:textColor="@color/dark_text_view"
-                            android:textColorHint="@color/hint" />
+                            android:textColorHint="@color/hint" >
+                        </com.mareklatuszek.utilities.EditTextBariol>
+                    </LinearLayout>
 
+                    <com.mareklatuszek.utilities.TextViewBariol
+                        android:id="@+id/textView7"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/nazwa"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="10dp"
+                        android:text="Termin ważności"
+                        android:textAppearance="@style/TPP.Normal.TextAppearance"
+                        android:textColor="@color/dark_text_view" />
+
+                    <com.mareklatuszek.utilities.EditTextBariol
+                        android:id="@+id/terminWazTextBox"
+                        android:layout_width="@dimen/add_edittext_termin_width"
+                        android:layout_height="@dimen/editbox_height"
+                        android:layout_alignLeft="@+id/nazwa"
+                        android:layout_below="@+id/textView7"
+                        android:layout_marginTop="5dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/editbox_back"
+                        android:editable="false"
+                        android:ems="10"
+                        android:focusable="false"
+                        android:gravity="center"
+                        android:hint="Wprowadź datę"
+                        android:textAppearance="@style/TPP.Normal.TextAppearance"
+                        android:textColor="@color/dark_text_view"
+                        android:textColorHint="@color/new_prod_hint" />
+
+                    <com.mareklatuszek.utilities.TextViewBariol
+                        android:id="@+id/textView4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/terminWazTextBox"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="10dp"
+                        android:gravity="bottom"
+                        android:text="Trwałość po otwarciu"
+                        android:textAppearance="@style/TPP.Normal.TextAppearance"
+                        android:textColor="@color/dark_text_view"
+                        android:textColorHint="@color/dark_text_view" />
+
+                    <LinearLayout
+                        android:id="@+id/linearLayout1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignLeft="@+id/terminWazTextBox"
+                        android:layout_below="@+id/textView4"
+                        android:gravity="center_vertical" >
+
+                        <com.mareklatuszek.utilities.EditTextBariol
+                            android:id="@+id/okresWazTextBox"
+                            android:layout_width="@dimen/add_edittext_okres_width"
+                            android:layout_height="@dimen/editbox_height"
+                            android:layout_weight="1"
+                            android:background="@drawable/editbox_back"
+                            android:ems="10"
+                            android:gravity="center"
+                            android:hint="np. 2"
+                            android:inputType="number"
+                            android:textAppearance="@style/TPP.Normal.TextAppearance"
+                            android:textColor="@color/dark_text_view"
+                            android:textColorHint="@color/hint"/>
+
+                        <com.mareklatuszek.datywaznosci.CustomSpinner
+                            android:id="@+id/okresWazDropDown"
+                            android:layout_width="@dimen/add_spinner_okres_width"
+                            android:layout_height="@dimen/spinner_height"
+                            android:layout_marginLeft="5dp"
+                            android:clickable="true"
+                            android:gravity="left|center"
+                            android:orientation="horizontal"/>
                     </LinearLayout>
 
                     <LinearLayout
-                        android:id="@+id/termin"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/dodaj_sections_height"
-                        android:layout_marginTop="5dp"
-                        android:gravity="center_vertical" >
+                        android:id="@+id/info"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBottom="@+id/terminWazTextBox"
+                        android:layout_alignTop="@+id/terminWazTextBox"
+                        android:layout_toRightOf="@+id/linearLayout1"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:orientation="vertical" >
+
+                        <ImageView
+                            android:id="@+id/okresInfoImage"
+                            android:layout_width="@dimen/add_pick_info"
+                            android:layout_height="@dimen/add_pick_info"
+                            android:src="@drawable/pick_info" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignLeft="@+id/info"
+                        android:layout_alignTop="@+id/linearLayout1"
+                        android:layout_marginTop="14dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:orientation="vertical" >
 
                         <ImageView
                             android:id="@+id/terminWazInfoImage"
                             android:layout_width="@dimen/add_pick_info"
                             android:layout_height="@dimen/add_pick_info"
-                            android:layout_marginRight="5dp"
-                            android:src="@drawable/info" />
-
-                        <TextView
-                            android:id="@+id/textView7"
-                            android:layout_width="95dp"
-                            android:layout_height="wrap_content"
-                            android:text="Termin ważności"
-                            android:textAppearance="@style/TPP.Small.TextAppearance"
-                            android:textColor="@color/dark_text_view" />
-
-                        <EditText
-                            android:id="@+id/terminWazTextBox"
-                            android:layout_width="@dimen/add_edittext_termin_width"
-                            android:layout_height="@dimen/editbox_height"
-                            android:background="@drawable/editbox_back"
-                            android:editable="false"
-                            android:focusable="false"
-                            android:gravity="center"
-                            android:hint="Wprowadź datę"
-                            android:textAppearance="@style/TPP.Normal.TextAppearance"
-                            android:textColor="@color/dark_text_view"
-                            android:textColorHint="@color/new_prod_hint" />
+                            android:src="@drawable/pick_info" />
                     </LinearLayout>
 
-                    <LinearLayout
-                        android:id="@+id/okres"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:gravity="center_horizontal"
-                        android:orientation="vertical" >
-
-                        <TextView
-                            android:id="@+id/textView4"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:gravity="bottom"
-                            android:text="Trwałość po otwarciu"
-                            android:textAppearance="@style/TPP.Normal.TextAppearance"
-                            android:textColorHint="@color/dark_text_view" />
-
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp" >
-
-                            <EditText
-                                android:id="@+id/okresWazTextBox"
-                                android:layout_width="@dimen/add_edittext_okres_width"
-                                android:layout_height="@dimen/editbox_height"
-                                android:layout_alignParentBottom="true"
-                                android:background="@drawable/editbox_back"
-                                android:ems="10"
-                                android:gravity="center"
-                                android:hint="np. 2"
-                                android:inputType="number"
-                                android:textAppearance="@style/TPP.Normal.TextAppearance"
-                                android:textColor="@color/dark_text_view"
-                                android:textColorHint="@color/hint" />
-
-                            <ImageView
-                                android:id="@+id/okresInfoImage"
-                                android:layout_width="@dimen/add_pick_info"
-                                android:layout_height="@dimen/add_pick_info"
-                                android:layout_alignParentRight="true"
-                                android:layout_centerVertical="true"
-                                android:layout_marginLeft="5dp"
-                                android:src="@drawable/info" />
-
-                            <LinearLayout
-                                android:id="@+id/okresWazDropDown"
-                                android:layout_width="@dimen/add_spinner_okres_width"
-                                android:layout_height="@dimen/spinner_height"
-                                android:layout_centerVertical="true"
-                                android:layout_toLeftOf="@+id/okresInfoImage"
-                                android:background="@drawable/spinner_back"
-                                android:clickable="true"
-                                android:gravity="center"
-                                android:orientation="horizontal" >
-                            </LinearLayout>
-
-                        </RelativeLayout>
-                    </LinearLayout>
-                </LinearLayout>
+                </RelativeLayout>
 
                 <RelativeLayout
                     android:id="@+id/images"
-                    android:layout_width="match_parent"
-                    android:layout_height="100dp"
+                    android:layout_width="273dp"
+                    android:layout_height="127dp"
                     android:layout_gravity="center"
                     android:layout_marginTop="10dp"
                     android:gravity="center" >
 
-                    <RelativeLayout
-                        android:id="@+id/barcodeLay"
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
-                        android:layout_alignParentRight="true"
-                        android:layout_alignParentTop="true" >
-
-                        <ImageView
-                            android:id="@+id/barcodeImage"
-                            android:layout_width="100dp"
-                            android:layout_height="100dp"
-                            android:background="@color/clicable_views" />
-
-                        <ImageView
-                            android:id="@+id/imageView3"
-                            android:layout_width="@dimen/add_pick_camera"
-                            android:layout_height="@dimen/add_pick_camera"
-                            android:layout_alignParentBottom="true"
-                            android:layout_alignParentLeft="true"
-                            android:layout_marginBottom="5dp"
-                            android:clickable="true"
-                            android:src="@drawable/background_pick_barcode" />
-
-                        <TextView
-                            android:id="@+id/TextView01"
-                          	android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentTop="true"
-                            android:layout_centerHorizontal="true"
-                            android:layout_marginTop="20dp"
-                            android:gravity="center"
-                            android:lines="2"
-                            android:text="QRCode lub\nzdjęcie produktu"
-                            android:textAppearance="@style/TPP.Small.TextAppearance"
-                            android:textColor="@color/dark_text_view" />
-
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:id="@+id/imageLay"
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_alignParentTop="true"
-                        android:layout_marginRight="60dp"
-                        android:layout_toLeftOf="@+id/barcodeLay" >
+                        android:layout_centerHorizontal="true" >
 
-                        <ImageView
-                            android:id="@+id/obrazekImage"
-                            android:layout_width="100dp"
-                            android:layout_height="100dp"
-                            android:layout_alignParentLeft="true"
-                            android:layout_alignParentTop="true"
-                            android:background="@color/clicable_views" />
+                        <RelativeLayout
+                            android:id="@+id/barcodeLay"
+                            android:layout_width="@dimen/add_image_back_width"
+                            android:layout_height="@dimen/add_image_back_height"
+                            android:background="@color/clicable_views" >
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentBottom="true"
-                            android:layout_alignParentLeft="true"
-                            android:layout_marginBottom="5dp"
-                            android:gravity="center"
-                            android:paddingLeft="5dp"
-                            android:paddingRight="5dp" >
+                            <com.mareklatuszek.utilities.TextViewBariol
+                                android:id="@+id/TextView01"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentBottom="true"
+                                android:layout_below="@+id/obrazekImage"
+                                android:layout_centerHorizontal="true"
+                                android:gravity="center"
+                                android:lines="2"
+                                android:text="Zdjęcie\n produktu"
+                                android:textAppearance="@style/TPP.XSmall.TextAppearance"
+                                android:textColor="@color/light_text_view" />
 
                             <ImageView
-                                android:id="@+id/imageView2"
-                                android:layout_width="@dimen/add_pick_camera"
-                                android:layout_height="@dimen/add_pick_camera"
-                                android:layout_weight="0.5"
-                                android:clickable="true"
-                                android:src="@drawable/background_pick_camera" />
+                                android:id="@+id/obrazekImage"
+                                android:layout_width="@dimen/add_image_width"
+                                android:layout_height="@dimen/add_image_height"
+                                android:layout_alignParentTop="true"
+                                android:layout_centerHorizontal="true"
+                                android:layout_marginTop="5dp"
+                                android:background="#ffffff" />
 
-                        </LinearLayout>
+                        </RelativeLayout>
 
-                        <TextView
-                            android:id="@+id/textView1"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentTop="true"
-                            android:layout_centerHorizontal="true"
-                            android:layout_marginTop="20dp"
-                            android:gravity="center"
-                            android:lines="2"
-                            android:text="Zdjęcie \nproduktu"
-                            android:textAppearance="@style/TPP.Small.TextAppearance"
-                            android:textColor="@color/dark_text_view" />
+                        <RelativeLayout
+                            android:id="@+id/imageLay"
+                            android:layout_width="@dimen/add_image_back_width"
+                            android:layout_height="@dimen/add_image_back_height"
+                            android:layout_marginLeft="32dp"
+                            android:background="@color/clicable_views" >
 
-                    </RelativeLayout>
+                            <com.mareklatuszek.utilities.TextViewBariol
+                                android:id="@+id/estimateTimeTxt"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentBottom="true"
+                                android:layout_below="@+id/barcodeImage"
+                                android:layout_centerHorizontal="true"
+                                android:gravity="center"
+                                android:lines="2"
+                                android:text="QRCode lub\nkod kreskowy"
+                                android:textAppearance="@style/TPP.XSmall.TextAppearance"
+                                android:textColor="@color/light_text_view" />
+
+                            <ImageView
+                                android:id="@+id/barcodeImage"
+                                android:layout_width="@dimen/add_image_width"
+                                android:layout_height="@dimen/add_image_height"
+                                android:layout_alignParentTop="true"
+                                android:layout_centerHorizontal="true"
+                                android:layout_marginTop="5dp"
+                                android:background="#ffffff" />
+
+                        </RelativeLayout>
+                    </LinearLayout>
+
+                    <ImageView
+                        android:id="@+id/imageView2"
+                        android:layout_width="@dimen/add_pick_camera"
+                        android:layout_height="@dimen/add_pick_camera"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_weight="0.5"
+                        android:clickable="true"
+                        android:src="@drawable/background_pick_camera" />
+
+                    <ImageView
+                        android:id="@+id/imageView3"
+                        android:layout_width="@dimen/add_pick_camera"
+                        android:layout_height="@dimen/add_pick_camera"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentRight="true"
+                        android:clickable="true"
+                        android:src="@drawable/background_pick_barcode" />
+
                 </RelativeLayout>
 
             </LinearLayout>
@@ -266,7 +280,7 @@
                 android:gravity="center"
                 android:orientation="vertical" >
 
-                <TextView
+                <com.mareklatuszek.utilities.TextViewBariol
                     android:id="@+id/textView2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -278,8 +292,7 @@
                     android:id="@+id/dodatkoweImage"
                     android:layout_width="@dimen/add_pick_expand"
                     android:layout_height="@dimen/add_pick_expand"
-                    android:src="@drawable/expand_dodatkowe" />
-
+                    android:src="@drawable/pick_expand" />
             </LinearLayout>
 
             <LinearLayout
@@ -287,15 +300,20 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_marginTop="10dp"
+                android:gravity="center_horizontal"
                 android:orientation="vertical" >
+
             </LinearLayout>
 
-            <Button
-                android:id="@+id/zapiszButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Zapisz" />
         </LinearLayout>
     </ScrollView>
+
+    <Button
+        android:id="@+id/zapiszButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:text="Zapisz" />
 
 </RelativeLayout>

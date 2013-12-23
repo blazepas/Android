@@ -62,6 +62,7 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
 	Fragment fragmentKategorie = new FragmentKategorie();
 	Fragment fragmentPrzypomnienia = new FragmentPrzypomnienia();
 	Fragment fragmentProdukt = new FragmentProdukt();
+	Fragment fragmentPrzypomnienie = new FragmentPrzypomnienie();
 	Fragment fragmentEdytuj;
 	
     @Override   
@@ -170,7 +171,9 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
 				selectFragment(2);	
 			}
 		} else if (currentFragmentPos == 5) { //jesli fragment produkt			
-			selectFragment(2);			
+			selectFragment(2);	
+		} else if (currentFragmentPos == 7) { //jesli fragment przypomnienie	
+			selectFragment(4);
 		} else {
 	        if (backIsDoublePressed) {
 	            super.onBackPressed();
@@ -249,6 +252,10 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
 			return;
 		case 6:
 			ft.replace(R.id.content_frame, fragmentEdytuj);
+			ft.commit();
+			return;
+		case 7:
+			ft.replace(R.id.content_frame, fragmentPrzypomnienie);
 			ft.commit();
 			return;
 		}
@@ -345,6 +352,14 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
 
         fragmentProdukt.setArguments(data);
         selectFragment(5);		
+	}
+	
+	public void selectFragmentToShowPrzypomienie(Product product) {
+		Bundle data = new Bundle();
+        data.putSerializable("product", product);
+
+        fragmentPrzypomnienie.setArguments(data);
+        selectFragment(7);		
 	}
 	
 	public void selectFragmentToEditProduct(Product product) {

@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import com.mareklatuszek.utilities.CommonUtilities;
 
-public class DialogPrzypomnienie extends Dialog implements android.view.View.OnClickListener {
+public class DialogPrzypomnienie extends Dialog {
 	
 	Product product;
 	CommonUtilities utilities = new CommonUtilities();
@@ -64,18 +64,5 @@ public class DialogPrzypomnienie extends Dialog implements android.view.View.OnC
 		kategoriaTxt.setText(kategoria);
 		okresProgress.setProgress(progress);
 	}
-	
-	@Override
-	public void onClick(View v) {
-		switch (v.getId()) {
-		case R.id.dodajButtonKat:
-			
-			break;
-		}
-		
-	}
-	
-
-	
 		
 }

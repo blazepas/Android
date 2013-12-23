@@ -11,9 +11,11 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.mareklatuszek.utilities.CommonUtilities;
+import com.mareklatuszek.utilities.TextViewBariol;
 
 public class AdapterKategorie extends BaseAdapter {
 	
@@ -24,8 +26,8 @@ public class AdapterKategorie extends BaseAdapter {
 	ArrayList<String> categories = new ArrayList<String>();
 	CommonUtilities utilites = new CommonUtilities();
 	
-	TextView catNameTxtKat;
-	Button usunButtonKat;
+	TextViewBariol catNameTxt;
+	LinearLayout deleteCat;
 	
 	public AdapterKategorie(Activity mActivity, ArrayList<String> categories, FragmentManager fragmentManager, int fragmentId) {
 		this.mActivity = mActivity;
@@ -55,16 +57,35 @@ public class AdapterKategorie extends BaseAdapter {
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		View vi=convertView;
-        vi = inflater.inflate(R.layout.listview_kategorie, null);
+		View vi = initRow(position);
         
-        catNameTxtKat = (TextView) vi.findViewById(R.id.catNameTxtKat);
-        usunButtonKat = (Button) vi.findViewById(R.id.usunButtonKat);
+		return vi;
+	}
+	
+	private View initRow(int position) {
+		View vi = inflater.inflate(R.layout.listview_kategorie, null);
+        
+        int rowBackground;
+		int deleteButtonBg;
+        
+        if((position % 2) == 0) { // produkt parzysty lub nie
+			rowBackground = R.color.categories_even;
+			deleteButtonBg = R.color.categories_delete_even_bg;
+		} else {
+			rowBackground = R.color.categories_odd;
+			deleteButtonBg = R.color.categories_delete_odd_bg;
+		}
+        
+        catNameTxt = (TextViewBariol) vi.findViewById(R.id.catNameTxt);
+        deleteCat = (LinearLayout) vi.findViewById(R.id.deleteCat);
+        
+        vi.setBackgroundResource(rowBackground);
+        deleteCat.setBackgroundResource(deleteButtonBg);
          
         final String category = categories.get(position);
-        catNameTxtKat.setText(category);
+        catNameTxt.setText(category);
         
-        usunButtonKat.setOnClickListener(new OnClickListener() {
+        deleteCat.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
@@ -73,7 +94,7 @@ public class AdapterKategorie extends BaseAdapter {
 			}
 		});
         
-		return vi;
+        return vi;
 	}
 	
 	private void deleteCategory(String category) {		

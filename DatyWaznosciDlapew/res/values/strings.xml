@@ -1,4 +1,7 @@
 <resources>
+    
+    <!-- menu -->
+    <string name="menu_premium_active">Masz wersję premium</string>
 
     <string name="app_name">Termin Przydatności Produktów - TPP</string>
     <string name="menu_settings">Ustawienia</string>

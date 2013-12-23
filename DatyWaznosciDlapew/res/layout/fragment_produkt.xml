@@ -1,7 +1,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    android:background="@color/fragment_background" >
 
     <ScrollView
         android:id="@+id/ScrollView1"
@@ -13,115 +14,242 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="5dp"
+            android:gravity="center_horizontal"
             android:orientation="vertical" >
 
-            <LinearLayout
-                android:id="@+id/podstawowe"
-                android:layout_width="match_parent"
+            <com.mareklatuszek.utilities.TextViewBariol
+                android:id="@+id/isScannedTxt"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:background="#20ffffff"
-                android:orientation="vertical"
-                android:padding="5dp" >
+                android:text="Zeskanowany"
+                android:textAppearance="?android:attr/textAppearanceSmall" />
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" >
+
+                <com.mareklatuszek.utilities.TextViewBariol
+                    android:id="@+id/textView1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Nazwa"
+                    android:textAppearance="@style/TPP.Normal.TextAppearance"
+                    android:textColor="@color/medium_text_view" />
+
+                <com.mareklatuszek.utilities.TextViewBariol
+                    android:id="@+id/textView2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignLeft="@+id/estimateTimeTxt"
+                    android:layout_below="@+id/textView1"
+                    android:layout_marginTop="@dimen/product_row_top_margin"
+                    android:text="Data otwarcia"
+                    android:textAppearance="@style/TPP.Normal.TextAppearance"
+                    android:textColor="@color/medium_text_view" />
+
+                <com.mareklatuszek.utilities.TextViewBariol
+                    android:id="@+id/textView3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignLeft="@+id/textView2"
+                    android:layout_below="@+id/textView2"
+                    android:layout_marginTop="@dimen/product_row_top_margin"
+                    android:text="Trwałość po otwarciu"
+                    android:textAppearance="@style/TPP.Normal.TextAppearance"
+                    android:textColor="@color/medium_text_view" />
+
+                <com.mareklatuszek.utilities.TextViewBariol
+                    android:id="@+id/textView4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignLeft="@+id/textView3"
+                    android:layout_below="@+id/textView3"
+                    android:layout_marginTop="@dimen/product_row_top_margin"
+                    android:text="Trwałość po otwarciu mija za"
+                    android:textAppearance="@style/TPP.Normal.TextAppearance"
+                    android:textColor="@color/medium_text_view" />
+
+                <com.mareklatuszek.utilities.TextViewBariol
+                    android:id="@+id/dataOtwTxt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBaseline="@+id/textView2"
+                    android:layout_alignBottom="@+id/textView2"
+                    android:layout_alignLeft="@+id/nazwaTxt"
+                    android:layout_marginTop="@dimen/product_row_top_margin"
+                    android:text="2013-10-31"
+                    android:textAllCaps="true"
+                    android:textAppearance="@style/TPP.Normal.TextAppearance"
+                    android:textColor="@color/dark_text_view" />
 
                 <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" >
+                    android:id="@+id/RelativeLayout1"
+                    android:layout_width="100dp"
+                    android:layout_height="18dp"
+                    android:layout_alignTop="@+id/textView4"
+                    android:layout_marginLeft="8dp"
+                    android:layout_toRightOf="@+id/textView4"
+                    android:orientation="vertical" >
 
-                    <TextView
-                        android:id="@+id/nazwaText"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Podstawowe dane"
-                        android:textAppearance="?android:attr/textAppearanceMedium" />
+                    <ProgressBar
+                    	android:id="@+id/pozostaloPrgsList"
+                    	style="?android:attr/progressBarStyleHorizontal"
+                    	android:layout_width="fill_parent"
+                    	android:layout_height="fill_parent" />
 
-                    <TextView
-                        android:id="@+id/isScannedTxt"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        android:text="Zeskanowany"
-                        android:textAppearance="?android:attr/textAppearanceSmall" />
+                    <com.mareklatuszek.utilities.TextViewBariol
+	                    android:id="@+id/estimateTimeTxt"
+	                    android:layout_width="wrap_content"
+	                    android:layout_height="wrap_content"
+	                    android:layout_centerHorizontal="true"
+	                    android:layout_centerVertical="true"
+	                    android:text="TextView"
+	                    android:textAppearance="@style/TPP.Small.TextAppearance"
+	                    android:textColor="@color/dark_text_view"
+	                    android:textAllCaps="true" />
 
                 </RelativeLayout>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="#10ffffff"
-                    android:orientation="vertical" >
+                <com.mareklatuszek.utilities.TextViewBariol
+                    android:id="@+id/nazwaTxt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@+id/textView2"
+                    android:layout_marginLeft="20dp"
+                    android:layout_toRightOf="@+id/textView3"
+                    android:text="NAZWA PRODUKTU"
+                    android:textAllCaps="true"
+                    android:textAppearance="@style/TPP.Normal.TextAppearance"
+                    android:textColor="@color/dark_text_view" />
 
-                </LinearLayout>
+                <com.mareklatuszek.utilities.TextViewBariol
+                    android:id="@+id/okresTxt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBaseline="@+id/textView3"
+                    android:layout_alignBottom="@+id/textView3"
+                    android:layout_alignLeft="@+id/nazwaTxt"
+                    android:text="2 MIESIĄCE"
+                    android:textAllCaps="true"
+                    android:textAppearance="@style/TPP.Normal.TextAppearance"
+                    android:textColor="@color/dark_text_view" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="100dp"
-                    android:gravity="bottom" >
+            </RelativeLayout>
 
-                    <LinearLayout
-                        android:layout_width="194dp"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical" >
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="@dimen/dodaj_sections_height"
-                            android:gravity="bottom" >
-
-                            <TextView
-                                android:id="@+id/TextView1"
-                                android:layout_width="wrap_content"
-                                android:layout_height="match_parent"
-                                android:gravity="bottom"
-                                android:text="Nazwa: " />
-
-                            <TextView
-                                android:id="@+id/nazwaTxt"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Medium Text"
-                                android:textAppearance="?android:attr/textAppearanceMedium" />
-                        </LinearLayout>
-                    </LinearLayout>
-
-                    <ImageView
-                        android:id="@+id/barcodeImage"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:src="@drawable/zxinglib_icon" />
-                </LinearLayout>
+            <RelativeLayout
+                android:id="@+id/images"
+                android:layout_width="273dp"
+                android:layout_height="127dp"
+                android:layout_marginTop="@dimen/product_row_top_margin"
+                android:gravity="center" >
 
                 <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/dodaj_sections_height"
-                    android:layout_marginTop="5dp"
-                    android:gravity="bottom" >
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true" >
 
-                    <TextView
-                        android:id="@+id/textView4"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:gravity="bottom"
-                        android:text="Okres ważności:" />
+                    <RelativeLayout
+                        android:id="@+id/barcodeLay"
+                        android:layout_width="@dimen/add_image_back_width"
+                        android:layout_height="@dimen/add_image_back_height"
+                        android:background="@color/clicable_views" >
 
-                    <TextView
-                        android:id="@+id/okresTxt"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Medium Text"
-                        android:textAppearance="?android:attr/textAppearanceMedium" />
+                        <com.mareklatuszek.utilities.TextViewBariol
+                            android:id="@+id/TextView01"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentBottom="true"
+                            android:layout_below="@+id/obrazekImage"
+                            android:layout_centerHorizontal="true"
+                            android:gravity="center"
+                            android:lines="2"
+                            android:text="Zdjęcie\n produktu"
+                            android:textAppearance="@style/TPP.XSmall.TextAppearance"
+                            android:textColor="@color/light_text_view" />
 
+                        <ImageView
+                            android:id="@+id/obrazekImage"
+                            android:layout_width="@dimen/add_image_width"
+                            android:layout_height="@dimen/add_image_height"
+                            android:layout_alignParentTop="true"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginTop="5dp"
+                            android:background="#ffffff" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/imageLay"
+                        android:layout_width="@dimen/add_image_back_width"
+                        android:layout_height="@dimen/add_image_back_height"
+                        android:layout_marginLeft="25dp"
+                        android:background="@color/clicable_views" >
+
+                        <com.mareklatuszek.utilities.TextViewBariol
+                            android:id="@+id/TextViewBariol01"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentBottom="true"
+                            android:layout_below="@+id/barcodeImage"
+                            android:layout_centerHorizontal="true"
+                            android:gravity="center"
+                            android:lines="2"
+                            android:text="QRCode lub\nkod kreskowy"
+                            android:textAppearance="@style/TPP.XSmall.TextAppearance"
+                            android:textColor="@color/light_text_view" />
+
+                        <ImageView
+                            android:id="@+id/barcodeImage"
+                            android:layout_width="@dimen/add_image_width"
+                            android:layout_height="@dimen/add_image_height"
+                            android:layout_alignParentTop="true"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginTop="5dp"
+                            android:background="#ffffff" />
+                    </RelativeLayout>
                 </LinearLayout>
 
-            </LinearLayout>
+                <ImageView
+                    android:id="@+id/imageView2"
+                    android:layout_width="@dimen/add_pick_camera"
+                    android:layout_height="@dimen/add_pick_camera"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_weight="0.5"
+                    android:clickable="true"
+                    android:src="@drawable/background_pick_camera" />
+
+                <ImageView
+                    android:id="@+id/imageView3"
+                    android:layout_width="@dimen/add_pick_camera"
+                    android:layout_height="@dimen/add_pick_camera"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentRight="true"
+                    android:clickable="true"
+                    android:src="@drawable/background_pick_barcode" />
+            </RelativeLayout>
+
+            <com.mareklatuszek.utilities.TextViewBariol
+                android:id="@+id/textView8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="dodatkow informacje"
+                android:textAppearance="@style/TPP.Small.TextAppearance"
+                android:textColor="@color/medium_text_view" />
+
+            <ImageView
+                android:id="@+id/dodatkoweImage"
+                android:layout_width="@dimen/product_pick_expand"
+                android:layout_height="@dimen/product_pick_expand"
+                android:layout_marginTop="5dp"
+                android:src="@drawable/pick_expand" />
 
             <LinearLayout
                 android:id="@+id/dodatkowe"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical" >
+                android:orientation="vertical"
+                android:visibility="gone" >
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

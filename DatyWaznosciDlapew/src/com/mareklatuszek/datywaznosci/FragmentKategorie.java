@@ -14,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -28,7 +29,7 @@ public class FragmentKategorie extends SherlockFragment implements OnClickListen
 	
 	View rootView;
 	EditText categoryTxtBoxKat;
-	Button dodajButtonKat;
+	ImageView addCat;
 	ListView categoryList;
 	
 	@Override
@@ -39,8 +40,8 @@ public class FragmentKategorie extends SherlockFragment implements OnClickListen
 		utilities.setActionBarTitle("Kategorie", getSherlockActivity());
 		
 		categoryTxtBoxKat = (EditText) rootView.findViewById(R.id.categoryTxtBoxKat);
-		dodajButtonKat = (Button) rootView.findViewById(R.id.dodajButtonKat);
-		dodajButtonKat.setOnClickListener(this);
+		addCat = (ImageView) rootView.findViewById(R.id.addCat);
+		addCat.setOnClickListener(this);
 		
 		initList();
 				
@@ -50,7 +51,7 @@ public class FragmentKategorie extends SherlockFragment implements OnClickListen
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
-		case R.id.dodajButtonKat:
+		case R.id.addCat:
 			add();
 			break;
 		}
@@ -149,10 +150,6 @@ public class FragmentKategorie extends SherlockFragment implements OnClickListen
 		refreshCategories();
 		return status;
 	}
-	
-//	private edit(String category) {
-//		//TODO dialog
-//	}
 	
 	public void refreshCategories() {
 		adapterCat.notifyDataSetChanged();

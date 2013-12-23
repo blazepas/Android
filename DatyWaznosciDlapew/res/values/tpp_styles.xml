@@ -28,6 +28,21 @@
         
     </style>
     
+    <style name="TPP.Spinner.DropDown.ActionBar" parent="TPP.Holo.Spinner">
+        <item name="android:background">@color/action_bar_background</item>
+    </style>
+    
+    <style name="TPP.Holo.Spinner" parent="Widget">
+        <item name="android:dropDownSelector">@drawable/abs__list_selector_holo_dark</item>
+        <item name="android:popupBackground">#ffffff</item>
+        <item name="android:dropDownVerticalOffset">0dip</item>
+        <item name="android:dropDownHorizontalOffset">0dip</item>
+        <item name="android:dropDownWidth">wrap_content</item>
+        <item name="android:gravity">left|center_vertical</item>
+        <item name="android:spinnerMode">dropdown</item>
+        <item name="android:clickable">true</item>
+    </style>
+    
     <style name="TPP.ListPopupWindow" parent="Widget">
         <item name="android:dropDownSelector">@drawable/abs__list_selector_holo_light</item>
         <item name="android:popupBackground">@color/dropdown</item>
@@ -38,12 +53,27 @@
     </style>
     
     <style name="TPP.PopupMenu" parent="TPP.ListPopupWindow">
+        <item name="android:textColor">#ffffff</item>
     </style>
     
     <style name="TPP.Spinner.ListView.DropDown" parent="Sherlock.__Widget.Holo.ListView">
-        <item name="android:divider">@drawable/abs__list_divider_holo_light</item>
+        <item name="android:divider">#ffffff</item>
         <item name="android:listSelector">@drawable/abs__list_selector_holo_light</item>
         <item name="android:background">@color/dropdown</item>
+        <item name="android:textColor">#ffffff</item>
+    </style>
+    
+    <style name="TPP.ActionOverflowDropDownText" parent="TPP.ActionBar.TextAppearance">
+    	<item name="android:gravity">center</item>
+    	<item name="android:textSize">@dimen/action_bar_font_size</item>
+    	<item name="android:actionMenuTextAppearance">@style/TPP.ActionBar.Menu.TextAppearance</item>
+    	 <item name="actionMenuTextAppearance">@style/TPP.ActionBar.Menu.TextAppearance</item>
+	</style>
+    
+    <style name="TPP.ActionBar.Menu.TextAppearance" parent="Widget">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">#ffffff</item>
+        <item name="android:textAllCaps">@bool/abs__config_actionMenuItemAllCaps</item>
     </style>
 
     <style name="TPP.ActionBar.TextAppearance" parent="Widget">
@@ -62,6 +92,12 @@
     
     <style name="TPP.Large.TextAppearance" parent="Widget">
         <item name="android:textSize">@dimen/text_view_large_size</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+    
+    <style name="TPP.XLarge.TextAppearance" parent="Widget">
+        <item name="android:textSize">@dimen/text_view_xlarge_size</item>
         <item name="android:textStyle">normal</item>
         <item name="android:textAllCaps">false</item>
     </style>

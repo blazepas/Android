@@ -15,8 +15,8 @@ import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.View.OnClickListener;
+import android.view.WindowManager;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -35,10 +35,11 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.mareklatuszek.utilities.CommonUtilities;
+import com.mareklatuszek.utilities.FinalVariables;
 import com.mareklatuszek.utilities.JavaMail;
 import com.mareklatuszek.utilities.PremiumUtilities;
 
-public class FragmentProdukty extends SherlockFragment implements OnClickListener {
+public class FragmentProdukty extends SherlockFragment implements FinalVariables, OnClickListener {
 	
 	AdapterDB dbAdapter;
 	AdapterProductList listAdapter;
@@ -51,7 +52,8 @@ public class FragmentProdukty extends SherlockFragment implements OnClickListene
 	
 	ListView productsList;
 	View rootView;
-	LinearLayout dodajLay, kategorieDropDown, scanLay;
+	LinearLayout dodajLay, scanLay;
+	CustomSpinner kategorieDropDown;
 		
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -161,14 +163,24 @@ public class FragmentProdukty extends SherlockFragment implements OnClickListene
 			DialogDodajProdukt dialog = new DialogDodajProdukt(getActivity());
 			dialog.show();
 			break;
-		case R.id.kategorieDropDown:
-			showSpinnerPopUp(v);
-			break;
 		case R.id.scanLay:
 			scanCode();
 		}
 		
 	}
+	
+	private class SpinnerListener implements OnItemClickListener {
+		
+		@Override
+		public void onItemClick(AdapterView<?> arg0, View view, int arg2, long arg3) {
+			kategorieDropDown.callOnItemClickListener(arg0, view, arg2, arg3);
+			
+			String choice = (String) view.getTag();
+			products = getSortedList(choice);
+			listAdapter = new AdapterProductList(getActivity(), products, fM, getId(), productsList);
+			productsList.setAdapter(listAdapter);
+		}		
+	};
 	
 	private ArrayList<Product> getSortedList(String choice) {
 		ArrayList<Product> sorted = new ArrayList<Product>();
@@ -181,45 +193,12 @@ public class FragmentProdukty extends SherlockFragment implements OnClickListene
 		}
 		return sorted;
 	}
-	
-	private void showSpinnerPopUp(final View clickedView) {
 
-        final PopupWindow popupWindow = new PopupWindow(getActivity());
-        ListView spinnerList = new ListView(getActivity());
-        ColorDrawable background = new ColorDrawable(getResources().getColor(R.color.dropdown));
-        
-        switch (clickedView.getId()) {
-	 	case R.id.kategorieDropDown:
-	     	spinnerList.setAdapter(adapterKategorieSpinner);
-	     	spinnerList.setOnItemClickListener(new OnItemClickListener() {
-	
-	 			@Override
-	 			public void onItemClick(AdapterView<?> arg0, View view, int arg2,long arg3) {
-	 				String choice = (String) view.getTag();
-	 				setCustomSpinner(choice, kategorieDropDown);
-	 				popupWindow.dismiss();
-	 				products = getSortedList(choice);
-	 				listAdapter = new AdapterProductList(getActivity(), products, fM, getId(), productsList);
-					productsList.setAdapter(listAdapter);
-	 			}
-	 		});
-	     	break;
-        }
-
-        popupWindow.setFocusable(true); 
-        popupWindow.setBackgroundDrawable(background); //TODO
-        popupWindow.setHeight(WindowManager.LayoutParams.WRAP_CONTENT);
-        popupWindow.setWidth(clickedView.getLayoutParams().width);
-        popupWindow.setContentView(spinnerList);
-
-        popupWindow.showAsDropDown(clickedView);
-    }
-	
 	private class InitSort extends AsyncTask<Void, Void, Void> {
 		
 		@Override
 		protected void onPreExecute() {			
-			kategorieDropDown = (LinearLayout) rootView.findViewById(R.id.kategorieDropDown);
+			kategorieDropDown = (CustomSpinner) rootView.findViewById(R.id.kategorieDropDown);
 		}
 
 		@Override
@@ -239,9 +218,10 @@ public class FragmentProdukty extends SherlockFragment implements OnClickListene
 		
 		@Override
 		protected void onPostExecute(Void v) {
-			setCustomSpinner("wybierz kategorię", kategorieDropDown);
 			adapterKategorieSpinner = new AdapterCustomSpinner(getActivity(), categories);
-			kategorieDropDown.setOnClickListener(FragmentProdukty.this);
+			kategorieDropDown.setText(SPINNER_KATEGORIE);
+			kategorieDropDown.setAdapter(adapterKategorieSpinner);
+			kategorieDropDown.setOnItemSelectedListener(new SpinnerListener());
 		}
 	}
     
@@ -278,22 +258,6 @@ public class FragmentProdukty extends SherlockFragment implements OnClickListene
 			
 			new InitSort().execute();// lista kategorii
 		}
-	}
-    
-	private void setCustomSpinner(String title, LinearLayout viewToSet) {
-		LayoutInflater inflater = LayoutInflater.from(getActivity());
-		LinearLayout spinner = (LinearLayout) inflater.inflate(R.layout.spinner_button, null);
-		
-		TextView spinnerTxt = (TextView) spinner.findViewById(R.id.spinnerTxt);
-		spinnerTxt.setText(title);
-		
-		viewToSet.removeAllViewsInLayout();
-		viewToSet.addView(spinner);
-	}
-        
-	public void switchToProductFragment(int positon) {
-		Product product = products.get(positon);
-		((MainActivity) getActivity()).selectFragmentToShowProduct(product);
 	}
 
 	private void switchToEditFragment(Product product) {

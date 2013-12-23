@@ -62,7 +62,7 @@ import com.mareklatuszek.datywaznosci.R;
 
 public class CommonUtilities implements FinalVariables {
 	
-	public int getProgress(String dataOtw, String terminWaz) {
+	public  int getProgress(String dataOtw, String terminWaz) {
 		
 		int progress = 100;
 		
@@ -79,8 +79,12 @@ public class CommonUtilities implements FinalVariables {
 		} catch (ParseException e) {
 			return 100;
 		}
-		
-		return progress;		
+		if (progress < 0) {
+			return 0;
+		} else {
+			return progress;	
+		}
+			
 	}
 	
 	public long parsePrzypmnienieToDate(String boxVal, String spinnerChoice, String terminWaz, String notifHour) throws ParseException {
@@ -165,39 +169,50 @@ public class CommonUtilities implements FinalVariables {
 			}
 			
 		} catch (ParseException e) {
-			Log.i("utils", "parseDateToOkres");
+			Log.i("utils", "parseDateToOkres error");
 			return "";
 		}		
 	}
 	
-	public String parseOkresToDate(String okres) {
-		Calendar cal = Calendar.getInstance();
-		String box = getFirstValue(okres);
-		String okresDate = "";
-		int val = 0;
-		
-		if (!box.equals("")) {
-			val = Integer.parseInt(box);
-		} else {
+	public String parseOkresToDate(String okres, String startDate) {
+
+		try {
+			long startMillis = parseDate(startDate);
+			Calendar cal = Calendar.getInstance();
+			cal.setTimeInMillis(startMillis);
+			
+			String box = getFirstValue(okres);
+			String okresDate = "";
+			int val = 0;
+			
+			if (!box.equals("")) {
+				val = Integer.parseInt(box);
+			} else {
+				return "";
+			}
+			
+			String format = getSecondValue(okres);		
+			
+			if(format.contains(SPINNER_DATE_DAY)) {			
+				cal.add(Calendar.DAY_OF_YEAR, val);
+			} else if (format.contains(SPINNER_DATE_WEEK)) {
+				cal.add(Calendar.WEEK_OF_MONTH, val);
+			} else if (format.contains(SPINNER_DATE_MONTH)) {
+				cal.add(Calendar.MONTH, val);
+			} else if (format.contains(SPINNER_DATE_YEAR)) {
+				cal.add(Calendar.YEAR, val);
+			}
+			
+
+			long okresInMillis = cal.getTimeInMillis();
+			okresDate = parseMillisToDate(okresInMillis);
+			
+			return okresDate;
+		} catch (ParseException e) {
+			Log.i("utils", "parse okresToDate error");
 			return "";
 		}
 		
-		String format = getSecondValue(okres);		
-		
-		if(format.contains(SPINNER_DATE_DAY)) {
-			cal.add(Calendar.DAY_OF_YEAR, val);
-		} else if (format.contains(SPINNER_DATE_WEEK)) {
-			cal.add(Calendar.WEEK_OF_MONTH, val);
-		} else if (format.contains(SPINNER_DATE_MONTH)) {
-			cal.add(Calendar.MONTH, val);
-		} else if (format.contains(SPINNER_DATE_YEAR)) {
-			cal.add(Calendar.YEAR, val);
-		}
-		
-		long okresInMillis = cal.getTimeInMillis();
-		okresDate = parseMillisToDate(okresInMillis);
-		
-		return okresDate;
 	}
 	
 	public Product parseCodeToProduct(String code){
@@ -824,7 +839,7 @@ public class CommonUtilities implements FinalVariables {
         	BitmapFactory.Options options = new Options();
         	options.inSampleSize = 5;
         	Bitmap b = BitmapFactory.decodeFile(path, options);
-    		Bitmap out = Bitmap.createScaledBitmap(b, 50, 50, false);
+    		Bitmap out = Bitmap.createScaledBitmap(b, 60, 60, false);
 
             File file = new File(path + "thumb");
             FileOutputStream fOut = new FileOutputStream(file);
@@ -870,7 +885,6 @@ public class CommonUtilities implements FinalVariables {
 	}
 	
 	public void expandView(final View v, final int targetHeightInPx) {
-		
 	    v.getLayoutParams().height = 0;
 	    v.setVisibility(View.VISIBLE);
 	    Animation a = new Animation()

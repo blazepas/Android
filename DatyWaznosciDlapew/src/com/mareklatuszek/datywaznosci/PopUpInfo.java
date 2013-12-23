@@ -3,6 +3,7 @@ package com.mareklatuszek.datywaznosci;
 import com.mareklatuszek.utilities.FinalVariables;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,12 +16,14 @@ import android.widget.TextView;
 public class PopUpInfo extends PopupWindow implements FinalVariables{
 	
 	View clickedView;
-	Activity mActivity;
+	Context mActivity;
 	
     private int posX = -265;
     private int posY = -35;
+    
 	
-	public PopUpInfo(Activity mActivity, View clickedView) {
+	public PopUpInfo(Context mActivity, View clickedView) {
+		super(mActivity);
 		this.mActivity = mActivity;
 		this.clickedView = clickedView;
 		initWindow();
@@ -40,19 +43,28 @@ public class PopUpInfo extends PopupWindow implements FinalVariables{
         	message = INFO_OKRES;
         	break;
         case R.id.terminWazInfoImage:
-        	leftSide = true;
+        	leftSide = false;
         	message = INFO_TERMIN_WAZNOSCI;
         	break;
         case R.id.dataZuzInfoImage:
         	leftSide = true;
         	message = INFO_DATA_ZUZYCIA;
+        	break;
         case R.id.scanInfoImage:
         	leftSide = false;
         	message = INFO_OKRES;
         	break;
-        case R.id.customInfoImage:
+        case R.id.wlasnyInfoImage:
         	leftSide = false;
         	message = INFO_OKRES;
+        	break;
+        case INFO_MENU_0_ITEM_ID:
+        	leftSide = true;
+        	message = INFO_SKANOWANIE;
+        	break;
+        case INFO_MENU_1_ITEM_ID:
+        	leftSide = true;
+        	message = INFO_WLASNY_PRODUKT;
         	break;
         }
         

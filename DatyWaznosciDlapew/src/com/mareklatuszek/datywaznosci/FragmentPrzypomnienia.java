@@ -57,8 +57,10 @@ public class FragmentPrzypomnienia extends SherlockFragment implements FinalVari
 			
 			if (przypomnienieCode.contains(productCode)) {				
 				
-				DialogPrzypomnienie dialog = new DialogPrzypomnienie(getActivity(), product);
-				dialog.show();
+//				DialogPrzypomnienie dialog = new DialogPrzypomnienie(getActivity(), product);
+//				dialog.show();
+				
+				((MainActivity) getActivity()).selectFragmentToShowPrzypomienie(product);
 				
 				break; // pokazuje tylko ten jeden produkt
 			}

@@ -6,23 +6,35 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:gravity="right" >
+        android:layout_height="@dimen/categories_row_height"
+        android:gravity="right|center_vertical" >
 
-        <TextView
-            android:id="@+id/catNameTxtKat"
+        <com.mareklatuszek.utilities.TextViewBariol
+            android:id="@+id/catNameTxt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="14dp"
             android:layout_weight="1"
             android:text="Medium Text"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+            android:textAppearance="@style/TPP.Large.TextAppearance"
+            android:textColor="@color/dark_text_view" />
 
-        <Button
-            android:id="@+id/usunButtonKat"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Usuń" />
+        <LinearLayout
+            android:id="@+id/deleteCat"
+            android:layout_width="@dimen/categories_button_delete_width"
+            android:layout_height="match_parent"
+            android:background="@color/categories_delete_even_bg"
+            android:gravity="center"
+            android:orientation="vertical" >
+
+            <ImageView
+                android:id="@+id/imageView1"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/categories_image_delete_height"
+                android:src="@drawable/image_trash" />
+
+        </LinearLayout>
+
     </LinearLayout>
 
 </LinearLayout>

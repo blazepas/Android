@@ -79,6 +79,13 @@ public interface FinalVariables {
 			+ " jest przeterminowany (data nadrukowana na opakowaniu)."; 
 	public static final String INFO_DATA_ZUZYCIA = "Po tym terminie produkt nie nadaje się do użycia/spożycia"
 			+ " jest przeterminowany (data nadrukowana na opakowaniu)."; 
+	public static final String INFO_SKANOWANIE = "Po tym terminie produkt nie nadaje się do użycia/spożycia"
+			+ " jest przeterminowany (data nadrukowana na opakowaniu)."; 
+	public static final String INFO_WLASNY_PRODUKT = "Po tym terminie produkt nie nadaje się do użycia/spożycia"
+			+ " jest przeterminowany (data nadrukowana na opakowaniu)."; 
+	
+	public static final int INFO_MENU_0_ITEM_ID = 100;
+	public static final int INFO_MENU_1_ITEM_ID = 200;
 	
 	public static final int SWIPE_MIN_DISTANCE = 50;
 	public static final int SWIPE_MAX_OFF_PATH = 250;

@@ -66,14 +66,16 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 	ArrayAdapter<String> spinnerAdapter;
 	ArrayList<String> kategorie;
 	CommonUtilities utilities = new CommonUtilities();
-	AdapterCustomSpinner adapterCustomSpinner, adapterKategorieSpinner, adapterPryzpSpinner;
+	AdapterCustomSpinner adapterOkresSpinner, adapterKategorieSpinner;
 	ArrayList<HashMap<String, String>> oldPrzypomnienia = new ArrayList<HashMap<String,String>>();
 	
 	View rootView;
 	ImageView barcodeImage, obrazekImage, dodatkoweImage, kategroieImage, okresInfoImage, terminWazInfoImage, dataZuzInfoImage;
 	Button zapiszButton;
 	EditText nazwaTextBox, okresWazTextBox, opisTxtBox, dataOtwTxtBox, terminWazTextBox, dataZuzTextBox;
-	LinearLayout podstawowe, dodatkowe, przypLayout, latDodatkoweEdit, okresWazDropDown, kategorieDropDown;
+	LinearLayout podstawowe, dodatkowe, latDodatkoweEdit;
+	CustomSpinner okresWazDropDown, kategorieDropDown;
+	CustomViewPrzypomnienia przypLayout;
 	View przypRow;
 	
 	@Override
@@ -178,11 +180,6 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 		DialogDatePicker dialogDatePicker = new DialogDatePicker(getActivity(), view);
 		
 		switch (view.getId()) {
-		case R.id.przypDropDown:
-		case R.id.kategorieDropDown:
-		case R.id.okresWazDropDown:
-			showSpinnerPopUp(view).showAsDropDown(view);
-			break;
 		case R.id.okresInfoImage:
 		case R.id.dataZuzInfoImage:
 		case R.id.terminWazInfoImage:
@@ -236,7 +233,7 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 		terminWazTextBox = (EditText) rootView.findViewById(R.id.terminWazTextBox);
 		terminWazInfoImage = (ImageView) rootView.findViewById(R.id.terminWazInfoImage);
 		okresWazTextBox = (EditText) rootView.findViewById(R.id.okresWazTextBox);
-		okresWazDropDown = (LinearLayout) rootView.findViewById(R.id.okresWazDropDown);
+		okresWazDropDown = (CustomSpinner) rootView.findViewById(R.id.okresWazDropDown);
 		okresInfoImage = (ImageView) rootView.findViewById(R.id.okresInfoImage);
 		zapiszButton = (Button) rootView.findViewById(R.id.zapiszButton);
 		dodatkoweImage = (ImageView) rootView.findViewById(R.id.dodatkoweImage);
@@ -257,7 +254,6 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 		obrazekImage.setOnClickListener(this);
 		terminWazTextBox.setOnClickListener(this);
 		terminWazInfoImage.setOnClickListener(this);
-		okresWazDropDown.setOnClickListener(this);
 		okresInfoImage.setOnClickListener(this);
 		dodatkoweImage.setOnClickListener(this);
 		zapiszButton.setOnClickListener(this);	
@@ -271,24 +267,19 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 		dodatkowe.addView(latDodatkoweEdit);		
 		dataOtwTxtBox = (EditText) dodatkowe.findViewById(R.id.dataOtwTxtBox);
 		kategroieImage = (ImageView) dodatkowe.findViewById(R.id.kategroieImage);
-		kategorieDropDown = (LinearLayout) dodatkowe.findViewById(R.id.kategorieDropDown);
+		kategorieDropDown = (CustomSpinner) dodatkowe.findViewById(R.id.kategorieDropDown);
 		opisTxtBox = (EditText) dodatkowe.findViewById(R.id.opisTxtBox);
-		przypLayout = (LinearLayout) dodatkowe.findViewById(R.id.przypomnieniaLayout);
+		przypLayout = (CustomViewPrzypomnienia) dodatkowe.findViewById(R.id.przypomnieniaLayout);
 		dataZuzTextBox = (EditText) dodatkowe.findViewById(R.id.dataZuzTextBox);		
 		dataZuzInfoImage = (ImageView) dodatkowe.findViewById(R.id.dataZuzInfoImage);
 	
+		initSpinnerKategorie();
+		dataOtwTxtBox.setText(currentDate);
 			
 		dataOtwTxtBox.setOnClickListener(this);		
 		kategroieImage.setOnClickListener(this);
 		dataZuzTextBox.setOnClickListener(this);
-		kategorieDropDown.setOnClickListener(this);
 		dataZuzInfoImage.setOnClickListener(this);
-
-		dataOtwTxtBox.setText(currentDate);
-		
-		initSpinnerKategorie();
-		initPrzypomnienia();
-		initSpinnerPrzypList();
 	}
 		
 	private void initSpinnerKategorie() {
@@ -299,70 +290,16 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 		Collections.reverse(kategorie);
 		dbAdapter.close();
 		
-		setCustomSpinner("wybierz kategorię", kategorieDropDown);
 		adapterKategorieSpinner = new AdapterCustomSpinner(getActivity(), kategorie);
+		kategorieDropDown.setText(SPINNER_KATEGORIE);
+		kategorieDropDown.setAdapter(adapterKategorieSpinner);
 	}
 	
 	private void initSpinnerOkres() {
-		setCustomSpinner("wybierz okres", okresWazDropDown);
 		String[] okresSpinnData = getResources().getStringArray(R.array.array_date);
-		adapterCustomSpinner = new AdapterCustomSpinner(getActivity(), okresSpinnData);
-	}
-	
-	private void initSpinnerPrzypList() {
-		String[] pryzpSpinnData = getResources().getStringArray(R.array.array_date);
-		adapterPryzpSpinner = new AdapterCustomSpinner(getActivity(), pryzpSpinnData);
-	}
-	
-	private void initPrzypomnienia() {
-		final LayoutInflater inflater = getActivity().getLayoutInflater();
-		final LinearLayout row = (LinearLayout) inflater.inflate(R.layout.listview_add_powiadomienia, null);
-		Button removePrzypButton = (Button) row.findViewById(R.id.removePrzypButton);
-		Button button = (Button) row.findViewById(R.id.addPrzypButton);
-		Button godzButton = (Button) row.findViewById(R.id.godzButton);
-		LinearLayout przypDropDown = (LinearLayout) row.findViewById(R.id.przypDropDown);
-		
-		setCustomSpinner(SPINNER_PRZPOMNIENIE, przypDropDown);
-		
-		przypDropDown.setOnClickListener(this);
-		
-		removePrzypButton.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				przypLayout.removeView(row);
-				int rowsCount = przypLayout.getChildCount();
-				
-				if (rowsCount == 0) {
-					initPrzypomnienia();
-				} else {
-					View viv = przypLayout.getChildAt(rowsCount - 1);
-					Button przypButton = (Button) viv.findViewById(R.id.addPrzypButton);
-					przypButton.setVisibility(View.VISIBLE);
-				}		
-			}
-		});
-		
-		godzButton.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				DialogTimePicker dialogTimePicker = new DialogTimePicker(getActivity(), v);
-				dialogTimePicker.show();				
-			}
-		});
-		
-		button.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				initPrzypomnienia();	
-				View viv =przypLayout.getChildAt(przypLayout.getChildCount() - 2);
-				Button przypButton = (Button) viv.findViewById(R.id.addPrzypButton);
-				przypButton.setVisibility(View.GONE);
-			}
-		});
-		przypLayout.addView(row);
+		adapterOkresSpinner = new AdapterCustomSpinner(getActivity(), okresSpinnData);
+		okresWazDropDown.setText(SPINNER_OKRES);
+		okresWazDropDown.setAdapter(adapterOkresSpinner);
 	}
 			
 	private void showDodatkowe() {
@@ -401,7 +338,7 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 		
 		String nazwa = nazwaTextBox.getText().toString();
 		String terminWaznosci = getTerminWaznosci();
-		String okresWaznosci = getPeriodFromBoxAndSpinner(okresWazTextBox, okresWazDropDown);
+		String okresWaznosci = getOkresWaz(okresWazTextBox, okresWazDropDown);
 		String kod = code;
 		String typKodu = codeFormat;
 		
@@ -416,8 +353,8 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 		String dataZuz = dataZuzTextBox.getText().toString();
 		String obrazek = utilities.getRealPathFromURI(MainActivity.imageUri, getActivity());
 		String opis = opisTxtBox.getText().toString();
-		String endDate = getEndDate(terminWaznosci, okresWaznosci);
-		ArrayList<HashMap<String, String>> przypomnienia = getPrzypomnienia(endDate);
+		String endDate = getEndDate(terminWaznosci, okresWaznosci, dataOtwarcia);
+		ArrayList<HashMap<String, String>> przypomnienia = przypLayout.getPrzypomnienia(endDate);
 		
 		product.setDataOtwarcia(dataOtwarcia);	
 		product.setTerminWaznosci(terminWaznosci);
@@ -488,8 +425,7 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 		isScanned = product.getIsScanned();
 		
 		nazwaTextBox.setText(nazwa);
-		okresWazTextBox.setText(okresText);
-		setCustomSpinner(okresSpinnVal, okresWazDropDown);
+		setOkresWaznosci(okresText, okresSpinnVal);
 		if (!kod.equals("")) {
 			setCodeImage(kod, typKodu);
 		}
@@ -498,7 +434,6 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 		String terminWaznosci = product.getTerminWaznosci();
 		String kategoria = product.getKategoria();
 		String dataZuz = product.getDataZuzycia();
-		
 		String imagePath = product.getImage();
 		MainActivity.imageUri = Uri.parse(imagePath);
 		
@@ -512,93 +447,12 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 		
 		dataOtwTxtBox.setText(dataOtwarcia);
 		terminWazTextBox.setText(terminWaznosci);
-		setKategorieSpinner(kategoria);
+		setKategoria(kategoria);
 		opisTxtBox.setText(opis);
-		setPrzypomnienia(przypomnienia);
+		przypLayout.setPrzypomnienia(przypomnienia);
 		dataZuzTextBox.setText(dataZuz);
 	}
-	
-	private void setPrzypomnienia(ArrayList<HashMap<String, String>> przypomnienia) { //TODO naprawić, dubluje sie
 		
-		int przypCount = przypomnienia.size();
-		
-		if (przypCount > 0) {
-			przypLayout.removeAllViews();
-		}
-		
-		for(int i = 0; i < przypCount; i++) {
-			
-			HashMap<String, String> przypomnienie = przypomnienia.get(i);
-			
-			LayoutInflater inflater =  getActivity().getLayoutInflater();		
-			String boxTxt = przypomnienie.get(PRZYP_TEXT_BOX);
-			String spinner = przypomnienie.get(PRZYP_SPINNER);
-			String przypHour = przypomnienie.get(PRZYP_HOUR);//TODO	
-						
-			final LinearLayout row = (LinearLayout) inflater.inflate(R.layout.listview_add_powiadomienia, null);
-			EditText przypTextBox = (EditText) row.findViewById(R.id.przypTextBox);
-			Button removePrzypButton = (Button) row.findViewById(R.id.removePrzypButton);
-			Button przypButton = (Button) row.findViewById(R.id.addPrzypButton);
-			Button godzButton = (Button) row.findViewById(R.id.godzButton);
-			LinearLayout przypDropDown = (LinearLayout) row.findViewById(R.id.przypDropDown);
-		
-			przypTextBox.setText(boxTxt);
-			setCustomSpinner(spinner, przypDropDown);
-			godzButton.setText(przypHour);
-					
-//			EditText temp = new EditText(getActivity());
-//			LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(54, LayoutParams.WRAP_CONTENT, 1);
-//			temp.setLayoutParams(params);
-//			temp.setText(boxTxt);
-//			row.addView(temp);
-			
-			przypDropDown.setOnClickListener(this);
-			
-			removePrzypButton.setOnClickListener(new OnClickListener() {
-				
-				@Override
-				public void onClick(View v) {
-					przypLayout.removeView(row);
-					int rowsCount = przypLayout.getChildCount();
-					
-					if (rowsCount == 0) {
-						initPrzypomnienia();
-					} else {
-						View viv = przypLayout.getChildAt(rowsCount - 1);
-						Button przypButton = (Button) viv.findViewById(R.id.addPrzypButton);
-						przypButton.setVisibility(View.VISIBLE);
-					}				
-				}
-			});
-			
-			if (i < (przypCount - 1)) {
-				przypButton.setVisibility(View.GONE);
-			} else {
-				przypButton.setOnClickListener(new OnClickListener() {
-					
-					@Override
-					public void onClick(View v) {
-						initPrzypomnienia();
-						View rowBefore = przypLayout.getChildAt(przypLayout.getChildCount() - 2);
-						Button buttonBefore = (Button) rowBefore.findViewById(R.id.addPrzypButton);
-						buttonBefore.setVisibility(View.GONE);				
-					}
-				});				
-			}
-			
-			godzButton.setOnClickListener(new OnClickListener() {
-				
-				@Override
-				public void onClick(View v) {
-					DialogTimePicker dialogTimePicker = new DialogTimePicker(getActivity(), v);
-					dialogTimePicker.show();				
-				}
-			});
-			
-			przypLayout.addView(row);	
-		}	
-	}
-	
 	public void setDataFromScan(String code, String codeFormat) {
 		dbAdapter.open();
 		boolean isInDB = dbAdapter.chckIfProductIsInDB(code);
@@ -660,41 +514,29 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 		}
 	}
 	
-	public void setOkresWaz(String choosenDate) {		
-		String okres = utilities.parseDateToOkres(choosenDate);
-		String box = utilities.getFirstValue(okres);
-		String spinnItem = utilities.getSecondValue(okres);
-		
-		okresWazTextBox.setText(box);
-		setCustomSpinner(spinnItem, okresWazDropDown);		
+	private void setOkresWaznosci(String okresText, String okresSpinnVal) {
+		if (okresSpinnVal.equals("")) {
+			okresSpinnVal = SPINNER_OKRES;
+		}
+		okresWazTextBox.setText(okresText);
+		okresWazDropDown.setText(okresSpinnVal);
 	}
 	
 	private void setAlarms(ArrayList<HashMap<String, String>> przypomnienia, String nazwa, String productCode) {
 		utilities.cancelAlarms(oldPrzypomnienia, productCode, getActivity());
 		utilities.startAlarms(przypomnienia, nazwa, productCode, getActivity());
 	}
-	
-	private void setCustomSpinner(String title, LinearLayout viewToSet) {
-		LayoutInflater inflater = LayoutInflater.from(getActivity());
-		LinearLayout spinner = (LinearLayout) inflater.inflate(R.layout.spinner_button, null);
 		
-		TextView spinnerTxt = (TextView) spinner.findViewById(R.id.spinnerTxt);
-		spinnerTxt.setText(title);
-		
-		viewToSet.removeAllViewsInLayout();
-		viewToSet.addView(spinner);
-	}
-	
-	private void setKategorieSpinner(String kategoria) {
+	private void setKategoria(String kategoria) {
 		if (kategoria.equals("")) {
-			setCustomSpinner(SPINNER_KATEGORIE, kategorieDropDown);
+			kategorieDropDown.setText(SPINNER_KATEGORIE);
 		} else {
-			setCustomSpinner(kategoria, kategorieDropDown);
+			kategorieDropDown.setText(kategoria);
 		}
 	}
 
 	private String getKategoria() {
-		String chosenKategoria = getChoiceFromCustomSpinner(kategorieDropDown);	
+		String chosenKategoria = kategorieDropDown.getText();	
 		if(chosenKategoria.equals(SPINNER_KATEGORIE)) {
 			return "";
 		} else {
@@ -706,51 +548,17 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 
 		return terminWazTextBox.getText().toString();
 	}
-	
-	private ArrayList<HashMap<String, String>> getPrzypomnienia(String endDate) {
-		ArrayList<HashMap<String, String>> przypomnienia = new ArrayList<HashMap<String,String>>();
-		int przypCount = przypLayout.getChildCount();
 		
-		for(int i = 0; i < przypCount; i++) {
-			HashMap<String, String> przypomnienie = new HashMap<String, String>();
-			View row = przypLayout.getChildAt(i);
-			
-			LinearLayout przypDropDown = (LinearLayout) row.findViewById(R.id.przypDropDown);
-			EditText przypTextBox = (EditText) row.findViewById(R.id.przypTextBox);
-			Button godzButton = (Button) row.findViewById(R.id.godzButton);
-			
-			String boxTxt = przypTextBox.getText().toString();
-			
-			if (boxTxt.length() != 0 & !boxTxt.equals("0") & !boxTxt.equals(SPINNER_PRZPOMNIENIE)) {
-				String spinnerChoice = getChoiceFromCustomSpinner(przypDropDown);
-				String przypHour = godzButton.getText().toString();
-				String przypDate = "0";
-				try {
-					long dateInMillis = utilities.parsePrzypmnienieToDate(boxTxt, spinnerChoice, endDate, przypHour);
-					przypDate = String.valueOf(dateInMillis);
-				} catch (ParseException e) {
-					Log.i("getPrzypomnienia", "parse to date error");
-				}
-				
-				przypomnienie.put(PRZYP_TEXT_BOX, boxTxt);
-				przypomnienie.put(PRZYP_SPINNER, spinnerChoice);
-				przypomnienie.put(PRZYP_HOUR, przypHour);
-				przypomnienie.put(PRZYP_DATE, przypDate);
-				
-				przypomnienia.add(przypomnienie);
-			}			
-		}
-		
-		return przypomnienia;
-	}
-	
-	private String getPeriodFromBoxAndSpinner(EditText box, LinearLayout okresWazDropDown) {		
+	private String getOkresWaz(EditText box, CustomSpinner customDropDown) {		
 		String value = box.getText().toString();
-		String format = getChoiceFromCustomSpinner(okresWazDropDown);
+		String format = customDropDown.getText();
 		
-		String peroid = value + ":" + format;
-		
-		return peroid;
+		if(value.length() == 0 || value.equals("0") || format.equals(SPINNER_OKRES)) {
+			return ":";
+		} else {
+			String peroid = value + ":" + format;
+			return peroid;
+		}
 	}
 	
 	private String getChoiceFromCustomSpinner(LinearLayout customSpinner) {
@@ -760,75 +568,15 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 		return choice;
 	}
 	
-	private String getEndDate(String terminWazosci, String okresWaznosci) {	
+	private String getEndDate(String terminWazosci, String okresWaznosci, String dataOtw) {	
 		if (terminWazosci.equals("")) {
-			String peroid = getPeriodFromBoxAndSpinner(okresWazTextBox, okresWazDropDown);
-			String date = utilities.parseOkresToDate(peroid);
+			String peroid = getOkresWaz(okresWazTextBox, okresWazDropDown);
+			String date = utilities.parseOkresToDate(peroid, dataOtw);
 			return date;
 		} else {	
 			return terminWazosci;
 		}
 	}
-	
-	private PopupWindow showSpinnerPopUp(final View clickedView) {
-
-        final PopupWindow popupWindow = new PopupWindow(getActivity());
-        ListView spinnerList = new ListView(getActivity());
-        ColorDrawable background = new ColorDrawable(getResources().getColor(R.color.dropdown));
-        
-        switch (clickedView.getId()) {
-        case R.id.okresWazDropDown:
-        	spinnerList.setAdapter(adapterCustomSpinner);
-        	spinnerList.setOnItemClickListener(new OnItemClickListener() {
-
-    			@Override
-    			public void onItemClick(AdapterView<?> arg0, View view, int arg2,long arg3) 
-    			{
-    				String choice = (String) view.getTag();
-    				setCustomSpinner(choice, okresWazDropDown);
-    				popupWindow.dismiss();
-    			}
-    		});
-        	break;
-        	
-        case R.id.kategorieDropDown:
-	     	spinnerList.setAdapter(adapterKategorieSpinner);
-	     	spinnerList.setOnItemClickListener(new OnItemClickListener() {
-	
-	 			@Override
-	 			public void onItemClick(AdapterView<?> arg0, View view, int arg2,long arg3) 
-	 			{
-	 				String choice = (String) view.getTag();
-	 				setCustomSpinner(choice, kategorieDropDown);
-	 				popupWindow.dismiss();
-	 			}
-	 		});
-	     	break;	
-	     	
-	 	case R.id.przypDropDown:
-	 		spinnerList.setAdapter(adapterPryzpSpinner);
-	     	spinnerList.setOnItemClickListener(new OnItemClickListener() {
-	
-	 			@Override
-	 			public void onItemClick(AdapterView<?> arg0, View view, int arg2,long arg3) 
-	 			{
-	 				LinearLayout viewToSet = (LinearLayout) clickedView;
-	 				String choice = (String) view.getTag();
-	 				setCustomSpinner(choice, viewToSet);
-	 				popupWindow.dismiss();
-	 			}
-	 		});
-	 		break;
-        }
-
-        popupWindow.setFocusable(true); 
-        popupWindow.setBackgroundDrawable(background);
-        popupWindow.setHeight(WindowManager.LayoutParams.WRAP_CONTENT);
-        popupWindow.setWidth(clickedView.getLayoutParams().width);
-        popupWindow.setContentView(spinnerList);
-
-        return popupWindow;
-    }
 						
 	private void save() {		
 		if (checkFormIsFill()) {

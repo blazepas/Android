@@ -1,11 +1,13 @@
 package com.mareklatuszek.datywaznosci;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,6 +18,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,17 +30,19 @@ import com.mareklatuszek.utilities.BitmapLoader;
 import com.mareklatuszek.utilities.CommonUtilities;
 import com.mareklatuszek.utilities.FinalVariables;
 import com.mareklatuszek.utilities.PremiumUtilities;
+import com.mareklatuszek.utilities.TextViewBariol;
 
-public class FragmentProdukt extends SherlockFragment implements OnClickListener {
+public class FragmentProdukt extends SherlockFragment implements FinalVariables, OnClickListener {
 	
 	private Product product = new Product();
 	CommonUtilities utilities = new CommonUtilities();
-	AdapterProduktPrzypomnienia adapterPrzyp;
+	boolean dodatkoweIsVisible = false;
 	
 	View rootView;
 	LinearLayout layDodatkoweShow, dodatkowe, przypomnieniaLayout;
-	TextView nazwaTxt, okresTxt, dataOtwTxt, terminWazTxt, kategoriaTxt, opisTxt, dataZuzTxt, isScannedTxt;
-	ImageView barcodeImage, obrazekImage;
+	TextViewBariol nazwaTxt, okresTxt, dataOtwTxt, terminWazTxt, kategoriaTxt, isScannedTxt, estimateTimeTxt;
+	ImageView barcodeImage, obrazekImage, dodatkoweImage;
+	ProgressBar pozostaloPrgsList;
 	
 	Bitmap codeBmp;
 	Bitmap imageBmp;
@@ -64,6 +69,14 @@ public class FragmentProdukt extends SherlockFragment implements OnClickListener
 			switchToProductsFragment();
 		}
 		
+		if(savedInstanceState != null) {
+			dodatkoweIsVisible = savedInstanceState.getBoolean("dodatkowe");
+		}
+		
+		if (dodatkoweIsVisible) { 
+			showDodatkowe();
+		}
+		
 		return rootView;
 	}
 	
@@ -84,7 +97,19 @@ public class FragmentProdukt extends SherlockFragment implements OnClickListener
 
       super.onCreateOptionsMenu(menu, inflater);
     }
-        
+       
+	@Override
+	public void onSaveInstanceState(Bundle bundle) {
+		super.onSaveInstanceState(bundle);
+		
+		if (dodatkoweIsVisible) { 
+			bundle.putBoolean("dodatkowe", true);
+
+		} else {
+			bundle.putBoolean("dodatkowe", false);
+		}
+		
+	}
     
     @Override
     public boolean onOptionsItemSelected(MenuItem item) 
@@ -122,24 +147,44 @@ public class FragmentProdukt extends SherlockFragment implements OnClickListener
 			DialogObrazek showImage = new DialogObrazek(getActivity(), imageBmp);
 			showImage.show();
 			break;
+		case R.id.dodatkoweImage:
+			if (dodatkoweIsVisible) {
+				hideDodatkowe();
+			} else {
+				showDodatkowe();
+			}
+			break;
 		}
 	}
 	
-	private void initPodstawowe() {
-		
-		nazwaTxt = (TextView) rootView.findViewById(R.id.nazwaTxt);
-		okresTxt = (TextView) rootView.findViewById(R.id.okresTxt);
-		isScannedTxt = (TextView) rootView.findViewById(R.id.isScannedTxt);
+	private void initPodstawowe() {		
+		isScannedTxt = (TextViewBariol) rootView.findViewById(R.id.isScannedTxt);
+		nazwaTxt = (TextViewBariol) rootView.findViewById(R.id.nazwaTxt);
+		dataOtwTxt = (TextViewBariol) rootView.findViewById(R.id.dataOtwTxt);
+		okresTxt = (TextViewBariol) rootView.findViewById(R.id.okresTxt);
+		estimateTimeTxt = (TextViewBariol) rootView.findViewById(R.id.estimateTimeTxt);
 		barcodeImage = (ImageView) rootView.findViewById(R.id.barcodeImage);
+		obrazekImage = (ImageView) rootView.findViewById(R.id.obrazekImage);
+		dodatkoweImage = (ImageView) rootView.findViewById(R.id.dodatkoweImage);
+		pozostaloPrgsList = (ProgressBar) rootView.findViewById(R.id.pozostaloPrgsList);
+		
 		
 		String nazwa = product.getNazwa();
 		String okres = product.getOkresWaznosci();
+		String dataOtw = product.getDataOtwarcia();
 		String code = product.getCode();
 		String codeFormat = product.getCodeFormat();
+		String image = product.getImage();
+		String endDate = product.getEndDate();
 		codeBmp = utilities.encodeCodeToBitmap(code, codeFormat, getActivity());
+		int progress = utilities.getProgress(dataOtw, endDate);
+		Drawable progressDrawable = getResources().getDrawable(R.drawable.progress_bar_bg);
+		String estimate = getEstimate(endDate);
 		
 		nazwaTxt.setText(nazwa);
 		okresTxt.setText(okres);
+		estimateTimeTxt.setText(estimate);
+		dataOtwTxt.setText(dataOtw);
 		barcodeImage.setImageBitmap(codeBmp);
 		barcodeImage.setOnClickListener(this);
 		if (product.getIsScanned()) {
@@ -147,6 +192,16 @@ public class FragmentProdukt extends SherlockFragment implements OnClickListener
 		} else {
 			isScannedTxt.setText("Własny produkt");
 		}
+		
+		if (!image.equals("")) {
+			String imagePath = product.getImage();
+			imageBmp = BitmapLoader.loadBitmap(imagePath, 100, 100);
+			obrazekImage.setImageBitmap(imageBmp);
+			obrazekImage.setOnClickListener(this);
+		}
+		dodatkoweImage.setOnClickListener(this);
+		pozostaloPrgsList.setProgress(progress);
+        pozostaloPrgsList.setProgressDrawable(progressDrawable);
 		
 	}
 	
@@ -156,48 +211,63 @@ public class FragmentProdukt extends SherlockFragment implements OnClickListener
 		dodatkowe = (LinearLayout) rootView.findViewById(R.id.dodatkowe);	
 		dodatkowe.addView(layDodatkoweShow);
 		
-		dataOtwTxt = (TextView) dodatkowe.findViewById(R.id.dataOtwTxt);
-		terminWazTxt = (TextView) dodatkowe.findViewById(R.id.terminWazTxt);
-		kategoriaTxt = (TextView) dodatkowe.findViewById(R.id.kategoriaTxt);
-		opisTxt = (TextView) dodatkowe.findViewById(R.id.opisTxt);
+		terminWazTxt = (TextViewBariol) dodatkowe.findViewById(R.id.terminWazTxt);
+		kategoriaTxt = (TextViewBariol) dodatkowe.findViewById(R.id.kategoriaTxt);
 		przypomnieniaLayout = (LinearLayout) dodatkowe.findViewById(R.id.przypomnieniaLayout);
-		obrazekImage = (ImageView) dodatkowe.findViewById(R.id.obrazekImage);
-		dataZuzTxt = (TextView) dodatkowe.findViewById(R.id.dataZuzTxt);
 		
-		String dataOtw = product.getDataOtwarcia();
 		String terminWaz = product.getTerminWaznosci();
 		String kategoria = product.getKategoria();
-		String opis = product.getOpis();
-		String image = product.getImage();
-		String dataZuz = product.getDataZuzycia();
-		
-		if (!image.equals("")) {
-			String imagePath = product.getImage();
-			imageBmp = BitmapLoader.loadBitmap(imagePath, 100, 100);
-			obrazekImage.setImageBitmap(imageBmp);
-			obrazekImage.setOnClickListener(this);
-		}
-		
-		
-		dataOtwTxt.setText(dataOtw);
+
 		terminWazTxt.setText(terminWaz);
 		kategoriaTxt.setText(kategoria);
-		opisTxt.setText(opis);
-		dataZuzTxt.setText(dataZuz);
 		initPrzypomnienia();
-		
 	}
 	
 	private void initPrzypomnienia() {
 		ArrayList<HashMap<String, String>> przypomnienia = product.getPrzypomnienia();
-		ArrayList<HashMap<String, String>> sortedPrzypomnienia = utilities.sortPrzypomnieniaAll(przypomnienia);
-		adapterPrzyp = new AdapterProduktPrzypomnienia(getActivity(), sortedPrzypomnienia);
+		przypomnienia = utilities.sortPrzypomnieniaAll(przypomnienia);
 		
-		for (int i = 0; i < adapterPrzyp.getCount(); i++)
-		{
-			View item = adapterPrzyp.getView((i), null, null);
-			przypomnieniaLayout.addView(item);
+		for (int i = 0; i < przypomnienia.size(); i++) {
+			TextViewBariol kiedyPow = new TextViewBariol(getActivity());
+			kiedyPow.setTextAppearance(getActivity(), R.style.TPP_Normal_TextAppearance);
+			kiedyPow.setTextColor(getResources().getColor(R.color.dark_text_view));
+	        
+	        String przypDate = przypomnienia.get(i).get(PRZYP_DATE);
+	        long notifTime = Long.parseLong(przypDate);
+	        long currentTime = System.currentTimeMillis();
+	        String date = "za " + utilities.dateToWords(currentTime, notifTime);
+	        
+	        kiedyPow.setText(date);
+	        
+	        przypomnieniaLayout.addView(kiedyPow);
 		}
+ 
+	}
+	
+	private String getEstimate(String endDate) {
+		long endTime = 0;
+		try {
+			endTime = utilities.parseDate(endDate);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+        String estimate = utilities.dateToWords(System.currentTimeMillis(), endTime);
+		
+		return estimate;
+	}
+	
+	private void showDodatkowe() {
+		dodatkoweIsVisible = true;
+		Drawable backg = getResources().getDrawable(R.drawable.collapse_dodatkowe);
+		dodatkoweImage.setImageDrawable(backg);
+        utilities.expandLinearLayout(dodatkowe);
+	}
+	
+	private void hideDodatkowe() {		
+		dodatkoweIsVisible = false;
+		Drawable backg = getResources().getDrawable(R.drawable.expand_dodatkowe);		
+		dodatkoweImage.setImageDrawable(backg);
+        dodatkowe.setVisibility(View.GONE);
 	}
 	
 	private void showChoiceDeleteDialog(final Product product) {
@@ -248,5 +318,5 @@ public class FragmentProdukt extends SherlockFragment implements OnClickListener
 			Toast.makeText(getActivity(), "Usuwanie zakończone niepowodzeniem", 2000).show();
 		}
 	}
-
+	
 }

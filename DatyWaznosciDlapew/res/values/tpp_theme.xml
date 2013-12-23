@@ -10,6 +10,10 @@
         <item name="popupMenuStyle">@style/TPP.PopupMenu</item>
         <item name="listPopupWindowStyle">@style/TPP.ListPopupWindow</item>
         <item name="popupMenuStyle">@style/TPP.PopupMenu</item>
+        <item name="actionDropDownStyle">@style/TPP.Spinner.DropDown.ActionBar</item>
+        <item name="actionMenuTextAppearance">@style/TPP.ActionBar.Menu.TextAppearance</item>
+        <item name="actionBarWidgetTheme">@style/TPP.ActionOverflowDropDownText</item>
+        
         <!-- android 3.x or greater -->
         <item name="android:actionBarStyle">@style/TTPActionBarStyle</item>
         <item name="android:actionBarItemBackground">@drawable/action_bar_item_background</item>
@@ -17,9 +21,12 @@
         <item name="android:popupMenuStyle">@style/TPP.PopupMenu</item>
         <item name="android:listPopupWindowStyle">@style/TPP.ListPopupWindow</item>
         <item name="android:popupMenuStyle">@style/TPP.PopupMenu</item>
+        <item name="android:actionDropDownStyle">@style/TPP.Spinner.DropDown.ActionBar</item>
+        <item name="android:actionMenuTextAppearance">@style/TPP.ActionBar.Menu.TextAppearance</item>
+        <item name="android:actionBarWidgetTheme">@style/TPP.ActionOverflowDropDownText</item>
         
         <!-- Action bar styles (from Theme.Holo) -->
-        <item name="actionDropDownStyle">@style/Widget.Sherlock.Light.Spinner.DropDown.ActionBar</item>
+        
         <item name="actionButtonStyle">@style/Widget.Sherlock.Light.ActionButton</item>
         <item name="actionOverflowButtonStyle">@style/Widget.Sherlock.Light.ActionButton.Overflow</item>
         <item name="actionModeBackground">@drawable/abs__cab_background_top_holo_light</item>
@@ -32,12 +39,10 @@
         <item name="actionModeCloseButtonStyle">@style/Widget.Sherlock.Light.ActionButton.CloseMode</item>
         <item name="actionBarSize">@dimen/abs__action_bar_default_height</item>
         <!-- Internal --><item name="actionModePopupWindowStyle">@style/Widget.Sherlock.Light.PopupWindow.ActionMode</item>
-        <item name="actionBarWidgetTheme">@null</item>
         
         <!-- Action bar styles (defaults from Theme) -->
         <item name="actionBarSplitStyle">?attr/actionBarStyle</item>
-        <item name="actionMenuTextAppearance">@style/TextAppearance.Sherlock.Widget.ActionBar.Menu</item>
-        <item name="actionMenuTextColor">?attr/textColorPrimary</item>
+        <item name="actionMenuTextColor">#ffffff</item>
         <item name="actionBarDivider">?attr/dividerVertical</item>
 
         <item name="buttonStyleSmall">@style/Widget.Sherlock.Light.Button.Small</item>

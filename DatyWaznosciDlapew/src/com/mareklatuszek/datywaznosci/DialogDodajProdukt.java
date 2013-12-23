@@ -37,7 +37,7 @@ public class DialogDodajProdukt extends Dialog implements android.view.View.OnCl
 		custom = (LinearLayout) findViewById(R.id.custom);
 		scanInfoImage = (ImageView) findViewById(R.id.scanInfoImage);
 		scanInfoArea = (LinearLayout) findViewById(R.id.scanInfoArea);
-		customInfoImage = (ImageView) findViewById(R.id.customInfoImage);
+		customInfoImage = (ImageView) findViewById(R.id.wlasnyInfoImage);
 		customInfoArea = (LinearLayout) findViewById(R.id.customInfoArea);
 
 		scan.setOnClickListener(this);
@@ -69,7 +69,7 @@ public class DialogDodajProdukt extends Dialog implements android.view.View.OnCl
 			popup.showPopUp();
 			break;
 		case R.id.scanInfoImage:
-		case R.id.customInfoImage:
+		case R.id.wlasnyInfoImage:
 			popup = new PopUpInfo(mActivity, v);
 			popup.showPopUp();
 			break;

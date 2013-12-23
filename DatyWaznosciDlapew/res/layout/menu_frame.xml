@@ -13,25 +13,25 @@
         <LinearLayout
             android:id="@+id/menuLogoLay"
             android:layout_width="match_parent"
-            android:layout_height="fill_parent"
-            android:layout_weight=".50"
+            android:layout_height="0dp"
+            android:layout_weight="0.5"
+            android:gravity="center"
             android:orientation="vertical" >
 
             <ImageView
                 android:id="@+id/imageView1"
-                android:layout_width="wrap_content"
+                android:layout_width="230dp"
                 android:layout_height="wrap_content"
-                android:layout_margin="40dp"
-                android:src="@drawable/logo" />
+                android:src="@drawable/image_logo" />
 
         </LinearLayout>
 
         <ListView
             android:id="@+id/listview_drawer"
             android:layout_width="match_parent"
-            android:layout_height="fill_parent"
-            android:layout_weight=".50"
-            android:background="@color/menu_item_4_background" >
+            android:layout_height="0dp"
+            android:layout_weight="0.5"
+            android:background="@color/menu_item_5_background" >
 
         </ListView>
 

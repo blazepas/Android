@@ -3,6 +3,8 @@ package com.mareklatuszek.datywaznosci;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.mareklatuszek.utilities.EditTextBariol;
+
 import android.app.Activity;
 import android.app.Dialog;
 import android.os.AsyncTask;
@@ -15,6 +17,7 @@ import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -29,17 +32,17 @@ public class DialogKategorie extends Dialog implements android.view.View.OnClick
 	ArrayList<String> categories = new ArrayList<String>();
 	FragmentActivity mActivity;
 	
-	LinearLayout viewToSetKat;
+	CustomSpinner spinnerKategorie;
 	LinearLayout kategorieRoot;
 	LinearLayout kategorieChild;
-	EditText categoryTxtBoxKat;
-	Button dodajButtonKat;
+	EditTextBariol categoryTxtBoxKat;
+	ImageView addCat;
 	ListView categoryList;
 	Button okButton;
 
-	public DialogKategorie(FragmentActivity mActivity, LinearLayout viewToSetKat, AdapterCustomSpinner kategorieAdapter) {
+	public DialogKategorie(FragmentActivity mActivity, CustomSpinner spinnerKategorie, AdapterCustomSpinner kategorieAdapter) {
 		super(mActivity);
-		this.viewToSetKat = viewToSetKat;
+		this.spinnerKategorie = spinnerKategorie;
 		this.mActivity = mActivity;
 		this.kategorieAdapter = kategorieAdapter;
 		this.categories = kategorieAdapter.getArrayListData();
@@ -62,7 +65,7 @@ public class DialogKategorie extends Dialog implements android.view.View.OnClick
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
-		case R.id.dodajButtonKat:
+		case R.id.addCat:
 			add();
 			break;
 		case R.id.okButton:
@@ -90,9 +93,9 @@ public class DialogKategorie extends Dialog implements android.view.View.OnClick
 		kategorieChild = (LinearLayout) inflater.inflate(R.layout.fragment_kategorie, null);			
 		kategorieRoot.addView(kategorieChild);
 		
-		categoryTxtBoxKat = (EditText) kategorieChild.findViewById(R.id.categoryTxtBoxKat);
-		dodajButtonKat = (Button) kategorieChild.findViewById(R.id.dodajButtonKat);
-		dodajButtonKat.setOnClickListener(this);
+		categoryTxtBoxKat = (EditTextBariol) kategorieChild.findViewById(R.id.categoryTxtBoxKat);
+		addCat = (ImageView) kategorieChild.findViewById(R.id.addCat);
+		addCat.setOnClickListener(this);
 		
 		initList();
 	}
@@ -117,7 +120,7 @@ public class DialogKategorie extends Dialog implements android.view.View.OnClick
 			
 			@Override
 			protected void onPostExecute(Void v) {
-				adapterCat = new AdapterDialogKategorie(mActivity, kategorieAdapter, viewToSetKat);
+				adapterCat = new AdapterDialogKategorie(mActivity, kategorieAdapter, spinnerKategorie);
 				categoryList.setAdapter(adapterCat);
 			}
 		}.execute();
@@ -131,25 +134,10 @@ public class DialogKategorie extends Dialog implements android.view.View.OnClick
 			categories.add(0, category);
 			kategorieAdapter.setArrayListData(categories);
 			adapterCat.notifyDataSetChanged();
-			setSpinner();
+			spinnerKategorie.setText(category);;
 			dismiss();
 		}
 		
 		return status;
-	}
-	
-	private void setSpinner() {
-		String title = categoryTxtBoxKat.getText().toString();
-		
-		LayoutInflater inflater = LayoutInflater.from(mActivity);
-		LinearLayout spinner = (LinearLayout) inflater.inflate(R.layout.spinner_button, null);
-		
-		TextView spinnerTxt = (TextView) spinner.findViewById(R.id.spinnerTxt);
-		spinnerTxt.setText(title);
-		
-		viewToSetKat.removeAllViewsInLayout();
-		viewToSetKat.addView(spinner);
-	}
-
-		
+	}		
 }

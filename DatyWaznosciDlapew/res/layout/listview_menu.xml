@@ -7,17 +7,25 @@
 
     <LinearLayout
         android:id="@+id/linearLayout1"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_marginLeft="5dp"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/menu_row_height"
+        android:layout_marginLeft="30dp"
         android:gravity="center_vertical" >
 
-        <ImageView
-            android:id="@+id/icon"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:adjustViewBounds="true"
-            android:src="@drawable/collections_cloud" />
+        <LinearLayout
+            android:layout_width="@dimen/menu_icon"
+            android:layout_height="@dimen/menu_icon"
+            android:gravity="center"
+            android:orientation="vertical" >
+
+            <ImageView
+                android:id="@+id/icon"
+                android:layout_width="@dimen/menu_icon"
+                android:layout_height="@dimen/menu_icon"
+                android:adjustViewBounds="true"
+                android:src="@drawable/collections_cloud" />
+
+        </LinearLayout>
 
         <com.mareklatuszek.utilities.TextViewBariol
             android:id="@+id/title"
@@ -31,11 +39,12 @@
     </LinearLayout>
 
     <ImageView
-        android:id="@+id/imageView1"
-        android:layout_width="20dp"
-        android:layout_height="30dp"
+        android:id="@+id/arrow"
+        android:layout_width="6dp"
+        android:layout_height="9dp"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:src="@drawable/ic_action_expand" />
+        android:layout_marginRight="10dp"
+        android:src="@drawable/image_menu_arrow" />
 
 </RelativeLayout>

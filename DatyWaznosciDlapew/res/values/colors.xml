@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- def -->
+    <!-- main -->
     <color name="light_text_view">#ffffff</color>
-    <color name="dark_text_view">#00242e</color>
-    <color name="hint">#007e8e</color>
+    <color name="medium_text_view">#065862</color>
+    <color name="dark_text_view">#013f46</color>
+    <color name="hint">#027f8e</color>
     <color name="item_pressed">#ffbd1f</color>
     <color name="fragment_background">#d9f0f3</color>
     <color name="clicable_views">#11a9bb</color>
     <color name="highlighted_views">#ffbd1f</color>
-    <color name="dropdown">#ffffff</color>
-    
+    <color name="dropdown">@color/action_bar_background</color>
     <!-- action bar -->
     <color name="action_bar_background">#005b66</color>
     <color name="action_bar_text">@color/light_text_view</color>
@@ -25,13 +25,8 @@
     <color name="menu_item_2_background">#0c737f</color>
     <color name="menu_item_3_background">#09565f</color>
     <color name="menu_item_4_background">#06363c</color>
-            
-    <!-- fragment produkty -->
-    <color name="delete_pressed">#40ffffff</color>
-    <color name="delete_normal">#10ffffff</color>    
-    <color name="show_pressed">#40ffffff</color>
-    <color name="show_normal">#00ffffff</color>
-    
+    <color name="menu_item_5_background">#052a2f</color>
+
     <!-- fragment dodaj/edytuj -->
     <color name="new_prod_text_view">@color/dark_text_view</color>
     <color name="new_prod_hint">@color/hint</color>
@@ -48,5 +43,16 @@
     <color name="products_delete_bg">#005b66</color>
     <color name="products_show_product_bg">#ffbd1f</color>
     <color name="products_dates_bg">#1e99a8</color>
-
+    
+    <!-- fragment kategorie -->
+    <color name="categories_header">#0a8594</color>
+    <color name="categories_even">@color/fragment_background</color>
+    <color name="categories_odd">#bee7ec</color>
+    <color name="categories_delete_even_bg">#82ced7</color>
+    <color name="categories_delete_odd_bg">#48b5c2</color>
+    
+    <!-- fragment przypomnienie -->
+    <color name="alarm_light_text">#0a8594</color>
+    
+    
 </resources>

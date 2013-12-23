@@ -20,12 +20,12 @@
     </string-array>
     
     <string-array name="array_menu_icons">
-        <item>@drawable/collections_cloud</item>
-        <item>@drawable/collections_cloud</item>
-        <item>@drawable/collections_cloud</item>
-        <item>@drawable/collections_cloud</item>
-        <item>@drawable/collections_cloud</item>
-        <item>@drawable/collections_cloud</item>
+        <item>@drawable/image_scan</item>
+        <item>@drawable/image_add_item</item>
+        <item>@drawable/image_list</item>
+        <item>@drawable/image_categories</item>
+        <item>@drawable/image_alarms</item>
+        <item>@drawable/image_premium</item>
     </string-array>
     
     <string-array name="array_menu_background_colors">
@@ -34,7 +34,7 @@
         <item>@color/menu_item_2_background</item>
         <item>@color/menu_item_3_background</item>
         <item>@color/menu_item_4_background</item>
-        <item>@color/menu_item_0_background</item>
+        <item>@color/menu_item_5_background</item>
     </string-array>
     
 </resources>

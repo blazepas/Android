@@ -3,6 +3,7 @@ package com.mareklatuszek.datywaznosci;
 import java.io.File;
 import java.lang.reflect.Method;
 import java.security.acl.LastOwnerException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -45,31 +46,31 @@ import android.widget.TextView;
 
 import com.mareklatuszek.utilities.BitmapLoader;
 import com.mareklatuszek.utilities.CommonUtilities;
+import com.mareklatuszek.utilities.TextViewBariol;
 
 public class AdapterProductList extends BaseAdapter implements OnClickListener, OnLongClickListener, 
 		OnScrollListener{
 		
-	private int detailsHeightInDps = 70;
-	float scale;
+	private int itemHeightInDps = 70;
 	
 	private LayoutInflater inflater=null;
 	private Activity mActivity;
 	private ArrayList<Product> products;
-	FragmentManager fragmentManager; 
-	int fragmentId;
+	private FragmentManager fragmentManager; 
+	private int fragmentId;
 	
 	private Boolean[] isExpanded;
 	private View[] views;
 	private ListView parentListView;
 	private int clickedPos = -1;
 	private int lastVisible = 0;
+	private boolean focusingOnItem = false;
 	private CommonUtilities utilities = new CommonUtilities();
-	
-	TextView nazwaTxtList, dataOtwTxtList, terminWazTxtList;	
-	ProgressBar pozostaloPrgsList;
-	ImageView obrazekImage;
-	LinearLayout detailsLay, basicLay, deleteLay, showProdLay, expandLay;
 
+	TextViewBariol nazwaTxtList, dataOtwTxtList, terminWazTxtList, kategoriaTxt, estimateTimeTxt;	
+	ProgressBar pozostaloPrgsList;
+	ImageView obrazekImage, imageInfo;
+	LinearLayout detailsLay, basicLay, deleteLay, showProdLay, expandLay;
 	
 	public AdapterProductList(Activity mActivity, ArrayList<Product> products, 
 			FragmentManager fM, int fragmentId, ListView parentListView) {
@@ -81,11 +82,11 @@ public class AdapterProductList extends BaseAdapter implements OnClickListener, 
 		this.parentListView = parentListView;
 		
 		parentListView.setOnScrollListener(this);
-		scale = mActivity.getResources().getDisplayMetrics().density; //oblicza skalę px do dps
+		itemHeightInDps = mActivity.getResources().getDimensionPixelSize(R.dimen.products_item_height);
 		inflater = (LayoutInflater) mActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		isExpanded = new Boolean[products.size()];
-		views = new View[products.size()];//TODO
 		Arrays.fill(isExpanded, false);
+		views = new View[products.size()];//TODO		
 	}
 	
 	@Override
@@ -112,7 +113,8 @@ public class AdapterProductList extends BaseAdapter implements OnClickListener, 
 	        
 	        vi = views[position];
 	        detailsLay = (LinearLayout) vi.findViewById(R.id.detailsLay);
-	        initAnimations(position);
+	        imageInfo = (ImageView) vi.findViewById(R.id.imageInfo);
+	        initAnimations((Integer) vi.getTag());
         	        
 	        return vi;
         } else if (convertViewStatus) {
@@ -144,10 +146,16 @@ public class AdapterProductList extends BaseAdapter implements OnClickListener, 
 		}
 		
 	}
-
+	
 	@Override
 	public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
 		lastVisible = (firstVisibleItem + visibleItemCount) - 1;
+		
+		if(visibleItemCount <= totalItemCount) {
+			focusingOnItem = true;
+		} else {
+			focusingOnItem = false;
+		}
 	}
 
 	@Override
@@ -157,9 +165,10 @@ public class AdapterProductList extends BaseAdapter implements OnClickListener, 
 	private void initAnimations(int position) {
 		boolean expanded = isExpanded[position];
 		
+		
 		if (expanded) {
 //	    	rotateView(expandImage, 0f, 90f, 250); 
-	    	
+			imageInfo.setImageResource(R.drawable.image_info_clicked);
 	    	if (position == clickedPos){
 	    		
 	    		expandItem(detailsLay, position);
@@ -170,6 +179,7 @@ public class AdapterProductList extends BaseAdapter implements OnClickListener, 
 
 		} else {    	
 //		    rotateView(expandImage, 90f, 0f, 250);
+			imageInfo.setImageResource(R.drawable.image_info);
 		    if (position == clickedPos){
 		    	collapseItem(detailsLay);
 		    } else {
@@ -191,9 +201,11 @@ public class AdapterProductList extends BaseAdapter implements OnClickListener, 
 			expandLayBg = R.color.products_expand_odd_bg;
 		}
 		
-        nazwaTxtList = (TextView) vi.findViewById(R.id.nazwaTxtList);
-        dataOtwTxtList = (TextView) vi.findViewById(R.id.dataOtwTxtList);
-        terminWazTxtList = (TextView) vi.findViewById(R.id.terminWazTxtList);
+        nazwaTxtList = (TextViewBariol) vi.findViewById(R.id.nazwaTxtList);
+        dataOtwTxtList = (TextViewBariol) vi.findViewById(R.id.dataOtwTxtList);
+        terminWazTxtList = (TextViewBariol) vi.findViewById(R.id.terminWazTxtList);
+        kategoriaTxt = (TextViewBariol) vi.findViewById(R.id.kategoriaTxt);
+        estimateTimeTxt = (TextViewBariol) vi.findViewById(R.id.estimateTimeTxt);
         pozostaloPrgsList = (ProgressBar) vi.findViewById(R.id.pozostaloPrgsList);
         expandLay = (LinearLayout) vi.findViewById(R.id.expandLay);
         obrazekImage = (ImageView) vi.findViewById(R.id.obrazekImage);
@@ -201,13 +213,20 @@ public class AdapterProductList extends BaseAdapter implements OnClickListener, 
         basicLay = (LinearLayout) vi.findViewById(R.id.basicLay);
         deleteLay = (LinearLayout) vi.findViewById(R.id.deleteLay);
         showProdLay = (LinearLayout) vi.findViewById(R.id.showProdLay);
-          
+        imageInfo = (ImageView) vi.findViewById(R.id.imageInfo);
+        
         final Product product = products.get(pos);
         String nazwa = product.getNazwa();
         String dataOtw = product.getDataOtwarcia();
         String terminWaz = product.getTerminWaznosci();
+        String kategoria = product.getKategoria();
+        String endDate = product.getEndDate();
+        String estimate = getEstimate(endDate);
         String image = product.getImage();
-        int progress = utilities.getProgress(dataOtw, terminWaz);
+        int progress = utilities.getProgress(dataOtw, endDate);
+        Log.i("dataOtw", dataOtw);
+        Log.i("endDate", endDate);
+        Log.i("test", "test");
         Drawable progressDrawable = mActivity.getResources().getDrawable(R.drawable.progress_bar_bg);
         
         vi.setTag(pos);
@@ -218,6 +237,8 @@ public class AdapterProductList extends BaseAdapter implements OnClickListener, 
         nazwaTxtList.setText(nazwa);
         dataOtwTxtList.setText(dataOtw);
         terminWazTxtList.setText(terminWaz);
+        kategoriaTxt.setText(kategoria);
+        estimateTimeTxt.setText(estimate);
         pozostaloPrgsList.setProgress(progress);
         pozostaloPrgsList.setProgressDrawable(progressDrawable);
         
@@ -259,24 +280,26 @@ public class AdapterProductList extends BaseAdapter implements OnClickListener, 
         return vi;
 	}
 	
-	private void rotateView(View view, float fromDegree, float toDegree, int duration) {
-	    final RotateAnimation rotateAnim = new RotateAnimation(fromDegree, toDegree,
-	            RotateAnimation.RELATIVE_TO_SELF, 0.5f,
-	            RotateAnimation.RELATIVE_TO_SELF, 0.5f);
-
-	    rotateAnim.setDuration(duration);
-	    rotateAnim.setFillAfter(true);
-	    view.startAnimation(rotateAnim);
+	private String getEstimate(String endDate) {
+		long endTime = 0;
+		try {
+			endTime = utilities.parseDate(endDate);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+        String estimate = utilities.dateToWords(System.currentTimeMillis(), endTime);
+		
+		return estimate;
 	}
-	
+		
 	private void deleteProduct(Product product) {
 		FragmentProdukty fragmentProdukty = (FragmentProdukty) fragmentManager.findFragmentById(fragmentId);
 		fragmentProdukty.deleteProduct(product);
 	}
 		
-	private void showProduct(int position) {
-		FragmentProdukty fragmentProdukty = (FragmentProdukty) fragmentManager.findFragmentById(fragmentId);
-		fragmentProdukty.switchToProductFragment(position);
+	private void showProduct(int position) {		
+		Product product = products.get(position);
+		((MainActivity) mActivity).selectFragmentToShowProduct(product);
 	}
 	
 	private void showChoiceDialog(final Product product) {
@@ -303,13 +326,12 @@ public class AdapterProductList extends BaseAdapter implements OnClickListener, 
 	}
 	
 	private void expandItem(View v, int position) {
-		final int targtetHeight = (int) (detailsHeightInDps * scale + 0.5f);
 		boolean isLastVisible = position == lastVisible;
 		boolean isBeforeLastVisible = position == lastVisible - 1;
 		
-		if(isLastVisible | isBeforeLastVisible) { // przesuwa listę jeśli produkt niewidoczny
+		if((isLastVisible | isBeforeLastVisible) & focusingOnItem) { // przesuwa listę jeśli produkt niewidoczny
 			v.setVisibility(View.VISIBLE);
-			v.getLayoutParams().height = targtetHeight;
+			v.getLayoutParams().height = itemHeightInDps;
 			if (isLastVisible) {
 				parentListView.smoothScrollToPosition(lastVisible);
 			} else {
@@ -317,7 +339,7 @@ public class AdapterProductList extends BaseAdapter implements OnClickListener, 
 			}
 			
 		} else {
-			utilities.expandView(v, targtetHeight);
+			utilities.expandView(v, itemHeightInDps);
 		}
 	}
 		

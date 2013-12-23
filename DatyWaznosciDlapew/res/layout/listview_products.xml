@@ -14,8 +14,8 @@
 
         <ImageView
             android:id="@+id/obrazekImage"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="@dimen/products_product_image"
+            android:layout_height="@dimen/products_product_image"
             android:layout_marginLeft="5dp"
             android:src="@drawable/abs__list_selector_background_transition_holo_light" />
 
@@ -35,26 +35,52 @@
                 android:lines="1"
                 android:text="Medium Text"
                 android:textAppearance="@style/TPP.Large.TextAppearance"
-                android:textColor="@color/dark_text_view" />
+                android:textColor="@color/medium_text_view" />
 
-            <ProgressBar
-                android:id="@+id/pozostaloPrgsList"
-                style="?android:attr/progressBarStyleHorizontal"
-                android:layout_width="85dp"
-                android:layout_height="13dp" />
+            <com.mareklatuszek.utilities.TextViewBariol
+                android:id="@+id/kategoriaTxt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:lines="1"
+                android:textAppearance="@style/TPP.Small.TextAppearance"
+                android:textColor="@color/medium_text_view" />
+
+            <RelativeLayout
+                android:layout_width="100dp"
+                android:layout_height="15dp" >
+
+                <ProgressBar
+                    android:id="@+id/pozostaloPrgsList"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent" />
+
+                <com.mareklatuszek.utilities.TextViewBariol
+                    android:id="@+id/estimateTimeTxt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:text="TextView"
+                    android:textAppearance="@style/TPP.Small.TextAppearance"
+                    android:textColor="@color/dark_text_view"
+                    android:textAllCaps="true" />
+
+            </RelativeLayout>
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/expandLay"
-            android:layout_width="32dp"
+            android:layout_width="54dp"
             android:layout_height="fill_parent"
             android:background="@color/products_expand_even_bg"
             android:gravity="center" >
 
             <ImageView
-                android:layout_width="15dp"
-                android:layout_height="15dp"
-                android:src="@drawable/pick_expand" />
+                android:id="@+id/imageInfo"
+                android:layout_width="@dimen/products_info_image"
+                android:layout_height="@dimen/products_info_image"
+                android:src="@drawable/image_info" />
 
         </LinearLayout>
 
@@ -136,10 +162,10 @@
 
                 <ImageView
                     android:id="@+id/imageView3"
-                    android:layout_width="15dp"
-                    android:layout_height="20dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/products_trash_image_height"
                     android:clickable="false"
-                    android:src="@drawable/pick_trash" />
+                    android:src="@drawable/image_trash" />
             </LinearLayout>
 
             <LinearLayout
@@ -163,11 +189,11 @@
 
                 <ImageView
                     android:id="@+id/imageView4"
-                    android:layout_width="18dp"
-                    android:layout_height="18dp"
+                    android:layout_width="@dimen/products_arrow_image"
+                    android:layout_height="@dimen/products_arrow_image"
                     android:layout_marginTop="4dp"
                     android:clickable="false"
-                    android:src="@drawable/pick_show" />
+                    android:src="@drawable/image_arrow" />
             </LinearLayout>
         </LinearLayout>
 

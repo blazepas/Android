@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -19,10 +20,14 @@ import android.widget.TextView;
 public class AdapterCustomSpinner extends BaseAdapter{
 	
 	private LayoutInflater inflater = null;
-	private FragmentActivity mActivity;
+	private Context mActivity;
 	private String[] data;
 	
-	public AdapterCustomSpinner(FragmentActivity mActivity, String[] data) {
+	public AdapterCustomSpinner() {
+		this.data = new String[0];
+	}
+	
+	public AdapterCustomSpinner(Context mActivity, String[] data) {
 		this.mActivity = mActivity;
 		inflater = (LayoutInflater)mActivity.getSystemService(mActivity.LAYOUT_INFLATER_SERVICE);
 		this.data = data;
@@ -52,15 +57,20 @@ public class AdapterCustomSpinner extends BaseAdapter{
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		View vi= inflater.inflate(R.layout.spinner_okres, null);
-		TextView okresTxt = (TextView) vi.findViewById(R.id.okres);
+		if (inflater != null) {
+			View vi= inflater.inflate(R.layout.spinner_okres, null);
+			TextView okresTxt = (TextView) vi.findViewById(R.id.okres);
 
-		String okres = data[position];
+			String okres = data[position];
+			
+			okresTxt.setText(okres);
+			vi.setTag(okres);
+			
+			return vi;
+		} else {
+			return convertView;
+		}
 		
-		okresTxt.setText(okres);
-		vi.setTag(okres);
-		
-		return vi;
 	}
 	
 	public void setData(String[] data) {
