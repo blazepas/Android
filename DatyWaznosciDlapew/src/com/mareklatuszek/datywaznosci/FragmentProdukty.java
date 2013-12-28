@@ -10,6 +10,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.widget.PopupMenuCompat;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -23,13 +24,16 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.PopupMenu;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -38,6 +42,7 @@ import com.mareklatuszek.utilities.CommonUtilities;
 import com.mareklatuszek.utilities.FinalVariables;
 import com.mareklatuszek.utilities.JavaMail;
 import com.mareklatuszek.utilities.PremiumUtilities;
+import com.mareklatuszek.utilities.TextViewBariol;
 
 public class FragmentProdukty extends SherlockFragment implements FinalVariables, OnClickListener {
 	
@@ -54,6 +59,7 @@ public class FragmentProdukty extends SherlockFragment implements FinalVariables
 	View rootView;
 	LinearLayout dodajLay, scanLay;
 	CustomSpinner kategorieDropDown;
+	PopupOverflow popupOverflow;
 		
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -62,7 +68,7 @@ public class FragmentProdukty extends SherlockFragment implements FinalVariables
 		fM = getFragmentManager();
 
 		utilities.setActionBarTitle("Lista produktów", getSherlockActivity());
-		
+
 		rootView = inflater.inflate(R.layout.fragment_produkty, container, false);
 		dodajLay = (LinearLayout) rootView.findViewById(R.id.dodajLay);
 		scanLay = (LinearLayout) rootView.findViewById(R.id.scanLay);
@@ -125,33 +131,26 @@ public class FragmentProdukty extends SherlockFragment implements FinalVariables
       } catch (NoSuchMethodError e) {
     	  Log.i("Fragment Produkty", "onCreateOptionsMenu ERROR");
       }
-      
 
       super.onCreateOptionsMenu(menu, inflater);
     }
             
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) 
-    {
+    public boolean onOptionsItemSelected(MenuItem item) {
        switch (item.getItemId()) {
-          case R.id.share:
           case R.id.shareMenuButton:
-        	  if (products.size() > 0) {
-        		  DialogShare dialogShare = new DialogShare(getActivity(), products);
-              	  dialogShare.show();
-        	  } else {
-        		  Toast.makeText(getActivity(), "Brak produktów do udostępnienia", 2000).show();
-        	  }
-          	  
+        	 onShare();
             break;
-          case R.id.scan:
           case R.id.scanMenuButton:
         	  scanCode();
             break;
-          case R.id.add:
           case R.id.addMenuButton:
         	  selectFragmentDodaj();
             break;
+          case R.id.overflow_product_list:        	  
+        	  popupOverflow = new PopupOverflow(getActivity(), item, new OverflowListener());
+        	  popupOverflow.showPopup();
+        	  break;
        }
        return true;
     }
@@ -166,7 +165,6 @@ public class FragmentProdukty extends SherlockFragment implements FinalVariables
 		case R.id.scanLay:
 			scanCode();
 		}
-		
 	}
 	
 	private class SpinnerListener implements OnItemClickListener {
@@ -180,6 +178,26 @@ public class FragmentProdukty extends SherlockFragment implements FinalVariables
 			listAdapter = new AdapterProductList(getActivity(), products, fM, getId(), productsList);
 			productsList.setAdapter(listAdapter);
 		}		
+	};
+	
+	private class OverflowListener implements OnClickListener {
+		// listener menu actionbara
+		@Override
+		public void onClick(View v) {
+			popupOverflow.dismiss();
+			
+			switch (v.getId()) {
+			case 0:
+				 onShare();
+				break;
+			case 1:
+				scanCode();
+				break;
+			case 2:
+				selectFragmentDodaj();
+				break;	
+			}
+		}
 	};
 	
 	private ArrayList<Product> getSortedList(String choice) {
@@ -204,7 +222,7 @@ public class FragmentProdukty extends SherlockFragment implements FinalVariables
 		@Override
 		protected Void doInBackground(Void... params) {
 			try {
-
+				
 				dbAdapter = new AdapterDB(getActivity());
 				dbAdapter.open();
 				categories = dbAdapter.getAllCategories();
@@ -296,5 +314,14 @@ public class FragmentProdukty extends SherlockFragment implements FinalVariables
 	
 	private void scanCode() {
 		((MainActivity) getActivity()).selectFragment(0);
+	}
+	
+	private void onShare() {
+		 if (products.size() > 0) {
+   		  DialogShare dialogShare = new DialogShare(getActivity(), products);
+         	  dialogShare.show();
+   	  } else {
+   		  Toast.makeText(getActivity(), "Brak produktów do udostępnienia", 2000).show();
+   	  }
 	}
 }

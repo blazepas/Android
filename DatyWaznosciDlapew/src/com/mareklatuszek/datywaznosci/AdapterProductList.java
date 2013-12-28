@@ -86,7 +86,7 @@ public class AdapterProductList extends BaseAdapter implements OnClickListener, 
 		inflater = (LayoutInflater) mActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		isExpanded = new Boolean[products.size()];
 		Arrays.fill(isExpanded, false);
-		views = new View[products.size()];//TODO		
+		views = new View[products.size()];//TODO	
 	}
 	
 	@Override
@@ -143,15 +143,13 @@ public class AdapterProductList extends BaseAdapter implements OnClickListener, 
 			isExpanded[pos] = !expanded;
 			clickedPos = pos;
 			AdapterProductList.this.notifyDataSetChanged();
-		}
-		
+		}		
 	}
 	
 	@Override
 	public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
 		lastVisible = (firstVisibleItem + visibleItemCount) - 1;
-		
-		if(visibleItemCount <= totalItemCount) {
+		if(visibleItemCount < totalItemCount) {
 			focusingOnItem = true;
 		} else {
 			focusingOnItem = false;
@@ -164,7 +162,6 @@ public class AdapterProductList extends BaseAdapter implements OnClickListener, 
 	
 	private void initAnimations(int position) {
 		boolean expanded = isExpanded[position];
-		
 		
 		if (expanded) {
 //	    	rotateView(expandImage, 0f, 90f, 250); 
@@ -224,9 +221,6 @@ public class AdapterProductList extends BaseAdapter implements OnClickListener, 
         String estimate = getEstimate(endDate);
         String image = product.getImage();
         int progress = utilities.getProgress(dataOtw, endDate);
-        Log.i("dataOtw", dataOtw);
-        Log.i("endDate", endDate);
-        Log.i("test", "test");
         Drawable progressDrawable = mActivity.getResources().getDrawable(R.drawable.progress_bar_bg);
         
         vi.setTag(pos);

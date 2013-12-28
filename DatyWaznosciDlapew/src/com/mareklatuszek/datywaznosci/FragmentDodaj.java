@@ -47,6 +47,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout.LayoutParams;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -71,7 +72,6 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 	boolean dodatkoweIsVisible = false;
 	boolean orientationChanged = false;
 	boolean isScanned = false;
-	int tempSpinnOkresPos = 0;
 	String currentDate = "";
 	String code = "";
 	String codeFormat = "";
@@ -84,12 +84,12 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 	
 	View rootView;
 	ImageView barcodeImage, obrazekImage, dodatkoweImage, kategroieImage, okresInfoImage, terminWazInfoImage, dataZuzInfoImage;
-	Button zapiszButton;
 	EditText nazwaTextBox, okresWazTextBox, opisTxtBox, dataOtwTxtBox, terminWazTextBox, dataZuzTextBox;
-	LinearLayout podstawowe, dodatkowe, latDodatkoweEdit;
+	LinearLayout podstawowe, dodatkowe, latDodatkoweEdit, zapiszButton;
 	CustomSpinner okresWazDropDown, kategorieDropDown;
 	CustomViewPrzypomnienia przypLayout;
 	View przypRow;
+	ScrollView scrollView;
 		
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -97,7 +97,6 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		rootView = inflater.inflate(R.layout.fragment_dodaj, container, false);
 		currentDate = utilities.getCurrentDate();
 		dbAdapter = new AdapterDB(getActivity());
-		orientationChanged = false;
 
 		utilities.setActionBarTitle("Dodaj produkt", getSherlockActivity());
 		
@@ -105,27 +104,30 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		initDodatkowe();
 		
 		if(savedInstanceState == null) {
+			orientationChanged = false;
 			Bundle extras = getArguments();
 		
 			if (extras != null) {//TODO
 				Product bundleProduct = (Product) extras.getSerializable("product");
 				setViewsFromProduct(bundleProduct);
-				showDodatkowe();
 			}
 			
 		} else {
+			orientationChanged = true;
 			Product savedStateProduct = (Product) savedInstanceState.getSerializable("product");
-			boolean ifDodatkoweExpand = savedInstanceState.getBoolean("dodatkowe");
+			dodatkoweIsVisible = savedInstanceState.getBoolean("dodatkowe");
 			isScanned = savedInstanceState.getBoolean("isScanned");
-			tempSpinnOkresPos = savedInstanceState.getInt("tempSpinnOkresPos");
 			
 			setViewsFromProduct(savedStateProduct);
 			
-			if (ifDodatkoweExpand) { 
-				showDodatkowe();
-			}
+			
 		}
 	
+		if (dodatkoweIsVisible) { 
+			showDodatkowe();
+		} 
+		
+		orientationChanged = false;
 		return rootView;
 	}
 	
@@ -144,7 +146,6 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 	public void onSaveInstanceState(Bundle bundle) {
 		super.onSaveInstanceState(bundle);
 		
-	    orientationChanged = true;	
 		Product productToSave = prepareDataToStore();
 		
 		if (dodatkoweIsVisible) { 
@@ -155,7 +156,6 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		}
 		
 		bundle.putBoolean("isScanned", isScanned);
-		bundle.putInt("tempSpinnOkresPos", tempSpinnOkresPos);
 	    bundle.putSerializable("product", productToSave);     
 	}
 	
@@ -258,8 +258,9 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		okresWazTextBox = (EditText) rootView.findViewById(R.id.okresWazTextBox);
 		okresWazDropDown = (CustomSpinner) rootView.findViewById(R.id.okresWazDropDown);
 		okresInfoImage = (ImageView) rootView.findViewById(R.id.okresInfoImage);
-		zapiszButton = (Button) rootView.findViewById(R.id.zapiszButton);
+		zapiszButton = (LinearLayout) rootView.findViewById(R.id.zapiszButton);
 		dodatkoweImage = (ImageView) rootView.findViewById(R.id.dodatkoweImage);
+		scrollView = (ScrollView) rootView.findViewById(R.id.scrollView);
 		
 		Bundle extras = getArguments(); // TODO jesli zeskanuje
 		if (extras != null) {
@@ -280,6 +281,8 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		okresInfoImage.setOnClickListener(this);
 		zapiszButton.setOnClickListener(this);		
 		dodatkoweImage.setOnClickListener(this);
+		
+		
 		
 	}
 	
@@ -332,7 +335,14 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		dodatkoweIsVisible = true;
 		Drawable backg = getResources().getDrawable(R.drawable.collapse_dodatkowe);
 		dodatkoweImage.setImageDrawable(backg);
-        utilities.expandLinearLayout(dodatkowe);
+		
+		if (orientationChanged) {
+			utilities.expandLinearLayout(dodatkowe);
+		} else {
+			// przesuwa widok na koniec ekranu
+			dodatkowe.setVisibility(View.VISIBLE);
+	        scrollView.post(new Runnable() { public void run() { scrollView.fullScroll(View.FOCUS_DOWN); } });
+		}
 	}
 	
 	private void hideDodatkowe() {		
@@ -416,9 +426,10 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		}
 	}
 		
-	public void saveCodeFromDialogGeneruj(String code, String codeFormat) {
+	public void saveCodeFromDialogGeneruj(String code, String codeFormat, Bitmap bmp) {
 		this.code = code;
 		this.codeFormat = codeFormat;
+		barcodeImage.setImageBitmap(bmp);
 	}
 	
 	private boolean storeAllToDatabase() {

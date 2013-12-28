@@ -95,12 +95,12 @@ public class AdapterDialogKategorie extends BaseAdapter {
         deleteCat.setOnClickListener(new OnClickListener() {
 			
 			@Override
-			public void onClick(View v) {
-				
+			public void onClick(View v) {				
 				removeCategory(category, position);
 			}
 		});
         
+        vi.setTag(category);
         return vi;
 	}
 	

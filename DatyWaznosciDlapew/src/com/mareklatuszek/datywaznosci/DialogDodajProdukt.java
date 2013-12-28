@@ -13,8 +13,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.mareklatuszek.utilities.CommonUtilities;
+import com.mareklatuszek.utilities.FinalVariables;
 
-public class DialogDodajProdukt extends Dialog implements android.view.View.OnClickListener {
+public class DialogDodajProdukt extends Dialog implements FinalVariables, android.view.View.OnClickListener {
 	
 	Activity mActivity;
 	CommonUtilities utilities = new CommonUtilities();
@@ -35,16 +36,12 @@ public class DialogDodajProdukt extends Dialog implements android.view.View.OnCl
 
 		scan = (LinearLayout) findViewById(R.id.scan);
 		custom = (LinearLayout) findViewById(R.id.custom);
-		scanInfoImage = (ImageView) findViewById(R.id.scanInfoImage);
 		scanInfoArea = (LinearLayout) findViewById(R.id.scanInfoArea);
-		customInfoImage = (ImageView) findViewById(R.id.wlasnyInfoImage);
 		customInfoArea = (LinearLayout) findViewById(R.id.customInfoArea);
 
 		scan.setOnClickListener(this);
 		custom.setOnClickListener(this);
-		scanInfoImage.setOnClickListener(this);
 		scanInfoArea.setOnClickListener(this);
-		customInfoImage.setOnClickListener(this);
 		customInfoArea.setOnClickListener(this);
 	}
 	
@@ -61,15 +58,10 @@ public class DialogDodajProdukt extends Dialog implements android.view.View.OnCl
 			dismiss();
 			break;
 		case R.id.scanInfoArea:
-			popup = new PopUpInfo(mActivity, scanInfoImage);
+			popup = new PopUpInfo(mActivity, v);
 			popup.showPopUp();
 			break;
 		case R.id.customInfoArea:
-			popup = new PopUpInfo(mActivity, customInfoImage);
-			popup.showPopUp();
-			break;
-		case R.id.scanInfoImage:
-		case R.id.wlasnyInfoImage:
 			popup = new PopUpInfo(mActivity, v);
 			popup.showPopUp();
 			break;

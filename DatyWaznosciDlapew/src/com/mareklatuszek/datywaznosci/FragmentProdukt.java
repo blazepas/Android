@@ -43,6 +43,7 @@ public class FragmentProdukt extends SherlockFragment implements FinalVariables,
 	TextViewBariol nazwaTxt, okresTxt, dataOtwTxt, terminWazTxt, kategoriaTxt, isScannedTxt, estimateTimeTxt;
 	ImageView barcodeImage, obrazekImage, dodatkoweImage;
 	ProgressBar pozostaloPrgsList;
+	PopupOverflow popupOverflow;
 	
 	Bitmap codeBmp;
 	Bitmap imageBmp;
@@ -115,23 +116,19 @@ public class FragmentProdukt extends SherlockFragment implements FinalVariables,
     public boolean onOptionsItemSelected(MenuItem item) 
     {
        switch (item.getItemId()) {
-          case R.id.edit:
           case R.id.editMenuButton:
         	switchToEditFragment(product);
             break;
-          case R.id.share:
           case R.id.shareMenuButton:
-        	  if (PremiumUtilities.APP_VERSION_NONE) {
-        		  Toast.makeText(getActivity(), "Aby korzystać z tej funkcji należy wykupic wersję premium", 2000).show();
-        	  } else {
-        		  DialogShare dialogShare = new DialogShare(getActivity(), product);
-            	  dialogShare.show();
-        	  } 
+        	  onShare();
             break;
-          case R.id.delete:
           case R.id.deleteMenuButton:
         	 showChoiceDeleteDialog(product);
             break;
+          case R.id.overflow_product:
+         	 popupOverflow = new PopupOverflow(getActivity(), item, new OverflowListener());
+         	 popupOverflow.showPopup();
+             break;
        }
        return true;
     }
@@ -156,6 +153,26 @@ public class FragmentProdukt extends SherlockFragment implements FinalVariables,
 			break;
 		}
 	}
+    
+    private class OverflowListener implements OnClickListener {
+		// listener menu actionbara
+		@Override
+		public void onClick(View v) {
+			popupOverflow.dismiss();
+			
+			switch (v.getId()) {
+			case 0:
+				 onShare();
+				break;
+			case 1:
+				switchToEditFragment(product);
+				break;
+			case 2:
+				showChoiceDeleteDialog(product);
+				break;	
+			}
+		}
+	};
 	
 	private void initPodstawowe() {		
 		isScannedTxt = (TextViewBariol) rootView.findViewById(R.id.isScannedTxt);
@@ -166,8 +183,7 @@ public class FragmentProdukt extends SherlockFragment implements FinalVariables,
 		barcodeImage = (ImageView) rootView.findViewById(R.id.barcodeImage);
 		obrazekImage = (ImageView) rootView.findViewById(R.id.obrazekImage);
 		dodatkoweImage = (ImageView) rootView.findViewById(R.id.dodatkoweImage);
-		pozostaloPrgsList = (ProgressBar) rootView.findViewById(R.id.pozostaloPrgsList);
-		
+		pozostaloPrgsList = (ProgressBar) rootView.findViewById(R.id.pozostaloPrgsList);		
 		
 		String nazwa = product.getNazwa();
 		String okres = product.getOkresWaznosci();
@@ -317,6 +333,15 @@ public class FragmentProdukt extends SherlockFragment implements FinalVariables,
 		} else {
 			Toast.makeText(getActivity(), "Usuwanie zakończone niepowodzeniem", 2000).show();
 		}
+	}
+	
+	private void onShare() {
+		if (PremiumUtilities.APP_VERSION_NONE) {
+  		  Toast.makeText(getActivity(), "Aby korzystać z tej funkcji należy wykupic wersję premium", 2000).show();
+  	  } else {
+  		  DialogShare dialogShare = new DialogShare(getActivity(), product);
+      	  dialogShare.show();
+  	  } 
 	}
 	
 }

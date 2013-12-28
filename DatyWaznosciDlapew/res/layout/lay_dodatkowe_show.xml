@@ -55,6 +55,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentTop="true"
                 android:layout_marginLeft="26dp"
+                android:layout_marginTop="@dimen/product_row_top_margin"
                 android:text="Termin ważności"
                 android:textAppearance="@style/TPP.Normal.TextAppearance"
                 android:textColor="@color/medium_text_view" />

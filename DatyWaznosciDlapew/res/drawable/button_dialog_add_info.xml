@@ -1,0 +1,13 @@
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@color/products_dialog_info_add_bg_pressed"
+        android:state_focused="true"
+        android:state_pressed="true" />
+    <item android:drawable="@color/products_dialog_info_add_bg_pressed"
+        android:state_focused="false"
+        android:state_pressed="true" />
+    <item android:drawable="@color/products_dialog_info_add_bg"
+            android:state_focused="true" />
+    <item android:drawable="@color/products_dialog_info_add_bg"
+        android:state_focused="false"
+        android:state_pressed="false" />
+</selector>

@@ -38,7 +38,7 @@
         <item name="android:dropDownVerticalOffset">0dip</item>
         <item name="android:dropDownHorizontalOffset">0dip</item>
         <item name="android:dropDownWidth">wrap_content</item>
-        <item name="android:gravity">left|center_vertical</item>
+        <item name="android:gravity">left</item>
         <item name="android:spinnerMode">dropdown</item>
         <item name="android:clickable">true</item>
     </style>
@@ -71,7 +71,7 @@
 	</style>
     
     <style name="TPP.ActionBar.Menu.TextAppearance" parent="Widget">
-        <item name="android:textSize">12sp</item>
+        <item name="android:textSize">@dimen/action_bar_font_size</item>
         <item name="android:textColor">#ffffff</item>
         <item name="android:textAllCaps">@bool/abs__config_actionMenuItemAllCaps</item>
     </style>

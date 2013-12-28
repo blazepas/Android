@@ -21,7 +21,7 @@ import android.widget.Toast;
 import com.actionbarsherlock.app.SherlockFragment;
 import com.mareklatuszek.utilities.CommonUtilities;
 
-public class FragmentKategorie extends SherlockFragment implements OnClickListener, OnItemLongClickListener{
+public class FragmentKategorie extends SherlockFragment implements OnClickListener {
 	
 	AdapterDB adapterDb;
 	AdapterKategorie adapterCat;
@@ -56,37 +56,7 @@ public class FragmentKategorie extends SherlockFragment implements OnClickListen
 			break;
 		}
 	}
-	
-	@Override
-	public boolean onItemLongClick(AdapterView<?> arg0, final View v, final int pos, long arg3) {
-		Vibrator vibe = (Vibrator) getActivity().getSystemService(getActivity().VIBRATOR_SERVICE);
-		vibe.vibrate(25);
 		
-//        PopupMenu popup = new PopupMenu(getActivity(), v);
-//        popup.getMenuInflater().inflate(R.menu.popupCategories, popup.getMenu());
-//        popup.setOnMenuItemClickListener(new OnMenuItemClickListener() {
-//
-//            @Override
-//            public boolean onMenuItemClick(android.view.MenuItem item) {
-//            	String category = categories.get(pos);
-//            	switch (item.getItemId()) {
-//            	case R.id.edytujPopup:
-//            		editCategory(category);
-//            		break;
-//            	case R.id.usunPopup:
-//            		removeCategory(category);
-//            		break;
-//            	}
-//            	           	
-//                return true;
-//            }
-//        });
-//
-//        popup.show();
-		
-		return false;
-	}
-	
 	private void add() {
 		String category = categoryTxtBoxKat.getText().toString();
 		if (category.equals("")) {

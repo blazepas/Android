@@ -32,6 +32,7 @@
     <color name="new_prod_hint">@color/hint</color>
     <color name="new_prod_clicable">@color/clicable_views</color>
     <color name="new_prod_highlighted">@color/highlighted_views</color>
+    <color name="new_prod_save_back">#24acbd</color>
     
     <!-- fragment produkty -->
     <color name="products_add">#0a8594</color>
@@ -41,8 +42,19 @@
     <color name="products_expand_even_bg">#82ced7</color>
     <color name="products_expand_odd_bg">#48b5c2</color>
     <color name="products_delete_bg">#005b66</color>
+    <color name="products_delete_bg_pressed">#50005b66</color>
     <color name="products_show_product_bg">#ffbd1f</color>
+    <color name="products_show_product_bg_pressed">#50ffbd1f</color>
     <color name="products_dates_bg">#1e99a8</color>
+    <color name="products_dialog_bg">#198390</color>
+    <color name="products_dialog_button_scan_bg">#10737f</color>
+    <color name="products_dialog_button_scan_bg_pressed">@color/item_pressed</color>
+    <color name="products_dialog_button_add_bg">#034f58</color>
+    <color name="products_dialog_button_add_bg_pressed">@color/item_pressed</color>
+    <color name="products_dialog_info_scan_bg">#034f58</color>
+    <color name="products_dialog_info_scan_bg_pressed">@color/item_pressed</color>
+    <color name="products_dialog_info_add_bg">#01434b</color>
+    <color name="products_dialog_info_add_bg_pressed">@color/item_pressed</color>
     
     <!-- fragment kategorie -->
     <color name="categories_header">#0a8594</color>
@@ -53,6 +65,9 @@
     
     <!-- fragment przypomnienie -->
     <color name="alarm_light_text">#0a8594</color>
+    
+    <!-- dialog generuj -->
+    <color name="dialog_gen_save">#24acbd</color>
     
     
 </resources>

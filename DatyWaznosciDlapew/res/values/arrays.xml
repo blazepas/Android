@@ -9,7 +9,6 @@
     </string-array>
     
     <!-- Menu -->
-    
     <string-array name="array_menu_titles">
         <item>Skanowanie produktu</item>
         <item>Własny produkt</item>
@@ -35,6 +34,19 @@
         <item>@color/menu_item_3_background</item>
         <item>@color/menu_item_4_background</item>
         <item>@color/menu_item_5_background</item>
+    </string-array>
+    
+    <!-- Popup overflow -->
+    <string-array name="array_popup_products_list_title">
+        <item>Udostępnij</item>
+        <item>Skanowanie produtku</item>
+        <item>Własny produkt</item>
+    </string-array>
+    
+    <string-array name="array_popup_product_title">
+        <item>Udostępnij</item>
+        <item>Edytuj</item>
+        <item>Usuń</item>
     </string-array>
     
 </resources>

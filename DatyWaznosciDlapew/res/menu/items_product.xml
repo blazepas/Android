@@ -2,27 +2,9 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
     
     <item
+        android:id="@+id/overflow_product"
 	    android:icon="@drawable/ic_overflow"
 	    android:showAsAction="ifRoom">
-	    <menu>
-	    	<item android:id="@+id/share"
-	          android:visible="true" 
-	          android:title="Udostępnij" 
-	          android:enabled="true">       
-	    	</item>
-	    	
-	    	<item android:id="@+id/edit"
-	          android:visible="true" 
-	          android:title="Edytuj" 
-	          android:enabled="true">       
-	    	</item>
-	    	
-	    	<item android:id="@+id/delete"
-	          android:visible="true" 
-	          android:title="Usuń" 
-	          android:enabled="true">       
-	    	</item>
-	    </menu>
 	</item> 
            
      <item android:id="@+id/shareMenuButton"

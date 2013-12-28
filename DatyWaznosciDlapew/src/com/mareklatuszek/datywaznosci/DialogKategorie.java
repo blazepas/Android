@@ -11,9 +11,12 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -24,7 +27,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class DialogKategorie extends Dialog implements android.view.View.OnClickListener {	
+public class DialogKategorie extends Dialog 
+		implements android.view.View.OnClickListener, OnItemClickListener {	
 	
 	AdapterDB adapterDb;
 	AdapterDialogKategorie adapterCat;
@@ -33,14 +37,13 @@ public class DialogKategorie extends Dialog implements android.view.View.OnClick
 	FragmentActivity mActivity;
 	
 	CustomSpinner spinnerKategorie;
-	LinearLayout kategorieRoot;
-	LinearLayout kategorieChild;
+	LinearLayout kategorieRoot, kategorieChild, okButton;
 	EditTextBariol categoryTxtBoxKat;
 	ImageView addCat;
 	ListView categoryList;
-	Button okButton;
 
-	public DialogKategorie(FragmentActivity mActivity, CustomSpinner spinnerKategorie, AdapterCustomSpinner kategorieAdapter) {
+	public DialogKategorie(FragmentActivity mActivity, 
+			CustomSpinner spinnerKategorie, AdapterCustomSpinner kategorieAdapter) {
 		super(mActivity);
 		this.spinnerKategorie = spinnerKategorie;
 		this.mActivity = mActivity;
@@ -51,11 +54,11 @@ public class DialogKategorie extends Dialog implements android.view.View.OnClick
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setTitle("Kategorie");
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.dialog_kategorie);
 
 		kategorieRoot = (LinearLayout) findViewById(R.id.kategorieRoot);
-		okButton = (Button) findViewById(R.id.okButton);
+		okButton = (LinearLayout) findViewById(R.id.okButton);
 		
 		okButton.setOnClickListener(this);
 		
@@ -73,6 +76,14 @@ public class DialogKategorie extends Dialog implements android.view.View.OnClick
 			break;	
 		}		
 	}
+	
+
+	@Override
+	public void onItemClick(AdapterView<?> arg0, View vi, int pos, long arg3) {
+		String category = (String) vi.getTag();
+		spinnerKategorie.setText(category);
+		dismiss();
+	}	
 	
 	private void add() {
 		String category = categoryTxtBoxKat.getText().toString();
@@ -122,6 +133,7 @@ public class DialogKategorie extends Dialog implements android.view.View.OnClick
 			protected void onPostExecute(Void v) {
 				adapterCat = new AdapterDialogKategorie(mActivity, kategorieAdapter, spinnerKategorie);
 				categoryList.setAdapter(adapterCat);
+				categoryList.setOnItemClickListener(DialogKategorie.this);
 			}
 		}.execute();
 	}
@@ -134,10 +146,10 @@ public class DialogKategorie extends Dialog implements android.view.View.OnClick
 			categories.add(0, category);
 			kategorieAdapter.setArrayListData(categories);
 			adapterCat.notifyDataSetChanged();
-			spinnerKategorie.setText(category);;
+			spinnerKategorie.setText(category);
 			dismiss();
 		}
 		
 		return status;
-	}		
+	}	
 }

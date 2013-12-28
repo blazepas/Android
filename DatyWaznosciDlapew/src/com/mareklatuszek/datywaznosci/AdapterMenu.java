@@ -133,7 +133,7 @@ public class AdapterMenu extends BaseAdapter implements FinalVariables{
 			itemView.setBackgroundColor(backgroundColor);
 		}
 		
-		switch (position) {
+		switch (position) { // tak samo jest w dialog dodaj produkt
 		case 0:
 			info.setId(INFO_MENU_0_ITEM_ID);
 			break;

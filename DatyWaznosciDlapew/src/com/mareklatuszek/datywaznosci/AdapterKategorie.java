@@ -3,7 +3,9 @@ package com.mareklatuszek.datywaznosci;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -89,12 +91,35 @@ public class AdapterKategorie extends BaseAdapter {
 			
 			@Override
 			public void onClick(View v) {
-				deleteCategory(category);
+				showDialog(category);
 				
 			}
 		});
         
         return vi;
+	}
+	
+	private void showDialog(final String category) {
+		AlertDialog.Builder dialog = new AlertDialog.Builder(mActivity);
+		dialog.setTitle("Usuwanie");
+		dialog.setMessage("Czy na pewno usunąć ketegorię: " + category + "?");
+		dialog.setPositiveButton("Tak",new DialogInterface.OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				deleteCategory(category);
+			}
+		});
+
+		dialog.setNegativeButton("Anuluj",new DialogInterface.OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				dialog.dismiss();
+			}
+		});
+
+		dialog.show();
 	}
 	
 	private void deleteCategory(String category) {		

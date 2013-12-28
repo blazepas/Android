@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal" >
+
+    <com.mareklatuszek.utilities.TextViewBariol
+        android:id="@+id/testTxt"
+        android:layout_width="@dimen/add_textview_width"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="25dp"
+        android:text="Przypomnienie"
+        android:textAppearance="@style/TPP.Small.TextAppearance"
+        android:textColor="@color/dark_text_view" />
+    
+    <com.mareklatuszek.utilities.EditTextBariol
+         	android:id="@+id/textBox"
+            android:layout_width="@dimen/add_edittext_przyp_width"
+            android:layout_height="@dimen/editbox_height"
+            android:layout_marginLeft="5dp"
+            android:background="@drawable/edittext_back"
+            android:ems="10"
+            android:gravity="center"
+            android:hint="np. 3"
+            android:inputType="number|textNoSuggestions"
+            android:textAppearance="@style/TPP.Normal.TextAppearance"
+            android:textColor="@color/dark_text_view"
+            android:textColorHint="@color/new_prod_hint" />
+
+   <com.mareklatuszek.datywaznosci.CustomSpinner
+       android:id="@+id/spinner"
+       android:layout_width="@dimen/add_spinner_przyp_width"
+       android:layout_height="@dimen/spinner_height"
+       android:layout_marginRight="5dp"
+       android:gravity="center_vertical"
+       android:orientation="vertical" />
+
+    <ImageView
+        android:id="@+id/buttonImage"
+        android:layout_width="@dimen/add_button_normal_height"
+        android:layout_height="@dimen/add_button_normal_width"
+        android:src="@drawable/add_przypomnienie" />
+
+</LinearLayout>

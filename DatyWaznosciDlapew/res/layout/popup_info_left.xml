@@ -3,12 +3,14 @@
     android:id="@+id/RelativeLayout1"
     android:layout_width="250dp"
     android:layout_height="wrap_content"
+    android:background="@color/item_pressed"
     android:orientation="vertical" >
 
     <com.mareklatuszek.utilities.TextViewBariol
         android:id="@+id/popupTxt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_toLeftOf="@+id/infoImage"
         android:layout_toRightOf="@+id/popupImageLay"
         android:textAppearance="@style/TPP.Small.TextAppearance"
         android:textColor="#ffffff" />
@@ -27,5 +29,14 @@
             android:src="@drawable/info_popup" />
 
     </LinearLayout>
+
+    <ImageView
+        android:id="@+id/infoImage"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="2dp" />
 
 </RelativeLayout>

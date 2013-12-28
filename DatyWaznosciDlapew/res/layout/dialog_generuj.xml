@@ -3,6 +3,7 @@
     android:id="@+id/LinearLayout1"
     android:layout_width="300dp"
     android:layout_height="match_parent"
+    android:background="@color/fragment_background"
     android:orientation="vertical" >
 
     <LinearLayout
@@ -16,106 +17,99 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" >
 
-            <TextView
-                android:id="@+id/nazwaTxtList"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Nazwa produktu: " />
-
-            <TextView
+            <com.mareklatuszek.utilities.TextViewBariol
                 android:id="@+id/nazwaTxt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="TextView" />
+                android:layout_marginTop="20dp"
+                android:text="TextView"
+                android:textAllCaps="true"
+                android:textAppearance="@style/TPP.Normal.TextAppearance"
+                android:textColor="@color/dark_text_view" />
+
         </LinearLayout>
 
         <ImageView
             android:id="@+id/codeImage"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:src="@drawable/zxinglib_icon" />
+            android:layout_width="@dimen/dialog_gen_image"
+            android:layout_height="@dimen/dialog_gen_image"
+            android:layout_marginTop="20dp"
+            android:background="@color/clicable_views" />
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal" >
+            android:layout_marginTop="20dp" >
 
-            <TextView
-                android:id="@+id/textView2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Data: " />
-
-            <TextView
-                android:id="@+id/dataTxt"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="TextView" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal" >
-
-            <TextView
+            <com.mareklatuszek.utilities.TextViewBariol
                 android:id="@+id/TextView01"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Termin ważności: " />
+                android:text="Termin ważności"
+                android:textAppearance="@style/TPP.Normal.TextAppearance"
+                android:textColor="@color/dark_text_view" />
 
-            <TextView
+            <com.mareklatuszek.utilities.TextViewBariol
                 android:id="@+id/terminWazTxt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="TextView" />
-        </LinearLayout>
+                android:layout_alignParentTop="true"
+                android:layout_marginLeft="40dp"
+                android:layout_toRightOf="@+id/TextView01"
+                android:text="TextView"
+                android:textAppearance="@style/TPP.Normal.TextAppearance"
+                android:textColor="@color/dark_text_view" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_margin="5dp"
-            android:background="#10ffffff"
-            android:orientation="vertical" >
+            <com.mareklatuszek.utilities.TextViewBariol
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/TextView01"
+                android:text="Data"
+                android:textAppearance="@style/TPP.Normal.TextAppearance"
+                android:textColor="@color/dark_text_view" />
 
-        </LinearLayout>
+            <com.mareklatuszek.utilities.TextViewBariol
+                android:id="@+id/dataTxt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/textView2"
+                android:layout_alignBottom="@+id/textView2"
+                android:layout_alignLeft="@+id/terminWazTxt"
+                android:text="TextView"
+                android:textAppearance="@style/TPP.Normal.TextAppearance"
+                android:textColor="@color/dark_text_view" />
 
-        <TextView
-            android:id="@+id/pozostaleTxt"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Pozostałe wartości zawarte w kodzie" />
-
-        <ListView
-            android:id="@+id/pozostaleList"
-            android:divider="@null"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
-        </ListView>
-
+        </RelativeLayout>
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="50dp"
-        android:layout_margin="5dp"
-        android:orientation="horizontal"
-        android:paddingBottom="5dp" >
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:background="@color/dialog_gen_save"
+        android:gravity="center"
+        android:orientation="horizontal" >
 
-        <Button
-            android:id="@+id/cancelButton"
+        <LinearLayout
+            android:id="@+id/generujButton"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.5"
-            android:text="Anuluj" />
+            android:layout_height="@dimen/dialog_gen_button_height"
+            android:background="@drawable/spinner_back"
+            android:gravity="center"
+            android:orientation="vertical" >
 
-        <Button
-            android:id="@+id/okButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.5"
-            android:text="Ok" />
+            <com.mareklatuszek.utilities.TextViewBariol
+                android:id="@+id/buttonTxt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="generuj"
+                android:textAllCaps="true"
+                android:textAppearance="@style/TPP.Normal.TextAppearance"
+                android:textColor="@color/light_text_view" />
+
+        </LinearLayout>
     </LinearLayout>
 
 </LinearLayout>

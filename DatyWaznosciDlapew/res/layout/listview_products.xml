@@ -155,7 +155,7 @@
                 android:id="@+id/deleteLay"
                 android:layout_width="40dp"
                 android:layout_height="match_parent"
-                android:background="@color/products_delete_bg"
+                android:background="@drawable/button_delete_back"
                 android:clickable="true"
                 android:gravity="center"
                 android:orientation="vertical" >
@@ -172,7 +172,7 @@
                 android:id="@+id/showProdLay"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/products_show_product_bg"
+                android:background="@drawable/button_show_back"
                 android:clickable="true"
                 android:gravity="center"
                 android:orientation="vertical" >

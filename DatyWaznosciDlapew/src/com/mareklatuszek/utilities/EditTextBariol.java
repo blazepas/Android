@@ -1,6 +1,9 @@
 package com.mareklatuszek.utilities;
 
+import com.mareklatuszek.datywaznosci.R;
+
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.widget.EditText;
 
@@ -8,7 +11,7 @@ public class EditTextBariol extends EditText {
 
 	public EditTextBariol(Context context) {
 		super(context);
-		setTypeface(FontBariol.getInstance(context).getTypeFace());
+		setTypeface(FontBariol.getInstance(context).getTypeFace());;
 	}
 	
 	public EditTextBariol(Context context, AttributeSet attrs) {
@@ -20,5 +23,6 @@ public class EditTextBariol extends EditText {
 		super(context, attrs, defStyle);
 		setTypeface(FontBariol.getInstance(context).getTypeFace());
 	}
+	
 
 }

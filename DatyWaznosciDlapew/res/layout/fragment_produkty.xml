@@ -10,7 +10,7 @@
         android:id="@+id/dodajLay"
         android:layout_width="match_parent"
         android:layout_height="@dimen/products_dodaj_height"
-        android:background="@drawable/background_clickable_views"
+        android:background="@drawable/button_add_back"
         android:gravity="center" >
 
         <LinearLayout
@@ -71,7 +71,7 @@
         android:id="@+id/scanLay"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="@drawable/background_clickable_views"
+        android:background="@drawable/button_add_back"
         android:gravity="center" >
 
         <LinearLayout
@@ -84,7 +84,7 @@
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_marginRight="7dp"
-                android:src="@drawable/add_image" />
+                android:src="@drawable/image_add_item" />
 
             <com.mareklatuszek.utilities.TextViewBariol
                 android:id="@+id/TextViewBariol01"

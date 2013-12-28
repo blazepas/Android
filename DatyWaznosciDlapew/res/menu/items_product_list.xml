@@ -1,27 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >           
 	<item
+	    android:id="@+id/overflow_product_list"
 	    android:icon="@drawable/ic_overflow"
 	    android:showAsAction="ifRoom">
-	    <menu>
-	        <item android:id="@+id/share"
-	          android:visible="true" 
-	          android:title="Udostępnij" 
-	          android:enabled="true">       
-	    	</item>
-	    	<item android:id="@+id/scan"
-	          android:visible="true" 
-	          android:title="Skanowanie produktu" 
-	          android:enabled="true">       
-	    	</item>
-	    	<item android:id="@+id/add"
-	          android:visible="true" 
-	          android:title="Własny produkt" 
-	          android:enabled="true">       
-	    	</item>
-	    </menu>
 	</item>
-	
+
 	<item android:id="@+id/shareMenuButton"
           android:icon="@drawable/share" 
           android:title="Udostępnij listę" 

@@ -24,6 +24,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -207,10 +208,11 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
 		menu.setMenu(getMenuList());
 	}
 	
-	private void initActionBar() {		
-		getSupportActionBar().setHomeButtonEnabled(true);
-		getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM | ActionBar.DISPLAY_SHOW_HOME);
-		getSupportActionBar().setCustomView(R.layout.actionbar_title);
+	private void initActionBar() {	
+		ActionBar actionBar = getSupportActionBar();
+		actionBar.setHomeButtonEnabled(true);
+		actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM | ActionBar.DISPLAY_SHOW_HOME);
+		actionBar.setCustomView(R.layout.actionbar_title);
 	}
 
 	private class MenuItemClickListener implements ListView.OnItemClickListener {
