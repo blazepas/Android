@@ -15,10 +15,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup.LayoutParams;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,7 +41,7 @@ public class FragmentPrzypomnienie extends SherlockFragment implements FinalVari
 	
 	View rootView;
 	TextViewBariol nazwaTxt, dataOtwTxt, terminWazTxt, kategoriaTxt, estimateTxt;
-	ProgressBar pozostaloProgress;
+	RelativeLayout progressLay;
 
 	@Override
 	public void onResume() {
@@ -69,7 +71,7 @@ public class FragmentPrzypomnienie extends SherlockFragment implements FinalVari
 		terminWazTxt = (TextViewBariol) rootView.findViewById(R.id.terminWazTxt);
 		kategoriaTxt = (TextViewBariol) rootView.findViewById(R.id.kategoriaTxt);
 		estimateTxt = (TextViewBariol) rootView.findViewById(R.id.estimateTxt);
-		pozostaloProgress = (ProgressBar) rootView.findViewById(R.id.pozostaloProgress);
+		progressLay = (RelativeLayout) rootView.findViewById(R.id.progressLay);
 		
 		String nazwa = product.getNazwa();
 		String dataOtw = product.getDataOtwarcia();
@@ -85,9 +87,8 @@ public class FragmentPrzypomnienie extends SherlockFragment implements FinalVari
 		terminWazTxt.setText(terminWaz);
 		kategoriaTxt.setText(kategoria);
 		estimateTxt.setText(estimate);
-		pozostaloProgress.setProgress(progress);
-		pozostaloProgress.setProgressDrawable(progressDrawable);
 		
+		setProggres(progress, progressDrawable);
 	}
 	
 	private String getEstimate(String endDate) {
@@ -100,6 +101,19 @@ public class FragmentPrzypomnienie extends SherlockFragment implements FinalVari
         String estimate = utilities.dateToWords(System.currentTimeMillis(), endTime);
 		
 		return estimate;
+	}
+	
+	private void setProggres(int progress, Drawable progressDrawable) {
+		// ominiecie buga androida
+		int fillParent = LayoutParams.FILL_PARENT;
+		LayoutParams params = new LayoutParams(fillParent, fillParent);
+		
+		ProgressBar progressBar = new ProgressBar(getActivity(), null, android.R.attr.progressBarStyleHorizontal);
+		progressBar.setProgress(progress);
+		progressBar.setProgressDrawable(progressDrawable);
+		progressBar.setLayoutParams(params);
+		
+		progressLay.addView(progressBar, 0);
 	}
 
 	private void switchToPrzypomnieniaFragment() {

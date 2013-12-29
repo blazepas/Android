@@ -47,14 +47,13 @@ public class AdapterDB implements FinalVariables {
 	    ContentValues newCategoryVal = new ContentValues();
 	    newCategoryVal.put(DB_CAT_CATEGORY, category);
 	    
-	    Log.i("insertCat", category);
-	    
 	    return db.insert(DB_CATEGORIES_TABLE, null, newCategoryVal) > 0;
 	}
 	
-	public boolean updateProduct(Product product, String oldCode) {
+	public boolean updateProduct(Product product) {
+		String productId = product.getProductId();
 		ContentValues updateProductVal = generateProductContentVal(product);
-		String where = DB_CODE + " = " + "'" + oldCode + "'";
+		String where = DB_PRODUCT_ID + " = " + "'" + productId + "'";
 		
 	    return db.update(DB_PRODUCT_TABLE, updateProductVal, where, null) > 0;
 	}
@@ -75,8 +74,8 @@ public class AdapterDB implements FinalVariables {
 	}
 	
 	public boolean deleteProduct(Product product){
-		String code = product.getCode();
-	    String where = DB_CODE + "=" + "'" + code + "'";
+		String productId = product.getProductId();
+	    String where = DB_PRODUCT_ID + "=" + "'" + productId + "'";
 	    return db.delete(DB_PRODUCT_TABLE, where, null) > 0;
 	}
 	
@@ -94,15 +93,15 @@ public class AdapterDB implements FinalVariables {
 	    return caategoryStatus;
 	}
 	
-	public boolean deletePrzypomnienie(String productCode, String alarmTimeInMillis){
-		Product product = getProduct(productCode);
+	public boolean deletePrzypomnienie(String productId, String alarmTimeInMillis){
+		Product product = getProduct(productId);
 		ArrayList<HashMap<String, String>> przypomnienia = product.getPrzypomnienia();
 		
 		przypomnienia = utilities.removePrzypomnienie(przypomnienia, alarmTimeInMillis);
 		product.setPrzypomnienia(przypomnienia);
 		
 		ContentValues updateProductVal = generateProductContentVal(product);
-		String where = DB_CODE + " = " + "'" + productCode + "'";
+		String where = DB_PRODUCT_ID + " = " + "'" + productId + "'";
 		
 	    return db.update(DB_PRODUCT_TABLE, updateProductVal, where, null) > 0;
 	}
@@ -127,6 +126,7 @@ public class AdapterDB implements FinalVariables {
 		int columnDataZuzycia =  cursor.getColumnIndex(DB_DATA_ZUZYCIA);
 		int columnEndDate =  cursor.getColumnIndex(DB_END_DATE);
 		int columnIsScanned =  cursor.getColumnIndex(DB_IS_SCANNED);
+		int columnProductId=  cursor.getColumnIndex(DB_PRODUCT_ID);
 		
 		while(cursor.moveToNext()) {
 			Product product = new Product();
@@ -144,6 +144,7 @@ public class AdapterDB implements FinalVariables {
 			String dataZuz = cursor.getString(columnDataZuzycia);
 			String endDate = cursor.getString(columnEndDate);
 			String isScanned = cursor.getString(columnIsScanned);
+			String productId = cursor.getString(columnProductId);
 	        
 			product.setNazwa(nazwa);
 			product.setDataOtwarcia(dataOtwarcia);
@@ -158,6 +159,7 @@ public class AdapterDB implements FinalVariables {
 			product.setDataZuzycia(dataZuz);
 			product.setEndDate(endDate);
 			product.setIsScanned(isScanned);
+			product.setProductId(productId);
 			
 			productList.add(product);
 		}
@@ -187,10 +189,10 @@ public class AdapterDB implements FinalVariables {
 		return categoriesList;
 	}
 	 
-	public Product getProduct(String codeId) {
+	public Product getProduct(String productId) {
 		Product product = new Product();
 		
-	    String where = DB_CODE + "=" + "'" + codeId + "'";
+	    String where = DB_PRODUCT_ID + "=" + "'" + productId + "'";
 	    Cursor cursor = db.query(DB_PRODUCT_TABLE, null, where, null, null, null, null);
 	    
 	    if(cursor != null && cursor.moveToFirst()) {
@@ -207,6 +209,7 @@ public class AdapterDB implements FinalVariables {
 			String dataZuzycia = cursor.getString(cursor.getColumnIndex(DB_DATA_ZUZYCIA));
 			String endDate = cursor.getString(cursor.getColumnIndex(DB_END_DATE));
 			String isScanned = cursor.getString(cursor.getColumnIndex(DB_IS_SCANNED));
+			String productIdDB = cursor.getString(cursor.getColumnIndex(DB_PRODUCT_ID));
 	        
 			product.setNazwa(nazwa);
 			product.setDataOtwarcia(dataOtwarcia);
@@ -221,10 +224,37 @@ public class AdapterDB implements FinalVariables {
 			product.setDataZuzycia(dataZuzycia);
 			product.setEndDate(endDate);
 			product.setIsScanned(isScanned);
+			product.setProductId(productIdDB);
 			
 	    }
 	    
 	    return product;
+	}
+	
+	public Product getProductByCode(String code) {
+		Product product = new Product();
+		
+		String where = DB_CODE + "=" + "'" + code + "'";
+	    Cursor cursor = db.query(DB_PRODUCT_TABLE, null, where, null, null, null, null);
+		mActivity.startManagingCursor(cursor);
+		
+		int columnCode =  cursor.getColumnIndex(DB_CODE);
+		int columnProductId =  cursor.getColumnIndex(DB_PRODUCT_ID);
+		
+		while(cursor.moveToNext()) {
+			
+			String codeDb = cursor.getString(columnCode);
+
+			if (codeDb.equals(code)) {
+				mActivity.stopManagingCursor(cursor);
+				String productId = cursor.getString(columnProductId);
+				product = getProduct(productId);
+				return product;
+			}
+		}
+		
+		mActivity.stopManagingCursor(cursor);
+		return product;
 	}
 	
 	public boolean chckIfCategoryIsSetInProducts(String category) {
@@ -247,7 +277,7 @@ public class AdapterDB implements FinalVariables {
 		return false;
 	}
 	
-	public boolean chckIfProductIsInDB(String code) {
+	public boolean chckIfCodeIsInDB(String code) {
 		
 		String where = DB_CODE + "=" + "'" + code + "'";
 	    Cursor cursor = db.query(DB_PRODUCT_TABLE, null, where, null, null, null, null);
@@ -268,6 +298,27 @@ public class AdapterDB implements FinalVariables {
 		return false;
 	}
 	
+//	public boolean chckIfProductIsInDB(String productId) {
+//		
+//		String where = DB_PRODUCT_ID + "=" + "'" + productId + "'";
+//	    Cursor cursor = db.query(DB_PRODUCT_TABLE, null, where, null, null, null, null);
+//		mActivity.startManagingCursor(cursor);
+//		
+//		int columnProductId =  cursor.getColumnIndex(DB_PRODUCT_ID);
+//		
+//		while(cursor.moveToNext()) {
+//			
+//			String id = cursor.getString(columnProductId);
+//			if (productId.equals(id)) {
+//				mActivity.stopManagingCursor(cursor);
+//				return true;
+//			}
+//		}
+//		
+//		mActivity.stopManagingCursor(cursor);
+//		return false;
+//	}
+	
 	private ContentValues generateProductContentVal(Product product) {
 		ContentValues newProductVal = new ContentValues();
 		
@@ -284,8 +335,7 @@ public class AdapterDB implements FinalVariables {
 		String dataZuzycia = product.getDataZuzycia();
 		String endDate = product.getEndDate();
 		String isScanned = product.getIsScannedToDB();
-		
-		Log.i("DBPrzypomnienia", przypomnienia);
+		String productId = product.getProductId();
 	    
 		newProductVal.put(DB_NAZWA, nazwa);
 		newProductVal.put(DB_DATA_OTWARCIA, dataOtwarcia);
@@ -300,6 +350,7 @@ public class AdapterDB implements FinalVariables {
 		newProductVal.put(DB_DATA_ZUZYCIA, dataZuzycia);
 		newProductVal.put(DB_END_DATE, endDate);
 		newProductVal.put(DB_IS_SCANNED, isScanned);
+		newProductVal.put(DB_PRODUCT_ID, productId);
 		
 		return newProductVal;
 	}

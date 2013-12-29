@@ -49,13 +49,13 @@ public class FragmentPrzypomnienia extends SherlockFragment implements FinalVari
 	@Override
 	public void onItemClick(AdapterView<?> arg0, View arg1, int pos, long arg3) {
 		HashMap<String, String> przypomnienie = (HashMap<String, String>) adapterPrzyp.getItem(pos);
-		String przypomnienieCode = przypomnienie.get(DB_CODE);
+		String przypId = przypomnienie.get(DB_PRODUCT_ID);
 		
 		for (int i = 0; i < products.size(); i++) {
 			Product product = products.get(i);
-			String productCode = product.getCode();
+			String productId = product.getProductId();
 			
-			if (przypomnienieCode.contains(productCode)) {				
+			if (przypId.equals(productId)) {				
 				
 //				DialogPrzypomnienie dialog = new DialogPrzypomnienie(getActivity(), product);
 //				dialog.show();
@@ -131,15 +131,17 @@ public class FragmentPrzypomnienia extends SherlockFragment implements FinalVari
 				String nazwa = product.getNazwa();
 				String dataOtw = product.getDataOtwarcia();
 				String terminWaz = product.getTerminWaznosci();
+				String endDate = product.getEndDate();
 				String przypDate = przypomnienia.get(a).get(PRZYP_DATE);
-				String code = product.getCode();
+				String productId = product.getProductId();
 				
 				HashMap<String, String> przypomnienie = new HashMap<String, String>(); // przypomnienie jako oddzielny byt
 				przypomnienie.put(DB_NAZWA, nazwa);
 				przypomnienie.put(DB_DATA_OTWARCIA, dataOtw);
 				przypomnienie.put(DB_TERMIN_WAZNOSCI, terminWaz);
+				przypomnienie.put(DB_END_DATE, endDate);
 				przypomnienie.put(PRZYP_DATE, przypDate);
-				przypomnienie.put(DB_CODE, code);
+				przypomnienie.put(DB_PRODUCT_ID, productId);
 				
 				przypomnieniaAll.add(przypomnienie);				
 			}
@@ -151,7 +153,7 @@ public class FragmentPrzypomnienia extends SherlockFragment implements FinalVari
 	private void removePrzypomnienie(int pos) {
 		HashMap<String, String> przypomnienie = (HashMap<String, String>) adapterPrzyp.getItem(pos);
 		String alarmTime = przypomnienie.get(PRZYP_DATE);
-		String productId = przypomnienie.get(DB_CODE);
+		String productId = przypomnienie.get(DB_PRODUCT_ID);
 		
 		adapterDb.open();
 		boolean removeStatus = adapterDb.deletePrzypomnienie(productId, alarmTime);

@@ -73,8 +73,8 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 	boolean orientationChanged = false;
 	boolean isScanned = false;
 	String currentDate = "";
-	String code = "";
-	String codeFormat = "";
+	public String code = "";
+	public String codeFormat = "";
 	
 	AdapterDB dbAdapter;
 	CommonUtilities utilities = new CommonUtilities();
@@ -188,7 +188,7 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
     		} else {
         		Product product = prepareDataToStore();
         		
-				DialogGeneruj dialogGen = new DialogGeneruj(getActivity(),product , getFragmentManager(), getId());
+				DialogGeneruj dialogGen = new DialogGeneruj(this, product, barcodeImage);
 				dialogGen.show();
     		}	
     		break;
@@ -400,6 +400,8 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		product.setOpis(opis);
 		product.setEndDate(endDate);
 		product.setPrzypomnienia(przypomnienia);
+		
+		product.setProductId(System.currentTimeMillis());
 	
 		return product;
 	}
@@ -425,13 +427,7 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 			((MainActivity) getActivity()).selectFragment(2); // prze��cza a ekran listy produkt�w
 		}
 	}
-		
-	public void saveCodeFromDialogGeneruj(String code, String codeFormat, Bitmap bmp) {
-		this.code = code;
-		this.codeFormat = codeFormat;
-		barcodeImage.setImageBitmap(bmp);
-	}
-	
+			
 	private boolean storeAllToDatabase() {
 		Product product = prepareDataToStore();
 		utilities.createThumb(product.getImage());// TODO jesli nie ma
@@ -442,8 +438,8 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		if (storeStatus) {
 			ArrayList<HashMap<String, String>> przypomnienia = product.getPrzypomnienia();
 			String nazwa = product.getNazwa();
-			String code = product.getCode();
-			setAlarms(przypomnienia, nazwa, code);
+			String productId = product.getProductId();
+			setAlarms(przypomnienia, nazwa, productId);
 			isScanned = false;
 		}
 		
@@ -485,7 +481,7 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 	
 	public void setDataFromScan(String code, String codeFormat) {		
 		dbAdapter.open();
-		boolean isInDB = dbAdapter.chckIfProductIsInDB(code);
+		boolean isInDB = dbAdapter.chckIfCodeIsInDB(code);
 		dbAdapter.close();
 		
 		if(isInDB) {
@@ -553,8 +549,8 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		okresWazDropDown.setText(okresSpinnVal);
 	}
 	
-	private void setAlarms(ArrayList<HashMap<String, String>> przypomnienia, String nazwa, String productCode) {
-		utilities.startAlarms(przypomnienia, nazwa, productCode, getActivity());
+	private void setAlarms(ArrayList<HashMap<String, String>> przypomnienia, String nazwa, String productId) {
+		utilities.startAlarms(przypomnienia, nazwa, productId, getActivity());
 	}
 		
 	private void setKategoria(String kategoria) {
@@ -610,20 +606,8 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 	
 	private void save() {		
 		if (checkFormIsFill()) {
-			if (code.equals("")) {	
-				Product product = prepareDataToStore();
-	//			DialogGeneruj dialogGen = new DialogGeneruj(getActivity(),product , getFragmentManager(), getId());
-	//			dialogGen.show();	
-				
-	//			TODO wyłączony dialog z generowaniem, za miast niego mozna dać opcję zapytania o wygenerowanie
-	//			aktualnie generuje kod w tle
-				
-				this.code = utilities.getJsonFromProduct(product);
-				this.codeFormat = product.getCodeFormat();
-				save();
-			} else {
-				new SaveData().execute();
-			}	
+			
+			new SaveData().execute();	
 		}
 	}
 	
@@ -640,9 +624,9 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				dbAdapter.open();
-				Product product = dbAdapter.getProduct(code);
+				Product product = dbAdapter.getProductByCode(code);
 				dbAdapter.close();
-				switchToShowFragment(product);
+				switchToEditFragment(product);
 			}
 			
 		});
@@ -652,9 +636,9 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				dbAdapter.open();
-				Product product = dbAdapter.getProduct(code);
+				Product product = dbAdapter.getProductByCode(code);
 				dbAdapter.close();
-				switchToEditFragment(product);
+				switchToShowFragment(product);
 			}
 			
 		});

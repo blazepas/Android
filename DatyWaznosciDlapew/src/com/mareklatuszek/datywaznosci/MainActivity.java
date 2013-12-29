@@ -70,11 +70,11 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
     public void onResume() {
     	super.onResume();    	
     	if(notification) {
-    		String productCode = getIntent().getStringExtra("productCode");
+    		String productId = getIntent().getStringExtra("productId");
             String timeInMillis = getIntent().getStringExtra("timeInMillis");
             notification = false;
-            if (productCode != null & timeInMillis != null) {
-        		onNotification(productCode, timeInMillis);
+            if (productId != null & timeInMillis != null) {
+        		onNotification(productId, timeInMillis);
             } else {
             	//TODO
             }
@@ -385,7 +385,7 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
 	
 	private boolean chcekIfCodeIsInDB(String code) {
 		adapterDb.open();
-		boolean status = adapterDb.chckIfProductIsInDB(code);
+		boolean status = adapterDb.chckIfCodeIsInDB(code);
 		adapterDb.close();
 		return status;
 	}

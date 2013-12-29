@@ -83,19 +83,13 @@
                     android:textColor="@color/dark_text_view" />
 
                 <RelativeLayout
-                    android:id="@+id/RelativeLayout1"
+                    android:id="@+id/progressLay"
                     android:layout_width="100dp"
                     android:layout_height="18dp"
                     android:layout_alignTop="@+id/textView4"
                     android:layout_marginLeft="8dp"
                     android:layout_toRightOf="@+id/textView4"
                     android:orientation="vertical" >
-
-                    <ProgressBar
-                    	android:id="@+id/pozostaloPrgsList"
-                    	style="?android:attr/progressBarStyleHorizontal"
-                    	android:layout_width="fill_parent"
-                    	android:layout_height="fill_parent" />
 
                     <com.mareklatuszek.utilities.TextViewBariol
 	                    android:id="@+id/estimateTimeTxt"
@@ -220,7 +214,7 @@
                     android:src="@drawable/background_pick_camera" />
 
                 <ImageView
-                    android:id="@+id/imageView3"
+                    android:id="@+id/pickGenerate"
                     android:layout_width="@dimen/add_pick_camera"
                     android:layout_height="@dimen/add_pick_camera"
                     android:layout_alignParentBottom="true"

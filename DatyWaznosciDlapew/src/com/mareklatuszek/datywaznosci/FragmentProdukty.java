@@ -292,8 +292,8 @@ public class FragmentProdukty extends SherlockFragment implements FinalVariables
 			listAdapter.notifyDataSetChanged();
 			
 			ArrayList<HashMap<String, String>> przypomnienia = product.getPrzypomnienia();
-			String codeId = product.getCode();
-			removeAlarms(przypomnienia, codeId);
+			String productId = product.getProductId();
+			removeAlarms(przypomnienia, productId);
 			
 			listAdapter = new AdapterProductList(getActivity(), products, fM, getId(), productsList);
 			productsList.setAdapter(listAdapter);
@@ -304,8 +304,8 @@ public class FragmentProdukty extends SherlockFragment implements FinalVariables
 		}
 	}
 	
-	private void removeAlarms(ArrayList<HashMap<String, String>> przypomnienia, String codeId) {
-		utilities.cancelAlarms(przypomnienia, codeId, getActivity());
+	private void removeAlarms(ArrayList<HashMap<String, String>> przypomnienia, String productId) {
+		utilities.cancelAlarms(przypomnienia, productId, getActivity());
 	}
 		
 	public void selectFragmentDodaj() {

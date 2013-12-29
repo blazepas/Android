@@ -59,9 +59,10 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 	boolean isScanned = false;
 	boolean orientationChanged = false;
 	String currentDate = "";
-	String code = "";
-	String codeFormat = "";
+	public String code = "";
+	public String codeFormat = "";
 	String oldCode = "";
+	String productId = "0";
 	
 	AdapterDB dbAdapter;
 	ArrayAdapter<String> spinnerAdapter;
@@ -99,6 +100,7 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 				oldCode = bundleProduct.getCode();
 				oldPrzypomnienia = bundleProduct.getPrzypomnienia();
 				isScanned = bundleProduct.getIsScanned();
+				productId = bundleProduct.getProductId();
 				
 				setViewsFromProduct(bundleProduct);
 			}
@@ -110,6 +112,7 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 			oldPrzypomnienia = (ArrayList<HashMap<String, String>>) savedInstanceState.getSerializable("oldPrzypomnienia");
 			dodatkoweIsVisible = savedInstanceState.getBoolean("dodatkowe");
 			isScanned = savedInstanceState.getBoolean("isScanned");
+			productId = savedInstanceState.getString("productId");
 			
 			setViewsFromProduct(savedStateProduct);
 		}
@@ -136,6 +139,7 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 		
 		bundle.putBoolean("isScanned", isScanned);
 		bundle.putString("oldCode", oldCode);
+		bundle.putString("productId", productId);
 		bundle.putSerializable("oldPrzypomnienia", oldPrzypomnienia);
 	    bundle.putSerializable("product", productToSave);     
 	}
@@ -163,7 +167,7 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 	    switch (item.getItemId()) {
 	    case R.id.generatePopup:
     		Product product = prepareDataToStore();
-			DialogGeneruj dialogGen = new DialogGeneruj(getActivity(),product , getFragmentManager(), getId());
+			DialogGeneruj dialogGen = new DialogGeneruj(this, product, barcodeImage);
 			dialogGen.show();
     		break;
 	    case R.id.gallery:
@@ -374,6 +378,7 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 		product.setEndDate(endDate);
 		product.setPrzypomnienia(przypomnienia);		
 	
+		product.setProductId(productId);
 		return product;
 	}
 	
@@ -399,25 +404,19 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 			((MainActivity) getActivity()).selectFragment(2); // prze��cza a ekran listy produkt�w
 		}	
 	}
-		
-	public void saveCodeFromDialogGeneruj(String code, String codeFormat, Bitmap bmp) {
-		this.code = code;
-		this.codeFormat = codeFormat;
-		barcodeImage.setImageBitmap(bmp);
-	}
-	
+			
 	private boolean storeAllToDatabase() {
 		Product product = prepareDataToStore();
 		utilities.createThumb(product.getImage());
 		dbAdapter.open();		
-		boolean storeStatus = dbAdapter.updateProduct(product, oldCode);
+		boolean storeStatus = dbAdapter.updateProduct(product);
 		dbAdapter.close();
 		
 		if (storeStatus) {
 			ArrayList<HashMap<String, String>> przypomnienia = product.getPrzypomnienia();
 			String nazwa = product.getNazwa();
-			String code = product.getCode();
-			setAlarms(przypomnienia, nazwa, code); // gdy zmienia się id produktu, zaktualizować id alarmu!
+			String productId = product.getProductId();
+			setAlarms(przypomnienia, nazwa, productId); // gdy zmienia się id produktu, zaktualizować id alarmu!
 		}
 		
 		return storeStatus; //je�li zapisze do poprawnie
@@ -464,7 +463,7 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 		
 	public void setDataFromScan(String code, String codeFormat) {
 		dbAdapter.open();
-		boolean isInDB = dbAdapter.chckIfProductIsInDB(code);
+		boolean isInDB = dbAdapter.chckIfCodeIsInDB(code);
 		dbAdapter.close();
 		
 		if(isInDB) {
@@ -531,9 +530,9 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 		okresWazDropDown.setText(okresSpinnVal);
 	}
 	
-	private void setAlarms(ArrayList<HashMap<String, String>> przypomnienia, String nazwa, String productCode) {
-		utilities.cancelAlarms(oldPrzypomnienia, productCode, getActivity());
-		utilities.startAlarms(przypomnienia, nazwa, productCode, getActivity());
+	private void setAlarms(ArrayList<HashMap<String, String>> przypomnienia, String nazwa, String productId) {
+		utilities.cancelAlarms(oldPrzypomnienia, productId, getActivity());
+		utilities.startAlarms(przypomnienia, nazwa, productId, getActivity());
 	}
 		
 	private void setKategoria(String kategoria) {
@@ -588,15 +587,8 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 	}
 						
 	private void save() {		
-		if (checkFormIsFill()) {
-			if (code.equals("")) {	
-				Product product = prepareDataToStore();				
-				this.code = utilities.getJsonFromProduct(product);
-				this.codeFormat = product.getCodeFormat();
-				save();
-			} else {
-				new SaveData().execute();
-			}	
+		if (checkFormIsFill()) {			
+			new SaveData().execute();				
 		}
 	}
 	
@@ -613,9 +605,9 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				dbAdapter.open();
-				Product product = dbAdapter.getProduct(code);
+				Product product = dbAdapter.getProductByCode(code);
 				dbAdapter.close();
-				switchToShowFragment(product);
+				((MainActivity) getActivity()).selectFragmentToShowProduct(product);
 			}
 			
 		});
@@ -625,9 +617,9 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				dbAdapter.open();
-				Product product = dbAdapter.getProduct(code);
+				Product product = dbAdapter.getProductByCode(code);
 				dbAdapter.close();
-				((MainActivity) getActivity()).selectFragmentToShowProduct(product);
+				switchToShowFragment(product);
 			}
 			
 		});

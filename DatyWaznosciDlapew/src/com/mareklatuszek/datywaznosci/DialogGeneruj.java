@@ -3,17 +3,21 @@ package com.mareklatuszek.datywaznosci;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,16 +26,15 @@ import com.mareklatuszek.utilities.TextViewBariol;
 
 public class DialogGeneruj extends Dialog implements android.view.View.OnClickListener {
 	
-	FragmentActivity mActivity;
+	Fragment mFragment;
+	Activity mActivity;
 	Product product;
-	FragmentManager fragmentManager; 
-	int fragmentId;
-	int fragPos;
 	CommonUtilities utilities = new CommonUtilities();
 	AdapterDialogGeneruj adapterPozostale;
+	AdapterDB adapterDb;
 	
 	TextViewBariol nazwaTxt, dataTxt, terminWazTxt, pozostaleTxt, buttonTxt;;
-	ImageView codeImage;
+	ImageView codeImage, viewToSet;
 	ListView pozostaleList;
 	LinearLayout generujButton;
 	String codeFormat;
@@ -41,13 +44,13 @@ public class DialogGeneruj extends Dialog implements android.view.View.OnClickLi
 	boolean isGenerated = false;
 
 
-	public DialogGeneruj(FragmentActivity mActivity, Product product, FragmentManager fragmentManager, int fragmentId) {
-		super(mActivity);
-		this.mActivity = mActivity;
+	public DialogGeneruj(Fragment mFragment, Product product, ImageView viewToSet) {
+		super(mFragment.getActivity());
+		this.mFragment = mFragment;
+		this.mActivity = mFragment.getActivity();
 		this.product = product;
-		this.fragmentManager = fragmentManager;
-		this.fragmentId = fragmentId;
-		fragPos = MainActivity.currentFragmentPos;
+		this.viewToSet = viewToSet;
+		adapterDb = new AdapterDB(mActivity);
 	}
 
 	@Override
@@ -55,7 +58,7 @@ public class DialogGeneruj extends Dialog implements android.view.View.OnClickLi
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.dialog_generuj);
-		
+
 		initPodstawowe();
 	}
 	
@@ -71,7 +74,6 @@ public class DialogGeneruj extends Dialog implements android.view.View.OnClickLi
 			}
 			break;
 		}
-		
 	}
 	
 	private void initPodstawowe() {		
@@ -94,17 +96,25 @@ public class DialogGeneruj extends Dialog implements android.view.View.OnClickLi
 	}
 		
 	private void saveProduct() {
-		switch (fragPos) {
-		case 1:
-			FragmentDodaj fragmentDodaj = (FragmentDodaj) fragmentManager.findFragmentById(fragmentId);
-			fragmentDodaj.saveCodeFromDialogGeneruj(code, codeFormat, bmp);
-			break;
-		case 6:
-			FragmentEdytuj fragmentEdytuj = (FragmentEdytuj) fragmentManager.findFragmentById(fragmentId);
-			fragmentEdytuj.saveCodeFromDialogGeneruj(code, codeFormat, bmp);
-			break;
-		default:
-			Toast.makeText(mActivity, "Nie wygenerowano kodu!", 2000).show();
+		viewToSet.setImageBitmap(bmp);
+		if (mFragment instanceof FragmentProdukt) {	
+			
+			product.setCode(code);
+			product.setCodeFormat(codeFormat);
+			
+			adapterDb.open();
+			adapterDb.updateProduct(product);
+			adapterDb.close();
+			
+		} else if (mFragment instanceof FragmentDodaj) {
+			
+			((FragmentDodaj) mFragment).code = code;
+			((FragmentDodaj) mFragment).codeFormat = codeFormat;
+			
+		} else if (mFragment instanceof FragmentEdytuj) {
+			
+			((FragmentEdytuj) mFragment).code = code;
+			((FragmentEdytuj) mFragment).codeFormat = codeFormat;
 		}
 	}
 	
@@ -113,6 +123,10 @@ public class DialogGeneruj extends Dialog implements android.view.View.OnClickLi
 		codeFormat = product.getCodeFormat();
 		bmp = utilities.encodeCodeToBitmap(code, codeFormat, mActivity);
 		codeImage.setImageBitmap(bmp);
+		
+		RelativeLayout relative = (RelativeLayout) findViewById(R.id.relative);
+		View viewToRemove = findViewById(R.id.withoutBarcode);
+		relative.removeView(viewToRemove);
 		
 		buttonTxt.setText("zapisz");
 		isGenerated = true;

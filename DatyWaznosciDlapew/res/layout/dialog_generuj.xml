@@ -29,12 +29,46 @@
 
         </LinearLayout>
 
-        <ImageView
-            android:id="@+id/codeImage"
-            android:layout_width="@dimen/dialog_gen_image"
-            android:layout_height="@dimen/dialog_gen_image"
-            android:layout_marginTop="20dp"
-            android:background="@color/clicable_views" />
+        <RelativeLayout
+            android:id="@+id/relative"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp" >
+
+            <ImageView
+                android:id="@+id/codeImage"
+                android:layout_width="@dimen/dialog_gen_image"
+                android:layout_height="@dimen/dialog_gen_image"
+                android:background="@color/clicable_views" />
+
+            <LinearLayout
+                android:id="@+id/withoutBarcode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:gravity="center"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:id="@+id/textView1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="DODAJ\nQRCode/\nkod kreskowy"
+                    android:textAppearance="@style/TPP.Small.TextAppearance"
+                    android:textColor="@color/dark_text_view" />
+
+                <ImageView
+                    android:id="@+id/imageView1"
+                    android:layout_width="@dimen/add_pick_camera"
+                    android:layout_height="@dimen/add_pick_camera"
+                    android:layout_marginTop="20dp"
+                    android:src="@drawable/background_pick_barcode" />
+
+            </LinearLayout>
+
+        </RelativeLayout>
 
         <RelativeLayout
             android:layout_width="wrap_content"

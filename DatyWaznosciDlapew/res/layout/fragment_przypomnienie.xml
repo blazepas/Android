@@ -34,12 +34,11 @@
         android:textAppearance="@style/TPP.Normal.TextAppearance"
         android:textColor="@color/dark_text_view" />
 
-    <ProgressBar
-        android:id="@+id/pozostaloProgress"
-        style="?android:attr/progressBarStyleHorizontal"
+    <RelativeLayout
+        android:id="@+id/progressLay"
         android:layout_width="220dp"
-        android:layout_height="54dp"
-        android:layout_marginTop="10dp" />
+        android:layout_height="54dp" >
+    </RelativeLayout>
 
     <com.mareklatuszek.utilities.TextViewBariol
         android:id="@+id/estimateTxt"

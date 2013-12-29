@@ -84,7 +84,7 @@
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_marginRight="7dp"
-                android:src="@drawable/image_add_item" />
+                android:src="@drawable/ic_scan_info" />
 
             <com.mareklatuszek.utilities.TextViewBariol
                 android:id="@+id/TextViewBariol01"

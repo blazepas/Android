@@ -24,7 +24,7 @@ public class ReminderService extends IntentService implements FinalVariables {
         MainActivity.notification = true;
         
         String message = intent.getStringExtra("message");
-		String productCode = intent.getStringExtra("productCode");
+		String productId = intent.getStringExtra("productId");
         String timeInMillis = intent.getStringExtra("timeInMillis");
         int intentId = 0;
         
@@ -33,7 +33,7 @@ public class ReminderService extends IntentService implements FinalVariables {
         notification.flags |= notification.FLAG_AUTO_CANCEL;
         
         Intent notificationIntent = new Intent(this, MainActivity.class);
-        notificationIntent.putExtra("productCode", productCode);
+        notificationIntent.putExtra("productId", productId);
         notificationIntent.putExtra("timeInMillis", timeInMillis);
         PendingIntent contentIntent = PendingIntent.getActivity(this, intentId, notificationIntent , 0);
        

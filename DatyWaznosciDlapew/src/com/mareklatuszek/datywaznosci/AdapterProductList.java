@@ -149,7 +149,7 @@ public class AdapterProductList extends BaseAdapter implements OnClickListener, 
 	@Override
 	public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
 		lastVisible = (firstVisibleItem + visibleItemCount) - 1;
-		if(visibleItemCount < totalItemCount) {
+		if(visibleItemCount <= totalItemCount) {
 			focusingOnItem = true;
 		} else {
 			focusingOnItem = false;
@@ -164,7 +164,6 @@ public class AdapterProductList extends BaseAdapter implements OnClickListener, 
 		boolean expanded = isExpanded[position];
 		
 		if (expanded) {
-//	    	rotateView(expandImage, 0f, 90f, 250); 
 			imageInfo.setImageResource(R.drawable.image_info_clicked);
 	    	if (position == clickedPos){
 	    		
@@ -175,7 +174,6 @@ public class AdapterProductList extends BaseAdapter implements OnClickListener, 
 		    }
 
 		} else {    	
-//		    rotateView(expandImage, 90f, 0f, 250);
 			imageInfo.setImageResource(R.drawable.image_info);
 		    if (position == clickedPos){
 		    	collapseItem(detailsLay);
@@ -233,6 +231,7 @@ public class AdapterProductList extends BaseAdapter implements OnClickListener, 
         terminWazTxtList.setText(terminWaz);
         kategoriaTxt.setText(kategoria);
         estimateTimeTxt.setText(estimate);
+
         pozostaloPrgsList.setProgress(progress);
         pozostaloPrgsList.setProgressDrawable(progressDrawable);
         
@@ -270,7 +269,7 @@ public class AdapterProductList extends BaseAdapter implements OnClickListener, 
 				showProduct(pos);				
 			}
 		});
-        
+                
         return vi;
 	}
 	

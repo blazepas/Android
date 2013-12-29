@@ -372,7 +372,7 @@ public class CommonUtilities implements FinalVariables {
 	    v.startAnimation(a);	    
 	}
 	
-	public Bitmap encodeCodeToBitmap(String code, String codeFormat, FragmentActivity mActivity)
+	public Bitmap encodeCodeToBitmap(String code, String codeFormat, Activity mActivity)
 	{
 		//konwersja zeskanowanego kodu na obrazek, na podstawie kodu i jego formatu
 				
@@ -737,23 +737,23 @@ public class CommonUtilities implements FinalVariables {
 		return f;
 	}
 	
-	public void startAlarms(ArrayList<HashMap<String, String>> przypomnienia, String nazwa, String productCode, FragmentActivity mActivity) {
+	public void startAlarms(ArrayList<HashMap<String, String>> przypomnienia, String nazwa, String productId, FragmentActivity mActivity) {
 		for (int i = 0; i < przypomnienia.size(); i++) {
 			HashMap<String, String> przypomnienie = przypomnienia.get(i);
 			String time = przypomnienie.get(PRZYP_DATE);
-			startAlarm(time, nazwa, productCode, mActivity);
+			startAlarm(time, nazwa, productId, mActivity);
 		}
 	}
 	
-	public void cancelAlarms(ArrayList<HashMap<String, String>> przypomnienia, String productCode, FragmentActivity mActivity) {
+	public void cancelAlarms(ArrayList<HashMap<String, String>> przypomnienia, String productId, FragmentActivity mActivity) {
 		for (int i = 0; i < przypomnienia.size(); i++) {
 			HashMap<String, String> przypomnienie = przypomnienia.get(i);
 			String time = przypomnienie.get(PRZYP_DATE);
-			cancelAlarm(time, productCode, mActivity);
+			cancelAlarm(time, productId, mActivity);
 		}
 	}
 	
-	public void startAlarm(String alarmTimeInMillis, String nazwa, String productCode, FragmentActivity mActivity) {
+	public void startAlarm(String alarmTimeInMillis, String nazwa, String productId, FragmentActivity mActivity) {
 		long alarmTime = Long.parseLong(alarmTimeInMillis);	
 	    AlarmManager alarmManager = (AlarmManager) mActivity.getSystemService(mActivity.ALARM_SERVICE);
 	    
@@ -761,10 +761,10 @@ public class CommonUtilities implements FinalVariables {
 	    cal.setTimeInMillis(alarmTime);
 	    
 	    long when = cal.getTimeInMillis(); // czas powiadomienia
-	    int intentId = productCode.hashCode();
+	    int intentId = productId.hashCode();
 	    Intent intent = new Intent(mActivity, ReminderService.class);
 	    intent.putExtra("message", "Przypomnienie o koncu ważności produktu: " + nazwa);
-	    intent.putExtra("productCode", productCode);
+	    intent.putExtra("productId", productId);
 	    intent.putExtra("timeInMillis", alarmTimeInMillis);
 	    PendingIntent pendingIntent = PendingIntent.getService(mActivity, intentId, intent, 0);
 	    alarmManager.set(AlarmManager.RTC_WAKEUP, when, pendingIntent);
@@ -773,14 +773,14 @@ public class CommonUtilities implements FinalVariables {
           
 	}
 	
-	public void cancelAlarm(String alarmTimeInMillis, String productCode, FragmentActivity mActivity) {
+	public void cancelAlarm(String alarmTimeInMillis, String productId, FragmentActivity mActivity) {
 		long alarmTime = Long.parseLong(alarmTimeInMillis);		
 	    AlarmManager alarmManager = (AlarmManager) mActivity.getSystemService(mActivity.ALARM_SERVICE);
 	    
 	    Calendar cal = new GregorianCalendar();
 	    cal.setTimeInMillis(alarmTime);
 	    
-	    int intentId = productCode.hashCode();
+	    int intentId = productId.hashCode();
 	    Intent intent = new Intent(mActivity, ReminderService.class);
 	    PendingIntent pendingIntent = PendingIntent.getService(mActivity, intentId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 	    alarmManager.cancel(pendingIntent);

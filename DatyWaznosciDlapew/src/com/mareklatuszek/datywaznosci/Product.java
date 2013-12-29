@@ -28,6 +28,7 @@ public class Product implements FinalVariables, Serializable {
 	private String dataZuz;
 	private String isScanned;
 	private String endDate;
+	private String productId;
 	private ArrayList<HashMap<String, String>> przypomnienia;
 	
 	public Product() {		
@@ -43,6 +44,7 @@ public class Product implements FinalVariables, Serializable {
 		this.dataZuz = "";
 		this.isScanned = "0"; // 1 jeśli zeskanowany, 0 jeśli nie
 		this.endDate = ""; // data końca ważności produktu, obliczna na podstawie terminu lub okresu
+		this.productId = "0";
 		this.przypomnienia = new ArrayList<HashMap<String,String>>();
 	}
 	
@@ -104,6 +106,10 @@ public class Product implements FinalVariables, Serializable {
 	
 	public String getEndDate() {
 		return endDate;
+	}
+	
+	public String getProductId() {
+		return productId;
 	}
 	
 	public String getPrzypomnieniaToDB() {
@@ -195,6 +201,14 @@ public class Product implements FinalVariables, Serializable {
 	
 	public void setEndDate(String endDate) {
 		this.endDate = endDate;
+	}
+	
+	public void setProductId(String productId) {
+		this.productId = productId;
+	}
+	
+	public void setProductId(long productId) {
+		this.productId = String.valueOf(productId);
 	}
 	
 	public void setPrzypomnienia(ArrayList<HashMap<String, String>> przypomnienia) {

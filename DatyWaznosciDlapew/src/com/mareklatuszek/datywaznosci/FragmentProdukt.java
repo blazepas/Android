@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
@@ -16,9 +17,11 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,6 +37,8 @@ import com.mareklatuszek.utilities.TextViewBariol;
 
 public class FragmentProdukt extends SherlockFragment implements FinalVariables, OnClickListener {
 	
+	private static final String DODATKOWE = "dodatkowe";
+	
 	private Product product = new Product();
 	CommonUtilities utilities = new CommonUtilities();
 	boolean dodatkoweIsVisible = false;
@@ -41,18 +46,17 @@ public class FragmentProdukt extends SherlockFragment implements FinalVariables,
 	View rootView;
 	LinearLayout layDodatkoweShow, dodatkowe, przypomnieniaLayout;
 	TextViewBariol nazwaTxt, okresTxt, dataOtwTxt, terminWazTxt, kategoriaTxt, isScannedTxt, estimateTimeTxt;
-	ImageView barcodeImage, obrazekImage, dodatkoweImage;
-	ProgressBar pozostaloPrgsList;
+	ImageView barcodeImage, obrazekImage, pickGenerate, dodatkoweImage;
 	PopupOverflow popupOverflow;
-	
-	Bitmap codeBmp;
-	Bitmap imageBmp;
+	Bitmap codeBmp,imageBmp;
+	RelativeLayout progressLay;
 	
 	@Override
 	public void onResume() {
 		super.onResume();
 		utilities.setActionBarTitle("Informacje o produkcie", getSherlockActivity());
 	}
+	
 		
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -71,7 +75,7 @@ public class FragmentProdukt extends SherlockFragment implements FinalVariables,
 		}
 		
 		if(savedInstanceState != null) {
-			dodatkoweIsVisible = savedInstanceState.getBoolean("dodatkowe");
+			dodatkoweIsVisible = savedInstanceState.getBoolean(DODATKOWE);
 		}
 		
 		if (dodatkoweIsVisible) { 
@@ -104,10 +108,10 @@ public class FragmentProdukt extends SherlockFragment implements FinalVariables,
 		super.onSaveInstanceState(bundle);
 		
 		if (dodatkoweIsVisible) { 
-			bundle.putBoolean("dodatkowe", true);
+			bundle.putBoolean(DODATKOWE, true);
 
 		} else {
-			bundle.putBoolean("dodatkowe", false);
+			bundle.putBoolean(DODATKOWE, false);
 		}
 		
 	}
@@ -151,6 +155,10 @@ public class FragmentProdukt extends SherlockFragment implements FinalVariables,
 				showDodatkowe();
 			}
 			break;
+		case R.id.pickGenerate:
+			DialogGeneruj dialogGen = new DialogGeneruj(this, product, barcodeImage);
+			dialogGen.show();
+			break;
 		}
 	}
     
@@ -183,7 +191,8 @@ public class FragmentProdukt extends SherlockFragment implements FinalVariables,
 		barcodeImage = (ImageView) rootView.findViewById(R.id.barcodeImage);
 		obrazekImage = (ImageView) rootView.findViewById(R.id.obrazekImage);
 		dodatkoweImage = (ImageView) rootView.findViewById(R.id.dodatkoweImage);
-		pozostaloPrgsList = (ProgressBar) rootView.findViewById(R.id.pozostaloPrgsList);		
+		pickGenerate = (ImageView) rootView.findViewById(R.id.pickGenerate);
+		progressLay = (RelativeLayout) rootView.findViewById(R.id.progressLay);		
 		
 		String nazwa = product.getNazwa();
 		String okres = product.getOkresWaznosci();
@@ -192,8 +201,7 @@ public class FragmentProdukt extends SherlockFragment implements FinalVariables,
 		String codeFormat = product.getCodeFormat();
 		String image = product.getImage();
 		String endDate = product.getEndDate();
-		codeBmp = utilities.encodeCodeToBitmap(code, codeFormat, getActivity());
-		int progress = utilities.getProgress(dataOtw, endDate);
+		final int progress = utilities.getProgress(dataOtw, endDate);
 		Drawable progressDrawable = getResources().getDrawable(R.drawable.progress_bar_bg);
 		String estimate = getEstimate(endDate);
 		
@@ -201,24 +209,20 @@ public class FragmentProdukt extends SherlockFragment implements FinalVariables,
 		okresTxt.setText(okres);
 		estimateTimeTxt.setText(estimate);
 		dataOtwTxt.setText(dataOtw);
-		barcodeImage.setImageBitmap(codeBmp);
-		barcodeImage.setOnClickListener(this);
+		
 		if (product.getIsScanned()) {
 			isScannedTxt.setText("Zeskanowany");
 		} else {
 			isScannedTxt.setText("Własny produkt");
 		}
 		
-		if (!image.equals("")) {
-			String imagePath = product.getImage();
-			imageBmp = BitmapLoader.loadBitmap(imagePath, 100, 100);
-			obrazekImage.setImageBitmap(imageBmp);
-			obrazekImage.setOnClickListener(this);
-		}
-		dodatkoweImage.setOnClickListener(this);
-		pozostaloPrgsList.setProgress(progress);
-        pozostaloPrgsList.setProgressDrawable(progressDrawable);
+		setImage(image);
+		setBarcode(code, codeFormat);
 		
+		dodatkoweImage.setOnClickListener(this);
+		pickGenerate.setOnClickListener(this);
+		
+        setProggres(progress, progressDrawable);
 	}
 	
 	private void initDodatkowe() {
@@ -258,6 +262,36 @@ public class FragmentProdukt extends SherlockFragment implements FinalVariables,
 	        przypomnieniaLayout.addView(kiedyPow);
 		}
  
+	}
+	
+	private void setImage(String image) {
+		if (!image.equals("")) {
+			String imagePath = product.getImage();
+			imageBmp = BitmapLoader.loadBitmap(imagePath, 100, 100);
+			obrazekImage.setImageBitmap(imageBmp);
+			obrazekImage.setOnClickListener(this);
+		}
+	}
+	
+	private void setBarcode(String code, String codeFormat) {
+		if (!code.equals("")) {
+			codeBmp = utilities.encodeCodeToBitmap(code, codeFormat, getActivity());
+			barcodeImage.setImageBitmap(codeBmp);
+			barcodeImage.setOnClickListener(this);
+		}
+	}
+	
+	private void setProggres(int progress, Drawable progressDrawable) {
+		// ominiecie buga androida
+		int fillParent = LayoutParams.FILL_PARENT;
+		LayoutParams params = new LayoutParams(fillParent, fillParent);
+		
+		ProgressBar progressBar = new ProgressBar(getActivity(), null, android.R.attr.progressBarStyleHorizontal);
+		progressBar.setProgress(progress);
+		progressBar.setProgressDrawable(progressDrawable);
+		progressBar.setLayoutParams(params);
+		
+		progressLay.addView(progressBar, 0);
 	}
 	
 	private String getEstimate(String endDate) {
@@ -325,8 +359,8 @@ public class FragmentProdukt extends SherlockFragment implements FinalVariables,
 		
 		if (deleteStatus) {
 			ArrayList<HashMap<String, String>> przypomnienia = product.getPrzypomnienia();
-			String codeId = product.getCode();
-			utilities.cancelAlarms(przypomnienia, codeId, getActivity());
+			String productId = product.getProductId();
+			utilities.cancelAlarms(przypomnienia, productId, getActivity());
 			Toast.makeText(getActivity(), "Usunięto " + product.getNazwa(), 2000).show();
 			
 			switchToProductsFragment();
@@ -342,6 +376,5 @@ public class FragmentProdukt extends SherlockFragment implements FinalVariables,
   		  DialogShare dialogShare = new DialogShare(getActivity(), product);
       	  dialogShare.show();
   	  } 
-	}
-	
+	}	
 }

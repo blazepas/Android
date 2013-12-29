@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     android:orientation="vertical" >
 
     <ImageView
         android:id="@+id/obrazek"
-        android:layout_width="280dp"
-        android:layout_height="280dp"
-        android:layout_weight="0.59"
-        android:src="@drawable/abs__ab_bottom_solid_dark_holo" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minHeight="200dp"
+        android:minWidth="200dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/button_dialog_scan" />
 
 </LinearLayout>
