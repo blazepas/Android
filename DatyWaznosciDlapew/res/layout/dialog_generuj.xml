@@ -17,7 +17,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" >
 
-            <views.TextViewBariol
+            <pl.mareklatuszek.tpp.views.TextViewBariol
                 android:id="@+id/nazwaTxt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -75,7 +75,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp" >
 
-            <views.TextViewBariol
+            <pl.mareklatuszek.tpp.views.TextViewBariol
                 android:id="@+id/TextView01"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -83,7 +83,7 @@
                 android:textAppearance="@style/TPP.Normal.TextAppearance"
                 android:textColor="@color/dark_text_view" />
 
-            <views.TextViewBariol
+            <pl.mareklatuszek.tpp.views.TextViewBariol
                 android:id="@+id/terminWazTxt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -94,7 +94,7 @@
                 android:textAppearance="@style/TPP.Normal.TextAppearance"
                 android:textColor="@color/dark_text_view" />
 
-            <views.TextViewBariol
+            <pl.mareklatuszek.tpp.views.TextViewBariol
                 android:id="@+id/textView2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -104,7 +104,7 @@
                 android:textAppearance="@style/TPP.Normal.TextAppearance"
                 android:textColor="@color/dark_text_view" />
 
-            <views.TextViewBariol
+            <pl.mareklatuszek.tpp.views.TextViewBariol
                 android:id="@+id/dataTxt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -134,7 +134,7 @@
             android:gravity="center"
             android:orientation="vertical" >
 
-            <views.TextViewBariol
+            <pl.mareklatuszek.tpp.views.TextViewBariol
                 android:id="@+id/buttonTxt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

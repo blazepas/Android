@@ -4,6 +4,7 @@ import org.acra.ACRA;
 import org.acra.ReportingInteractionMode;
 import org.acra.annotation.ReportsCrashes;
 
+import pl.mareklatuszek.tpp.R;
 import android.app.Application;
 
 @ReportsCrashes(

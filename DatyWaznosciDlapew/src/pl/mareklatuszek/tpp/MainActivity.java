@@ -1,11 +1,20 @@
 package pl.mareklatuszek.tpp;
 
+import pl.mareklatuszek.tpp.R;
+import pl.mareklatuszek.tpp.atapters.AdapterDB;
+import pl.mareklatuszek.tpp.atapters.AdapterMenu;
+import pl.mareklatuszek.tpp.dialogs.DialogPrzypomnienie;
+import pl.mareklatuszek.tpp.fragments.FragmentDodaj;
+import pl.mareklatuszek.tpp.fragments.FragmentEdytuj;
+import pl.mareklatuszek.tpp.fragments.FragmentKategorie;
+import pl.mareklatuszek.tpp.fragments.FragmentProdukt;
+import pl.mareklatuszek.tpp.fragments.FragmentProdukty;
+import pl.mareklatuszek.tpp.fragments.FragmentPrzypomnienia;
+import pl.mareklatuszek.tpp.fragments.FragmentPrzypomnienie;
+import pl.mareklatuszek.tpp.utilities.FinalVariables;
+import pl.mareklatuszek.tpp.utilities.PremiumUtilities;
 import jim.h.common.android.lib.zxing.integrator.IntentIntegrator;
 import jim.h.common.android.lib.zxing.integrator.IntentResult;
-import utilities.FinalVariables;
-import utilities.PremiumUtilities;
-import adapters.AdapterDB;
-import adapters.AdapterMenu;
 import android.content.Intent;
 import android.content.res.TypedArray;
 import android.net.Uri;
@@ -32,15 +41,6 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.MenuItem;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
-
-import dialogs.DialogPrzypomnienie;
-import fragments.FragmentDodaj;
-import fragments.FragmentEdytuj;
-import fragments.FragmentKategorie;
-import fragments.FragmentProdukt;
-import fragments.FragmentProdukty;
-import fragments.FragmentPrzypomnienia;
-import fragments.FragmentPrzypomnienie;
 
 
 public class MainActivity extends SherlockFragmentActivity implements FinalVariables, OnClickListener {

@@ -11,7 +11,7 @@
         android:layout_height="match_parent"
         android:orientation="horizontal" >
 
-        <views.TextViewBariol
+        <pl.mareklatuszek.tpp.views.TextViewBariol
             android:id="@+id/spinnerTxt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

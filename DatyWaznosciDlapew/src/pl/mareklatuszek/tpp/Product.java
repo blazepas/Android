@@ -8,7 +8,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import utilities.FinalVariables;
+import pl.mareklatuszek.tpp.utilities.FinalVariables;
 import android.util.Log;
 
 public class Product implements FinalVariables, Serializable {

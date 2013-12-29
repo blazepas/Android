@@ -25,7 +25,7 @@
                 android:layout_marginRight="7dp"
                 android:src="@drawable/image_add_item" />
 
-            <views.TextViewBariol
+            <pl.mareklatuszek.tpp.views.TextViewBariol
                 android:id="@+id/estimateTimeTxt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -41,7 +41,7 @@
         android:background="@color/products_sort"
         android:gravity="center" >
 
-        <views.TextViewBariol
+        <pl.mareklatuszek.tpp.views.TextViewBariol
             android:id="@+id/textView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -49,7 +49,7 @@
             android:textAppearance="@style/TPP.Small.TextAppearance"
             android:textColor="@color/light_text_view" />
 
-        <views.CustomSpinner
+        <pl.mareklatuszek.tpp.views.CustomSpinner
             android:id="@+id/kategorieDropDown"
             android:layout_width="@dimen/products_expand_spinner_width"
             android:layout_height="@dimen/spinner_height"
@@ -86,7 +86,7 @@
                 android:layout_marginRight="7dp"
                 android:src="@drawable/ic_scan_info" />
 
-            <views.TextViewBariol
+            <pl.mareklatuszek.tpp.views.TextViewBariol
                 android:id="@+id/TextViewBariol01"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

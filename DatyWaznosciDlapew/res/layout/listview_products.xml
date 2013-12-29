@@ -28,7 +28,7 @@
             android:gravity="center_vertical"
             android:orientation="vertical" >
 
-            <views.TextViewBariol
+            <pl.mareklatuszek.tpp.views.TextViewBariol
                 android:id="@+id/nazwaTxtList"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -37,7 +37,7 @@
                 android:textAppearance="@style/TPP.Large.TextAppearance"
                 android:textColor="@color/medium_text_view" />
 
-            <views.TextViewBariol
+            <pl.mareklatuszek.tpp.views.TextViewBariol
                 android:id="@+id/kategoriaTxt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -55,7 +55,7 @@
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent" />
 
-                <views.TextViewBariol
+                <pl.mareklatuszek.tpp.views.TextViewBariol
                     android:id="@+id/estimateTimeTxt"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -107,7 +107,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical" >
 
-                <views.TextViewBariol
+                <pl.mareklatuszek.tpp.views.TextViewBariol
                     android:id="@+id/textView2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -116,7 +116,7 @@
                     android:textAppearance="@style/TPP.XSmall.TextAppearance"
                     android:textColor="@color/light_text_view" />
 
-                <views.TextViewBariol
+                <pl.mareklatuszek.tpp.views.TextViewBariol
                     android:id="@+id/dataOtwTxtList"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -125,7 +125,7 @@
                     android:textAppearance="@style/TPP.Normal.TextAppearance"
                     android:textColor="@color/light_text_view" />
 
-                <views.TextViewBariol
+                <pl.mareklatuszek.tpp.views.TextViewBariol
                     android:id="@+id/TextView01"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -134,7 +134,7 @@
                     android:textAppearance="@style/TPP.XSmall.TextAppearance"
                     android:textColor="@color/light_text_view" />
 
-                <views.TextViewBariol
+                <pl.mareklatuszek.tpp.views.TextViewBariol
                     android:id="@+id/terminWazTxtList"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -177,7 +177,7 @@
                 android:gravity="center"
                 android:orientation="vertical" >
 
-                <views.TextViewBariol
+                <pl.mareklatuszek.tpp.views.TextViewBariol
                     android:id="@+id/textView6"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

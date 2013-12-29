@@ -5,7 +5,7 @@
     android:gravity="center_vertical"
     android:orientation="horizontal" >
 
-    <views.TextViewBariol
+    <pl.mareklatuszek.tpp.views.TextViewBariol
         android:id="@+id/testTxt"
         android:layout_width="@dimen/add_textview_width"
         android:layout_height="wrap_content"
@@ -14,7 +14,7 @@
         android:textAppearance="@style/TPP.Small.TextAppearance"
         android:textColor="@color/dark_text_view" />
     
-    <views.EditTextBariol
+    <pl.mareklatuszek.tpp.views.EditTextBariol
                  android:id="@+id/textBox"
             android:layout_width="@dimen/add_edittext_przyp_width"
             android:layout_height="@dimen/editbox_height"
@@ -28,7 +28,7 @@
             android:textColor="@color/dark_text_view"
             android:textColorHint="@color/new_prod_hint" />
 
-   <views.CustomSpinner
+   <pl.mareklatuszek.tpp.views.CustomSpinner
        android:id="@+id/spinner"
        android:layout_width="@dimen/add_spinner_przyp_width"
        android:layout_height="@dimen/spinner_height"

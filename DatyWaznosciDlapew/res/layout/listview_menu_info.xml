@@ -54,7 +54,7 @@
             </LinearLayout>
         </LinearLayout>
 
-        <views.TextViewBariol
+        <pl.mareklatuszek.tpp.views.TextViewBariol
             android:id="@+id/actionBarTitle"
             style="?attr/spinnerDropDownItemStyle"
             android:layout_width="wrap_content"

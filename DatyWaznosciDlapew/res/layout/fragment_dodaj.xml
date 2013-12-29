@@ -40,7 +40,7 @@
                         android:gravity="bottom|center_horizontal"
                         android:orientation="vertical" >
 
-                        <views.TextViewBariol
+                        <pl.mareklatuszek.tpp.views.TextViewBariol
                             android:id="@+id/nazwaTxt"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
@@ -50,7 +50,7 @@
                             android:textColorHint="@color/dark_text_view"
                             android:typeface="normal" />
 
-                        <views.EditTextBariol
+                        <pl.mareklatuszek.tpp.views.EditTextBariol
                             android:id="@+id/nazwaTextBox"
                             android:layout_width="@dimen/add_edittext_nazwa_width"
                             android:layout_height="@dimen/editbox_height"
@@ -64,7 +64,7 @@
                             android:textColorHint="@color/hint" />
                     </LinearLayout>
 
-                    <views.TextViewBariol
+                    <pl.mareklatuszek.tpp.views.TextViewBariol
                         android:id="@+id/textView7"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -75,7 +75,7 @@
                         android:textAppearance="@style/TPP.Normal.TextAppearance"
                         android:textColor="@color/dark_text_view" />
 
-                    <views.EditTextBariol
+                    <pl.mareklatuszek.tpp.views.EditTextBariol
                         android:id="@+id/terminWazTextBox"
                         android:layout_width="@dimen/add_edittext_termin_width"
                         android:layout_height="@dimen/editbox_height"
@@ -96,7 +96,7 @@
                         android:textColor="@color/dark_text_view"
                         android:textColorHint="@color/new_prod_hint" />
 
-                    <views.TextViewBariol
+                    <pl.mareklatuszek.tpp.views.TextViewBariol
                         android:id="@+id/textView4"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -117,7 +117,7 @@
                         android:layout_below="@+id/textView4"
                         android:gravity="center_vertical" >
 
-                        <views.EditTextBariol
+                        <pl.mareklatuszek.tpp.views.EditTextBariol
                             android:id="@+id/okresWazTextBox"
                             android:layout_width="@dimen/add_edittext_okres_width"
                             android:layout_height="@dimen/editbox_height"
@@ -134,7 +134,7 @@
                             android:textColor="@color/dark_text_view"
                             android:textColorHint="@color/hint" />
 
-                        <views.CustomSpinner
+                        <pl.mareklatuszek.tpp.views.CustomSpinner
                             android:id="@+id/okresWazDropDown"
                             android:layout_width="@dimen/add_spinner_okres_width"
                             android:layout_height="@dimen/spinner_height"
@@ -200,7 +200,7 @@
                             android:layout_height="@dimen/add_image_back_height"
                             android:background="@color/clicable_views" >
 
-                            <views.TextViewBariol
+                            <pl.mareklatuszek.tpp.views.TextViewBariol
                                 android:id="@+id/TextView01"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -230,7 +230,7 @@
                             android:layout_marginLeft="32dp"
                             android:background="@color/clicable_views" >
 
-                            <views.TextViewBariol
+                            <pl.mareklatuszek.tpp.views.TextViewBariol
                                 android:id="@+id/estimateTimeTxt"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -281,7 +281,7 @@
                 android:gravity="center"
                 android:orientation="vertical" >
 
-                <views.TextViewBariol
+                <pl.mareklatuszek.tpp.views.TextViewBariol
                     android:id="@+id/textView2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -328,7 +328,7 @@
             android:gravity="center"
             android:orientation="vertical" >
 
-            <views.TextViewBariol
+            <pl.mareklatuszek.tpp.views.TextViewBariol
                 android:id="@+id/textView1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

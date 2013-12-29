@@ -1,6 +1,6 @@
 package pl.mareklatuszek.tpp;
 
-import utilities.FinalVariables;
+import pl.mareklatuszek.tpp.utilities.FinalVariables;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
