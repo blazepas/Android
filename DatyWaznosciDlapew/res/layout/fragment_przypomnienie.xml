@@ -5,7 +5,7 @@
     android:gravity="center_horizontal"
     android:orientation="vertical" >
 
-    <com.mareklatuszek.utilities.TextViewBariol
+    <views.TextViewBariol
         android:id="@+id/nazwaTxt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -15,7 +15,7 @@
         android:textAppearance="@style/TPP.XLarge.TextAppearance"
         android:textColor="@color/medium_text_view" />
 
-    <com.mareklatuszek.utilities.TextViewBariol
+    <views.TextViewBariol
         android:id="@+id/kategoriaTxt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -25,7 +25,7 @@
         android:textAppearance="@style/TPP.Normal.TextAppearance"
         android:textColor="@color/medium_text_view" />
 
-    <com.mareklatuszek.utilities.TextViewBariol
+    <views.TextViewBariol
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -40,7 +40,7 @@
         android:layout_height="54dp" >
     </RelativeLayout>
 
-    <com.mareklatuszek.utilities.TextViewBariol
+    <views.TextViewBariol
         android:id="@+id/estimateTxt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -55,7 +55,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp" >
 
-        <com.mareklatuszek.utilities.TextViewBariol
+        <views.TextViewBariol
             android:id="@+id/textView5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -65,7 +65,7 @@
             android:textAppearance="@style/TPP.Normal.TextAppearance"
             android:textColor="@color/dark_text_view" />
 
-        <com.mareklatuszek.utilities.TextViewBariol
+        <views.TextViewBariol
             android:id="@+id/dataOtwTxt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -75,7 +75,7 @@
             android:textAppearance="@style/TPP.Normal.TextAppearance"
             android:textColor="@color/alarm_light_text" />
 
-        <com.mareklatuszek.utilities.TextViewBariol
+        <views.TextViewBariol
             android:id="@+id/textView7"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -86,7 +86,7 @@
             android:textAppearance="@style/TPP.Normal.TextAppearance"
             android:textColor="@color/dark_text_view" />
 
-        <com.mareklatuszek.utilities.TextViewBariol
+        <views.TextViewBariol
             android:id="@+id/terminWazTxt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

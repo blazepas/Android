@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     
-    <!-- main -->
+    <!-- pl.mareklatuszek.tpp -->
     <dimen name="text_view_font_size">20sp</dimen>
     <dimen name="text_view_xlarge_size">20sp</dimen>
     <dimen name="text_view_large_size">18sp</dimen>

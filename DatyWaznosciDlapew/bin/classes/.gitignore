@@ -1,3 +1,9 @@
 /com
-/.gitignore
 /jim
+/pl
+/.gitignore
+/utilities
+/adapters
+/dialogs
+/fragments
+/views

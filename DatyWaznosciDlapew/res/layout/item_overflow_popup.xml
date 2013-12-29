@@ -6,8 +6,8 @@
     android:gravity="center"
     android:orientation="vertical" >
 
-    <com.mareklatuszek.utilities.TextViewBariol
-        android:id="@+id/title"
+    <views.TextViewBariol
+        android:id="@+id/actionBarTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"

@@ -9,7 +9,7 @@
         android:layout_height="@dimen/categories_row_height"
         android:gravity="right|center_vertical" >
 
-        <com.mareklatuszek.utilities.TextViewBariol
+        <views.TextViewBariol
             android:id="@+id/catNameTxt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

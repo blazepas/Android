@@ -451,6 +451,7 @@ int id abs__textButton 0x7f06001e
 int id abs__title 0x7f060026
 int id abs__titleDivider 0x7f060027
 int id abs__up 0x7f060016
+int id actionBarTitle 0x7f060032
 int id addCat 0x7f060072
 int id addMenuButton 0x7f0600b8
 int id arrow 0x7f06008d
@@ -590,7 +591,6 @@ int id textView6 0x7f06009b
 int id textView7 0x7f060060
 int id textView8 0x7f060078
 int id timePicker 0x7f06005a
-int id title 0x7f060032
 int id udostepnijPopup 0x7f0600be
 int id useLogo 0x7f06000f
 int id usunPopup 0x7f0600c0
