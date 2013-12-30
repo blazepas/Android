@@ -10,23 +10,23 @@
         android:layout_width="@dimen/add_textview_width"
         android:layout_height="wrap_content"
         android:layout_marginLeft="25dp"
-        android:text="Przypomnienie"
+        android:text="@string/tv_alarm"
         android:textAppearance="@style/TPP.Small.TextAppearance"
         android:textColor="@color/dark_text_view" />
     
     <pl.mareklatuszek.tpp.views.EditTextBariol
-                 android:id="@+id/textBox"
-            android:layout_width="@dimen/add_edittext_przyp_width"
-            android:layout_height="@dimen/editbox_height"
-            android:layout_marginLeft="5dp"
-            android:background="@drawable/edittext_back"
-            android:ems="10"
-            android:gravity="center"
-            android:hint="np. 3"
-            android:inputType="number|textNoSuggestions"
-            android:textAppearance="@style/TPP.Normal.TextAppearance"
-            android:textColor="@color/dark_text_view"
-            android:textColorHint="@color/new_prod_hint" />
+        android:id="@+id/textBox"
+        android:layout_width="@dimen/add_edittext_przyp_width"
+        android:layout_height="@dimen/editbox_height"
+        android:layout_marginLeft="5dp"
+        android:background="@drawable/edittext_back"
+        android:ems="10"
+        android:gravity="center"
+        android:hint="@string/hint_alarm"
+        android:inputType="number|textNoSuggestions"
+        android:textAppearance="@style/TPP.Normal.TextAppearance"
+        android:textColor="@color/dark_text_view"
+        android:textColorHint="@color/new_prod_hint" />
 
    <pl.mareklatuszek.tpp.views.CustomSpinner
        android:id="@+id/spinner"
@@ -36,10 +36,10 @@
        android:gravity="center_vertical"
        android:orientation="vertical" />
 
-    <ImageView
-        android:id="@+id/buttonImage"
-        android:layout_width="@dimen/add_button_normal_height"
-        android:layout_height="@dimen/add_button_normal_width"
-        android:src="@drawable/add_przypomnienie" />
+   <ImageView
+       android:id="@+id/buttonImage"
+       android:layout_width="@dimen/add_button_normal_height"
+       android:layout_height="@dimen/add_button_normal_width"
+       android:src="@drawable/add_przypomnienie" />
 
 </LinearLayout>

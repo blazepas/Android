@@ -29,7 +29,8 @@
                 android:id="@+id/estimateTimeTxt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="DODAJ PRODUKT"
+                android:text="@string/tv_add_product"
+                android:textAllCaps="true"
                 android:textAppearance="@style/TPP.Normal.TextAppearance"
                 android:textColor="@color/light_text_view" />
         </LinearLayout>
@@ -45,7 +46,8 @@
             android:id="@+id/textView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="SORTUJ WEDŁUG: "
+            android:text="@string/tv_filter_by"
+            android:textAllCaps="true"
             android:textAppearance="@style/TPP.Small.TextAppearance"
             android:textColor="@color/light_text_view" />
 
@@ -90,7 +92,7 @@
                 android:id="@+id/TextViewBariol01"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Skanowanie produktu"
+                android:text="@string/tv_scan"
                 android:textAppearance="@style/TPP.Normal.TextAppearance"
                 android:textColor="@color/light_text_view" />
         </LinearLayout>

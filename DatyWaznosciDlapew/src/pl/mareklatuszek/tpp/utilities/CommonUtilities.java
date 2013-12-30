@@ -30,13 +30,16 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import pl.mareklatuszek.tpp.TPPApp;
 import pl.mareklatuszek.tpp.Product;
 import pl.mareklatuszek.tpp.R;
 import pl.mareklatuszek.tpp.views.TextViewBariol;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -59,6 +62,12 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.google.zxing.WriterException;
 
 public class CommonUtilities implements FinalVariables {
+	
+	private Context context;
+
+	public CommonUtilities() {
+		context = TPPApp.getContext();
+	}
 	
 	public  int getProgress(String dataOtw, String terminWaz) {
 		
@@ -85,12 +94,17 @@ public class CommonUtilities implements FinalVariables {
 			
 	}
 	
-	public long parsePrzypmnienieToDate(String boxVal, String spinnerChoice, String terminWaz, String notifHour) throws ParseException {
+	public long parsePrzypmnienieToDate(String boxVal, String spinnerChoice, String endDateStr, String notifHour) throws ParseException {
+		String SPINNER_DATE_DAY = context.getString(R.string.date_day);
+		String SPINNER_DATE_WEEK = context.getString(R.string.date_week); 
+		String SPINNER_DATE_MONTH = context.getString(R.string.date_month);
+		String SPINNER_DATE_YEAR = context.getString(R.string.date_year);
+		
 		if(boxVal.equals("")) {
 			return 0;
 		} else {
 			int dateVal = Integer.parseInt(boxVal);
-			long endDate = parseDate(terminWaz);
+			long endDate = parseDate(endDateStr);
 			
 			Calendar notifTime = Calendar.getInstance();
 			notifTime.setTimeInMillis(endDate);
@@ -132,6 +146,10 @@ public class CommonUtilities implements FinalVariables {
 	}
 	
 	public String parseDateToOkres(String date) {
+		String SPINNER_DATE_DAY = context.getString(R.string.date_day);
+		String SPINNER_DATE_MONTH = context.getString(R.string.date_month);
+		String SPINNER_DATE_YEAR = context.getString(R.string.date_year);
+		
 		Calendar currCal = Calendar.getInstance();
 		Calendar endCal = Calendar.getInstance();
 		currCal.set(Calendar.HOUR_OF_DAY, 13);
@@ -173,6 +191,10 @@ public class CommonUtilities implements FinalVariables {
 	}
 	
 	public String parseOkresToDate(String okres, String startDate) {
+		String SPINNER_DATE_DAY = context.getString(R.string.date_day);
+		String SPINNER_DATE_WEEK = context.getString(R.string.date_week); 
+		String SPINNER_DATE_MONTH = context.getString(R.string.date_month);
+		String SPINNER_DATE_YEAR = context.getString(R.string.date_year);
 
 		try {
 			long startMillis = parseDate(startDate);
@@ -370,7 +392,7 @@ public class CommonUtilities implements FinalVariables {
 	    v.startAnimation(a);	    
 	}
 	
-	public Bitmap encodeCodeToBitmap(String code, String codeFormat, Activity mActivity)
+	public Bitmap encodeCodeToBitmap(String code, String codeFormat)
 	{
 		//konwersja zeskanowanego kodu na obrazek, na podstawie kodu i jego formatu
 				
@@ -598,8 +620,8 @@ public class CommonUtilities implements FinalVariables {
 	    return cursor.getString(column_index);
 	}
 	
-	public int getPixelsFromDp(int dp, Activity mActivity) {
-		float scale = mActivity.getResources().getDisplayMetrics().density;
+	public int getPixelsFromDp(int dp) {
+		float scale = context.getResources().getDisplayMetrics().density;
 		int pixels = (int) (dp * scale + 0.5f);
 		return pixels;
 	}
@@ -657,9 +679,9 @@ public class CommonUtilities implements FinalVariables {
 		}
 	}
 	
-	public void sendEmail(String productJson, FragmentActivity mActivity) {			
+	public void sendEmail(String productJson) {			
 		try {
-			Bitmap bitmap = encodeCodeToBitmap(productJson, "QR_CODE", mActivity);
+			Bitmap bitmap = encodeCodeToBitmap(productJson, "QR_CODE");
 			Uri u = null;
 			
 			File mFile = savebitmap(bitmap);
@@ -674,14 +696,14 @@ public class CommonUtilities implements FinalVariables {
 			i.putExtra(Intent.EXTRA_TEXT   , "W załączniku przesyłam kod, który po zeskanowaniu programem TPP zostanie dodany do bazy");
 			i.putExtra(Intent.EXTRA_STREAM, u);
 			
-			mActivity.startActivity(Intent.createChooser(i, "Wysyłanie..."));
+			context.startActivity(Intent.createChooser(i, "Wysyłanie..."));
 			
 			
 		} catch (IOException e) {
 			Log.i("sendEmail", "save file error");
-			Toast.makeText(mActivity, "Brak karty SD", Toast.LENGTH_SHORT).show();
+			Toast.makeText(context, "Brak karty SD", Toast.LENGTH_SHORT).show();
 		} catch (android.content.ActivityNotFoundException ex) {
-		    Toast.makeText(mActivity, "Brak klienta email", Toast.LENGTH_SHORT).show();
+		    Toast.makeText(context, "Brak klienta email", Toast.LENGTH_SHORT).show();
 		}			
 	}
 	
@@ -695,7 +717,7 @@ public class CommonUtilities implements FinalVariables {
 		return true;
 	}
 	
-	public boolean sendEmailWithSingleProduct(String email, Product product, FragmentActivity mActivity) {
+	public boolean sendEmailWithSingleProduct(String email, Product product) {
 		boolean sendStatus = false;
 		try {  
 			String table = getProductTableHTML(product);
@@ -705,12 +727,11 @@ public class CommonUtilities implements FinalVariables {
 				
 			}	
 			String productJson = getJsonFromProduct(product);
-			Bitmap bitmap = encodeCodeToBitmap(productJson, "QR_CODE", mActivity);
+			Bitmap bitmap = encodeCodeToBitmap(productJson, "QR_CODE");
 			Uri u = null;
 			
 			File mFile = savebitmap(bitmap);
-			u = Uri.fromFile(mFile);
-			String codePath = getRealPathFromURI(u, mActivity);
+			String codePath = mFile.getAbsolutePath();
 			
             JavaMail sender = new JavaMail();
             sendStatus = sender.sendMailWithProduct("Mój produkt", table, imagePath, codePath, email);
@@ -735,52 +756,52 @@ public class CommonUtilities implements FinalVariables {
 		return f;
 	}
 	
-	public void startAlarms(ArrayList<HashMap<String, String>> przypomnienia, String nazwa, String productId, FragmentActivity mActivity) {
+	public void startAlarms(ArrayList<HashMap<String, String>> przypomnienia, String nazwa, String productId) {
 		for (int i = 0; i < przypomnienia.size(); i++) {
 			HashMap<String, String> przypomnienie = przypomnienia.get(i);
 			String time = przypomnienie.get(PRZYP_DATE);
-			startAlarm(time, nazwa, productId, mActivity);
+			startAlarm(time, nazwa, productId);
 		}
 	}
 	
-	public void cancelAlarms(ArrayList<HashMap<String, String>> przypomnienia, String productId, FragmentActivity mActivity) {
+	public void cancelAlarms(ArrayList<HashMap<String, String>> przypomnienia, String productId) {
 		for (int i = 0; i < przypomnienia.size(); i++) {
 			HashMap<String, String> przypomnienie = przypomnienia.get(i);
 			String time = przypomnienie.get(PRZYP_DATE);
-			cancelAlarm(time, productId, mActivity);
+			cancelAlarm(time, productId);
 		}
 	}
 	
-	public void startAlarm(String alarmTimeInMillis, String nazwa, String productId, FragmentActivity mActivity) {
+	public void startAlarm(String alarmTimeInMillis, String nazwa, String productId) {
 		long alarmTime = Long.parseLong(alarmTimeInMillis);	
-	    AlarmManager alarmManager = (AlarmManager) mActivity.getSystemService(mActivity.ALARM_SERVICE);
+	    AlarmManager alarmManager = (AlarmManager) context.getSystemService(context.ALARM_SERVICE);
 	    
 	    Calendar cal = new GregorianCalendar();
 	    cal.setTimeInMillis(alarmTime);
 	    
 	    long when = cal.getTimeInMillis(); // czas powiadomienia
 	    int intentId = productId.hashCode();
-	    Intent intent = new Intent(mActivity, ReminderService.class);
+	    Intent intent = new Intent(context, ReminderService.class);
 	    intent.putExtra("message", "Przypomnienie o koncu ważności produktu: " + nazwa);
 	    intent.putExtra("productId", productId);
 	    intent.putExtra("timeInMillis", alarmTimeInMillis);
-	    PendingIntent pendingIntent = PendingIntent.getService(mActivity, intentId, intent, 0);
+	    PendingIntent pendingIntent = PendingIntent.getService(context, intentId, intent, 0);
 	    alarmManager.set(AlarmManager.RTC_WAKEUP, when, pendingIntent);
 	            
 	    Log.i("Alarm ustawiony", drukujCzas(cal));
           
 	}
 	
-	public void cancelAlarm(String alarmTimeInMillis, String productId, FragmentActivity mActivity) {
+	public void cancelAlarm(String alarmTimeInMillis, String productId) {
 		long alarmTime = Long.parseLong(alarmTimeInMillis);		
-	    AlarmManager alarmManager = (AlarmManager) mActivity.getSystemService(mActivity.ALARM_SERVICE);
+	    AlarmManager alarmManager = (AlarmManager) context.getSystemService(context.ALARM_SERVICE);
 	    
 	    Calendar cal = new GregorianCalendar();
 	    cal.setTimeInMillis(alarmTime);
 	    
 	    int intentId = productId.hashCode();
-	    Intent intent = new Intent(mActivity, ReminderService.class);
-	    PendingIntent pendingIntent = PendingIntent.getService(mActivity, intentId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+	    Intent intent = new Intent(context, ReminderService.class);
+	    PendingIntent pendingIntent = PendingIntent.getService(context, intentId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 	    alarmManager.cancel(pendingIntent);
 	            
 	    Log.i("Alarm usuniety", drukujCzas(cal));  

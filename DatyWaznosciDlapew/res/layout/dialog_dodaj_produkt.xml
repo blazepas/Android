@@ -50,7 +50,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="2.59"
                         android:gravity="center"
-                        android:text="Skanowanie produktu"
+                        android:text="@string/tv_scan"
                         android:textAppearance="@style/TPP.Large.TextAppearance"
                         android:textColor="@color/light_text_view" />
 
@@ -80,7 +80,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/custom"
+                android:id="@+id/own"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/button_dialog_add"
@@ -93,7 +93,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="3.34"
                     android:gravity="center"
-                    android:text="Własny produkt"
+                    android:text="@string/tv_own"
                     android:textAppearance="@style/TPP.Large.TextAppearance"
                     android:textColor="@color/light_text_view" />
             </LinearLayout>

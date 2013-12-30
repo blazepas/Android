@@ -3,6 +3,7 @@ package pl.mareklatuszek.tpp.fragments;
 import java.text.ParseException;
 
 import pl.mareklatuszek.tpp.MainActivity;
+import pl.mareklatuszek.tpp.TPPApp;
 import pl.mareklatuszek.tpp.Product;
 import pl.mareklatuszek.tpp.R;
 import pl.mareklatuszek.tpp.utilities.CommonUtilities;
@@ -22,7 +23,7 @@ import com.actionbarsherlock.app.SherlockFragment;
 public class FragmentPrzypomnienie extends SherlockFragment implements FinalVariables {
 	
 	private Product product = new Product();
-	CommonUtilities utilities = new CommonUtilities();
+	CommonUtilities utilities = TPPApp.getUtilities();
 	
 	View rootView;
 	TextViewBariol nazwaTxt, dataOtwTxt, terminWazTxt, kategoriaTxt, estimateTxt;
@@ -31,7 +32,9 @@ public class FragmentPrzypomnienie extends SherlockFragment implements FinalVari
 	@Override
 	public void onResume() {
 		super.onResume();
-		utilities.setActionBarTitle("Przypomnienie", getSherlockActivity());
+		
+		String title = getString(R.string.frag_alarm_title);
+		utilities.setActionBarTitle(title, getSherlockActivity());
 	}
 		
 	@Override
@@ -45,8 +48,7 @@ public class FragmentPrzypomnienie extends SherlockFragment implements FinalVari
 		} else {
 			switchToPrzypomnieniaFragment();
 		}
-		
-		
+				
 		return rootView;
 	}
 	

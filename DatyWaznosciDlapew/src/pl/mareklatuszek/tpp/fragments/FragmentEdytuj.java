@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.HashMap;
 
 import pl.mareklatuszek.tpp.MainActivity;
+import pl.mareklatuszek.tpp.TPPApp;
 import pl.mareklatuszek.tpp.Product;
 import pl.mareklatuszek.tpp.R;
 import pl.mareklatuszek.tpp.atapters.AdapterCustomSpinner;
@@ -63,7 +64,7 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 	AdapterDB dbAdapter;
 	ArrayAdapter<String> spinnerAdapter;
 	ArrayList<String> kategorie;
-	CommonUtilities utilities = new CommonUtilities();
+	CommonUtilities utilities = TPPApp.getUtilities();
 	AdapterCustomSpinner adapterOkresSpinner, adapterKategorieSpinner;
 	ArrayList<HashMap<String, String>> oldPrzypomnienia = new ArrayList<HashMap<String,String>>();
 	
@@ -83,7 +84,8 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 		currentDate = utilities.getCurrentDate();
 		dbAdapter = new AdapterDB(getActivity());	
 		
-		utilities.setActionBarTitle("Edycja produktu", getSherlockActivity());
+		String title = getString(R.string.frag_edit_title);
+		utilities.setActionBarTitle(title, getSherlockActivity());
 				
 		initPodstawowe();
 		initDodatkowe();
@@ -146,9 +148,6 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 	    android.view.MenuInflater inflater = getActivity().getMenuInflater();
 	    
 	    switch (v.getId()) {
-	    case R.id.barcodeImage:
-	    	inflater.inflate(R.menu.popup_edit_get_code, menu);
-	    	break;
 	    case R.id.obrazekImage:
 	    	inflater.inflate(R.menu.popup_get_image, menu);
 	    	break;
@@ -161,11 +160,6 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 		super.onContextItemSelected(item);
 	    
 	    switch (item.getItemId()) {
-	    case R.id.generatePopup:
-    		Product product = prepareDataToStore();
-			DialogGeneruj dialogGen = new DialogGeneruj(this, product, barcodeImage);
-			dialogGen.show();
-    		break;
 	    case R.id.gallery:
     		pickImageFromGallery();
     		break;
@@ -190,9 +184,13 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 		case R.id.barcodeImage:
 			if (!isScanned) {
 				if(checkFormIsFill()) {
-					view.showContextMenu();
+					Product product = prepareDataToStore();
+					
+					DialogGeneruj dialogGen = new DialogGeneruj(this, product, barcodeImage);
+					dialogGen.show();
 				} else {
-					Toast.makeText(getActivity(), "Należy podać nazwę i okres ważności", 1500).show();
+					String message = getString(R.string.toast_wrong_data_to_generate);
+	    			Toast.makeText(getActivity(), message, 1500).show();
 				}	
 			}
 			break;
@@ -240,13 +238,6 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 		dodatkoweImage = (ImageView) rootView.findViewById(R.id.dodatkoweImage);
 		scrollView = (ScrollView) rootView.findViewById(R.id.scrollView);
 		
-//		Bundle extras = getArguments(); // wylaczone bo nie będzie narazie skanowany kod z poziomu edycji
-//		code = extras.getString("scanResultCode");
-//		codeFormat = extras.getString("scanResultCodeFormat");
-//		if (code != null || codeFormat != null) {	
-//			setDataFromScan(code, codeFormat); 
-//		}
-		
 		initSpinnerOkres();
 		
 		registerForContextMenu(barcodeImage);
@@ -293,14 +284,16 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 		dbAdapter.close();
 		
 		adapterKategorieSpinner = new AdapterCustomSpinner(getActivity(), kategorie);
-		kategorieDropDown.setText(SPINNER_KATEGORIE);
+		String title = getString(R.string.spinner_title_category);
+		kategorieDropDown.setText(title);
 		kategorieDropDown.setAdapter(adapterKategorieSpinner);
 	}
 	
 	private void initSpinnerOkres() {
 		String[] okresSpinnData = getResources().getStringArray(R.array.array_date);
 		adapterOkresSpinner = new AdapterCustomSpinner(getActivity(), okresSpinnData);
-		okresWazDropDown.setText(SPINNER_OKRES);
+		String title = getString(R.string.spinner_title_okres);
+		okresWazDropDown.setText(title);
 		okresWazDropDown.setAdapter(adapterOkresSpinner);
 	}
 			
@@ -383,7 +376,9 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 		
 		@Override
 		protected void onPreExecute() {
-			progressDialog = ProgressDialog.show(getActivity(), "Dodaję", "Zapisywanie do bazy");
+			String title = getString(R.string.dialog_add_db_title);
+			String message = getString(R.string.dialog_add_db_message);
+			progressDialog = ProgressDialog.show(getActivity(), title, message);
 		}
 
 		@Override
@@ -470,7 +465,7 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 	}
 	
 	private void setCodeImage(String code, String codeFormat) {
-		Bitmap bmp = utilities.encodeCodeToBitmap(code, codeFormat, getActivity());
+		Bitmap bmp = utilities.encodeCodeToBitmap(code, codeFormat);
 		if (bmp != null) {
 			this.code = code;
 			this.codeFormat = codeFormat;
@@ -481,7 +476,9 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 			this.codeFormat = "";
 			bmp = BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.zxinglib_icon); 
 			barcodeImage.setImageBitmap(bmp);
-	    	Toast.makeText(getActivity(), "Błąd skanowania lub niepoprawny kod", 2000).show();
+			
+			String message = getString(R.string.toast_create_code_error);
+	    	Toast.makeText(getActivity(), message, 2000).show();
 		}
 	}
 		
@@ -494,9 +491,9 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
         	bitmap = BitmapLoader.loadBitmap(path, 100, 100);
 
             obrazekImage.setImageBitmap(bitmap);
-            Toast.makeText(getActivity(), selectedImage.toString(), Toast.LENGTH_LONG).show();
         } catch (Exception e) {
-            Toast.makeText(getActivity(), "Błąd aparatu!", Toast.LENGTH_SHORT).show();
+        	String message = getString(R.string.toast_pick_camera_error);
+            Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
             Log.e("Camera", e.toString());
         }
         
@@ -520,20 +517,21 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 	
 	private void setOkresWaznosci(String okresText, String okresSpinnVal) {
 		if (okresSpinnVal.equals("")) {
-			okresSpinnVal = SPINNER_OKRES;
+			okresSpinnVal = getString(R.string.spinner_title_okres);
 		}
 		okresWazTextBox.setText(okresText);
 		okresWazDropDown.setText(okresSpinnVal);
 	}
 	
 	private void setAlarms(ArrayList<HashMap<String, String>> przypomnienia, String nazwa, String productId) {
-		utilities.cancelAlarms(oldPrzypomnienia, productId, getActivity());
-		utilities.startAlarms(przypomnienia, nazwa, productId, getActivity());
+		utilities.cancelAlarms(oldPrzypomnienia, productId);
+		utilities.startAlarms(przypomnienia, nazwa, productId);
 	}
 		
 	private void setKategoria(String kategoria) {
 		if (kategoria.equals("")) {
-			kategorieDropDown.setText(SPINNER_KATEGORIE);
+			String title = getString(R.string.spinner_title_category);
+			kategorieDropDown.setText(title);
 		} else {
 			kategorieDropDown.setText(kategoria);
 		}
@@ -541,7 +539,8 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 
 	private String getKategoria() {
 		String chosenKategoria = kategorieDropDown.getText();	
-		if(chosenKategoria.equals(SPINNER_KATEGORIE)) {
+		String title = getString(R.string.spinner_title_category);
+		if(chosenKategoria.equals(title)) {
 			return "";
 		} else {
 			return chosenKategoria;
@@ -556,8 +555,9 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 	private String getOkresWaz(EditText box, CustomSpinner customDropDown) {		
 		String value = box.getText().toString();
 		String format = customDropDown.getText();
+		String title = getString(R.string.spinner_title_okres);
 		
-		if(value.length() == 0 || value.equals("0") || format.equals(SPINNER_OKRES)) {
+		if(value.length() == 0 || value.equals("0") || format.equals(title)) {
 			return ":";
 		} else {
 			String peroid = value + ":" + format;
@@ -595,20 +595,23 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 	
 	private void showChoiceDialog(final String code, final String codeFormat) {
 		AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
-		dialog.setMessage("Produkt o takim kodzie znajduje się już w bazie. Możesz wrócić do edycji lub do podglądu");
-		dialog.setPositiveButton("Edytuj",new DialogInterface.OnClickListener() {
+		String message = getString(R.string.dialog_after_validate_message);
+		String edit = getString(R.string.dialog_after_validate_btn_edit);
+		String preview = getString(R.string.dialog_after_validate_btn_preview);	
+		
+		dialog.setMessage(message);
+		dialog.setPositiveButton(edit, new DialogInterface.OnClickListener() {
 
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				dbAdapter.open();
 				Product product = dbAdapter.getProductByCode(code);
 				dbAdapter.close();
-				((MainActivity) getActivity()).selectFragmentToShowProduct(product);
+				switchToEditFragment(product);// TODO
 			}
 			
 		});
-
-		dialog.setNegativeButton("Podgląd",new DialogInterface.OnClickListener() {
+		dialog.setNegativeButton(preview, new DialogInterface.OnClickListener() {
 
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
@@ -619,7 +622,6 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 			}
 			
 		});
-
 		dialog.show();
 	}
 	
@@ -628,12 +630,15 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 		String termin = terminWazTextBox.getText().toString();
 		String okres = okresWazTextBox.getText().toString();
 		String okresSpinnChoice = getChoiceFromCustomSpinner(okresWazDropDown);
+		String title = getString(R.string.spinner_title_okres);
 		
 		if (nazwa.equals("")) {
-			Toast.makeText(getActivity(), "Należy podać nazwę produktu", 1500).show();
+			String message = getString(R.string.toast_empty_product_name);
+			Toast.makeText(getActivity(), message, 1500).show();
 			return false;
-		} else if (termin.equals("") & (okres.equals("") | okresSpinnChoice.equals(SPINNER_OKRES))) {
-			Toast.makeText(getActivity(), "Należy podać termin ważności lub okres trwałości produktu", 2000).show();
+		} else if (termin.equals("") & (okres.equals("") | okresSpinnChoice.equals(title))) {
+			String message = getString(R.string.toast_empty_termin_okres);
+			Toast.makeText(getActivity(), message, 2000).show();
 			return false;
 		} else {
 			return true;
@@ -642,5 +647,9 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 	
 	private void switchToShowFragment(Product product) {
 		((MainActivity) getActivity()).selectFragmentToShowProduct(product);
+	}
+	
+	private void switchToEditFragment(Product product) {
+		((MainActivity) getActivity()).selectFragmentToEditProduct(product);
 	}
 }	

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import pl.mareklatuszek.tpp.MainActivity;
+import pl.mareklatuszek.tpp.TPPApp;
 import pl.mareklatuszek.tpp.Product;
 import pl.mareklatuszek.tpp.R;
 import pl.mareklatuszek.tpp.fragments.FragmentProdukty;
@@ -49,7 +50,7 @@ public class AdapterProductList extends BaseAdapter implements OnClickListener, 
 	private int clickedPos = -1;
 	private int lastVisible = 0;
 	private boolean focusingOnItem = false;
-	private CommonUtilities utilities = new CommonUtilities();
+	private CommonUtilities utilities = TPPApp.getUtilities();
 
 	TextViewBariol nazwaTxtList, dataOtwTxtList, terminWazTxtList, kategoriaTxt, estimateTimeTxt;	
 	ProgressBar pozostaloPrgsList;
@@ -141,8 +142,7 @@ public class AdapterProductList extends BaseAdapter implements OnClickListener, 
 	}
 
 	@Override
-	public void onScrollStateChanged(AbsListView view, int scrollState) {}
-	
+	public void onScrollStateChanged(AbsListView view, int scrollState) {}	
 	
 	private void initAnimations(int position) {
 		boolean expanded = isExpanded[position];
@@ -163,8 +163,7 @@ public class AdapterProductList extends BaseAdapter implements OnClickListener, 
 		    	collapseItem(detailsLay);
 		    } else {
 			    detailsLay.setVisibility(View.GONE);
-		    }
-		    
+		    }		    
 		}
 	}
 	
@@ -281,9 +280,13 @@ public class AdapterProductList extends BaseAdapter implements OnClickListener, 
 	
 	private void showChoiceDialog(final Product product) {
 		AlertDialog.Builder dialog = new AlertDialog.Builder(mActivity);
-		dialog.setTitle("Usuwanie");
-		dialog.setMessage("Czy na pewno usunąć " + product.getNazwa() + "?");
-		dialog.setPositiveButton("Tak",new DialogInterface.OnClickListener() {
+		String message = mActivity.getString(R.string.dialog_delete_default_message);
+		String positive = mActivity.getString(R.string.possitive_button);
+		String cancel = mActivity.getString(R.string.cancel_button);
+		
+		dialog.setTitle(R.string.dialog_delete_title);
+		dialog.setMessage(message + " " + product.getNazwa() + "?");
+		dialog.setPositiveButton(positive, new DialogInterface.OnClickListener() {
 
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
@@ -291,7 +294,7 @@ public class AdapterProductList extends BaseAdapter implements OnClickListener, 
 			}
 		});
 
-		dialog.setNegativeButton("Anuluj",new DialogInterface.OnClickListener() {
+		dialog.setNegativeButton(cancel, new DialogInterface.OnClickListener() {
 
 			@Override
 			public void onClick(DialogInterface dialog, int which) {

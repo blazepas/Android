@@ -1,21 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="array_date">
-        <!-- kolejnosc musi zostac -->
-        <item name="dzien">Dzień</item>
-        <item name="tydzien">Tydzień</item>
-        <item name ="miesiac">Miesiąc</item>
-        <item name ="rok">Rok</item>
+        <item name="day">@string/date_day</item>
+        <item name="week">@string/date_week</item>
+        <item name ="month">@string/date_month</item>
+        <item name ="year">@string/date_year</item>
     </string-array>
     
     <!-- Menu -->
     <string-array name="array_menu_titles">
-        <item>Skanowanie produktu</item>
-        <item>Własny produkt</item>
-        <item>Lista produktów</item>
-        <item>Kategorie produktów</item>
-        <item>Przypomnienia</item>
-        <item>Kup premium</item>
+        <item>@string/tv_scan</item>
+        <item>@string/tv_own</item>
+        <item>@string/tv_product_list</item>
+        <item>@string/tv_categories</item>
+        <item>@string/tv_alarms</item>
+        <item>@string/tv_buy_premium</item>
     </string-array>
     
     <string-array name="array_menu_icons">
@@ -38,15 +37,15 @@
     
     <!-- Popup overflow -->
     <string-array name="array_popup_products_list_title">
-        <item>Udostępnij</item>
-        <item>Skanowanie produtku</item>
-        <item>Własny produkt</item>
+        <item>@string/action_item_share</item>
+        <item>@string/tv_scan</item>
+        <item>@string/tv_own</item>
     </string-array>
     
     <string-array name="array_popup_product_title">
-        <item>Udostępnij</item>
-        <item>Edytuj</item>
-        <item>Usuń</item>
+        <item>@string/action_item_share</item>
+        <item>@string/action_item_edit</item>
+        <item>@string/action_item_delete</item>
     </string-array>
     
 </resources>

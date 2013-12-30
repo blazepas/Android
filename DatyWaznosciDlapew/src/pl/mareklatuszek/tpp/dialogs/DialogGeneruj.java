@@ -1,9 +1,9 @@
 package pl.mareklatuszek.tpp.dialogs;
 
+import pl.mareklatuszek.tpp.TPPApp;
 import pl.mareklatuszek.tpp.Product;
 import pl.mareklatuszek.tpp.R;
 import pl.mareklatuszek.tpp.atapters.AdapterDB;
-import pl.mareklatuszek.tpp.atapters.AdapterDialogGeneruj;
 import pl.mareklatuszek.tpp.fragments.FragmentDodaj;
 import pl.mareklatuszek.tpp.fragments.FragmentEdytuj;
 import pl.mareklatuszek.tpp.fragments.FragmentProdukt;
@@ -27,8 +27,7 @@ public class DialogGeneruj extends Dialog implements android.view.View.OnClickLi
 	Fragment mFragment;
 	Activity mActivity;
 	Product product;
-	CommonUtilities utilities = new CommonUtilities();
-	AdapterDialogGeneruj adapterPozostale;
+	CommonUtilities utilities = TPPApp.getUtilities();
 	AdapterDB adapterDb;
 	
 	TextViewBariol nazwaTxt, dataTxt, terminWazTxt, pozostaleTxt, buttonTxt;;
@@ -40,7 +39,6 @@ public class DialogGeneruj extends Dialog implements android.view.View.OnClickLi
 	Bitmap bmp;
 	
 	boolean isGenerated = false;
-
 
 	public DialogGeneruj(Fragment mFragment, Product product, ImageView viewToSet) {
 		super(mFragment.getActivity());
@@ -119,16 +117,18 @@ public class DialogGeneruj extends Dialog implements android.view.View.OnClickLi
 	private void generateCode() {
 		code = utilities.getJsonFromProduct(product);
 		codeFormat = product.getCodeFormat();
-		bmp = utilities.encodeCodeToBitmap(code, codeFormat, mActivity);
+		bmp = utilities.encodeCodeToBitmap(code, codeFormat);
 		codeImage.setImageBitmap(bmp);
 		
 		RelativeLayout relative = (RelativeLayout) findViewById(R.id.relative);
 		View viewToRemove = findViewById(R.id.withoutBarcode);
 		relative.removeView(viewToRemove);
 		
-		buttonTxt.setText("zapisz");
+		String save = mActivity.getString(R.string.save_button);
+		buttonTxt.setText(save);
 		isGenerated = true;
 		
-		Toast.makeText(mActivity, "Kod został wygenerowany!", 2000).show();
+		String message = mActivity.getString(R.string.toast_generate_succes);
+		Toast.makeText(mActivity, message, 2000).show();
 	}
 }

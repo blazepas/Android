@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import pl.mareklatuszek.tpp.MainActivity;
+import pl.mareklatuszek.tpp.TPPApp;
 import pl.mareklatuszek.tpp.Product;
 import pl.mareklatuszek.tpp.R;
 import pl.mareklatuszek.tpp.atapters.AdapterCustomSpinner;
@@ -47,7 +48,7 @@ public class FragmentProdukty extends SherlockFragment implements FinalVariables
 	ArrayList<Product> products = new ArrayList<Product>();
 	ArrayList<Product> productsTemp = new ArrayList<Product>();
 	ArrayList<String> categories = new ArrayList<String>();
-	CommonUtilities utilities = new CommonUtilities();
+	CommonUtilities utilities = TPPApp.getUtilities();
 	FragmentManager fM;
 	
 	ListView productsList;
@@ -61,8 +62,9 @@ public class FragmentProdukty extends SherlockFragment implements FinalVariables
 		super.onCreateView(inflater, container, savedInstanceState);
 		setHasOptionsMenu(true);
 		fM = getFragmentManager();
-
-		utilities.setActionBarTitle("Lista produktów", getSherlockActivity());
+		
+		String title = getString(R.string.frag_products_title);
+		utilities.setActionBarTitle(title, getSherlockActivity());
 
 		rootView = inflater.inflate(R.layout.fragment_produkty, container, false);
 		dodajLay = (LinearLayout) rootView.findViewById(R.id.dodajLay);
@@ -97,7 +99,8 @@ public class FragmentProdukty extends SherlockFragment implements FinalVariables
     	switch (item.getItemId()) {
     	case R.id.udostepnijPopup:
     		if (PremiumUtilities.APP_VERSION_NONE) {
-      		  	Toast.makeText(getActivity(), "Aby korzystać z tej funkcji należy wykupic wersję premium", 2000).show();
+    			String message = getString(R.string.toast_must_have_premium);
+      		  	Toast.makeText(getActivity(), message, 2000).show();
       	  	} else {
       	  		DialogShare dialogShare = new DialogShare(getActivity(), product);
       	  		dialogShare.show();
@@ -232,7 +235,8 @@ public class FragmentProdukty extends SherlockFragment implements FinalVariables
 		@Override
 		protected void onPostExecute(Void v) {
 			adapterKategorieSpinner = new AdapterCustomSpinner(getActivity(), categories);
-			kategorieDropDown.setText(SPINNER_KATEGORIE);
+			String title = getString(R.string.spinner_title_category);
+			kategorieDropDown.setText(title);
 			kategorieDropDown.setAdapter(adapterKategorieSpinner);
 			kategorieDropDown.setOnItemSelectedListener(new SpinnerListener());
 		}
@@ -293,14 +297,16 @@ public class FragmentProdukty extends SherlockFragment implements FinalVariables
 			listAdapter = new AdapterProductList(getActivity(), products, fM, getId(), productsList);
 			productsList.setAdapter(listAdapter);
 			
-			Toast.makeText(getActivity(), "Usunięto " + product.getNazwa(), 2000).show();
+			String message = getString(R.string.toast_delete_succes);
+			Toast.makeText(getActivity(), message + " " + product.getNazwa(), 2000).show();
 		} else {
-			Toast.makeText(getActivity(), "Usuwanie zakończone niepowodzeniem", 2000).show();
+			String message = getString(R.string.toast_delete_error);
+			Toast.makeText(getActivity(), message, 2000).show();
 		}
 	}
 	
 	private void removeAlarms(ArrayList<HashMap<String, String>> przypomnienia, String productId) {
-		utilities.cancelAlarms(przypomnienia, productId, getActivity());
+		utilities.cancelAlarms(przypomnienia, productId);
 	}
 		
 	public void selectFragmentDodaj() {
@@ -316,7 +322,8 @@ public class FragmentProdukty extends SherlockFragment implements FinalVariables
    		  DialogShare dialogShare = new DialogShare(getActivity(), products);
          	  dialogShare.show();
    	  } else {
-   		  Toast.makeText(getActivity(), "Brak produktów do udostępnienia", 2000).show();
+   		  String message = getString(R.string.toast_no_products_to_share);
+   		  Toast.makeText(getActivity(), message, 2000).show();
    	  }
 	}
 }

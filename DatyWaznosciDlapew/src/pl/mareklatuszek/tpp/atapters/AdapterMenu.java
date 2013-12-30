@@ -64,8 +64,7 @@ public class AdapterMenu extends BaseAdapter implements FinalVariables{
 			txtTitle = (TextView) itemView.findViewById(R.id.actionBarTitle);
 			
 			imgIcon.setImageResource(icons.getResourceId(position, R.drawable.collections_cloud));
-			txtTitle.setText(titles[position]);
-			
+			txtTitle.setText(titles[position]);			
 			
 			if (position == clickedPos) {
 				int pressedColor = context.getResources().getColor(R.color.menu_item_pressed);
@@ -74,10 +73,7 @@ public class AdapterMenu extends BaseAdapter implements FinalVariables{
 				int backgroundColor = getItemBackgroundColor(position);
 				itemView.setBackgroundColor(backgroundColor);
 			}
-			
-			
 
-			
 			if (position == getCount() - 1) {
 				// premium item
 				
@@ -93,7 +89,8 @@ public class AdapterMenu extends BaseAdapter implements FinalVariables{
 				arrow.setImageResource(R.drawable.image_star);
 				
 				if(PremiumUtilities.APP_VERSION_PREMIUM) {
-					txtTitle.setText(R.string.menu_premium_active);
+					String title = context.getString(R.string.tv_have_premium);
+					txtTitle.setText(title);
 				}
 			} 
 					
@@ -116,9 +113,7 @@ public class AdapterMenu extends BaseAdapter implements FinalVariables{
 		imgIcon = (ImageView) itemView.findViewById(R.id.icon);
 		txtTitle = (TextView) itemView.findViewById(R.id.actionBarTitle);
 		info = (LinearLayout) itemView.findViewById(R.id.info);
-		
-		
-		
+
 		imgIcon.setImageResource(icons.getResourceId(position, R.drawable.collections_cloud));
 		txtTitle.setText(titles[position]);	
 		
@@ -148,7 +143,6 @@ public class AdapterMenu extends BaseAdapter implements FinalVariables{
 			}
 		});
 		
-		
 		return itemView;
 	}
 	
@@ -160,5 +154,4 @@ public class AdapterMenu extends BaseAdapter implements FinalVariables{
 		int color = colors.getColor(position, R.color.menu_background);
 		return color;
 	}
-
 }

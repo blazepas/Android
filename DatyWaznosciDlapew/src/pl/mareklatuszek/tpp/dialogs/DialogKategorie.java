@@ -83,10 +83,12 @@ public class DialogKategorie extends Dialog
 	private void add() {
 		String category = categoryTxtBoxKat.getText().toString();
 		if (category.equals("")) {
-			Toast.makeText(mActivity, "Proszę podać nazwę kategorii", 2000).show();
+			String message = mActivity.getString(R.string.toast_empty_category_name);
+			Toast.makeText(mActivity, message, 2000).show();
 		} else {
 			if (categories.contains(category)) {
-				Toast.makeText(mActivity, "Podana kategoria jest już w bazie", 2000).show();
+				String message = mActivity.getString(R.string.toast_category_is_in_db);
+				Toast.makeText(mActivity, message, 2000).show();
 			} else {
 				addCategory(category);
 				categoryTxtBoxKat.setText("");

@@ -8,19 +8,19 @@
 
 	<item android:id="@+id/shareMenuButton"
           android:icon="@drawable/share" 
-          android:title="Udostępnij listę" 
+          android:title="@string/action_item_share_list" 
           android:enabled="true"
           android:showAsAction="never">       
     </item>
     <item android:id="@+id/scanMenuButton"
           android:icon="@drawable/share" 
-          android:title="Skanowanie produktu" 
+          android:title="@string/action_item_scan" 
           android:enabled="true"
           android:showAsAction="never">       
     </item>
     <item android:id="@+id/addMenuButton"
           android:icon="@drawable/share" 
-          android:title="Własny produkt" 
+          android:title="@string/action_item_own_product" 
           android:enabled="true"
           android:showAsAction="never">       
     </item>

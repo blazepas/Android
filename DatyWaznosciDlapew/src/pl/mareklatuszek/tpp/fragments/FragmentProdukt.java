@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import pl.mareklatuszek.tpp.MainActivity;
+import pl.mareklatuszek.tpp.TPPApp;
 import pl.mareklatuszek.tpp.Product;
 import pl.mareklatuszek.tpp.R;
 import pl.mareklatuszek.tpp.atapters.AdapterDB;
@@ -45,7 +46,7 @@ public class FragmentProdukt extends SherlockFragment implements FinalVariables,
 	private static final String DODATKOWE = "dodatkowe";
 	
 	private Product product = new Product();
-	CommonUtilities utilities = new CommonUtilities();
+	CommonUtilities utilities = TPPApp.getUtilities();
 	boolean dodatkoweIsVisible = false;
 	
 	View rootView;
@@ -59,7 +60,8 @@ public class FragmentProdukt extends SherlockFragment implements FinalVariables,
 	@Override
 	public void onResume() {
 		super.onResume();
-		utilities.setActionBarTitle("Informacje o produkcie", getSherlockActivity());
+		String title = getString(R.string.frag_product_title);
+		utilities.setActionBarTitle(title, getSherlockActivity());
 	}
 	
 		
@@ -209,25 +211,25 @@ public class FragmentProdukt extends SherlockFragment implements FinalVariables,
 		final int progress = utilities.getProgress(dataOtw, endDate);
 		Drawable progressDrawable = getResources().getDrawable(R.drawable.progress_bar_bg);
 		String estimate = getEstimate(endDate);
+		String productStatus = "";
+		
+		if (product.getIsScanned()) {
+			productStatus = getString(R.string.tv_product_is_scaned);
+		} else {
+			productStatus = getString(R.string.tv_product_is_own);
+		}
 		
 		nazwaTxt.setText(nazwa);
 		okresTxt.setText(okres);
 		estimateTimeTxt.setText(estimate);
 		dataOtwTxt.setText(dataOtw);
-		
-		if (product.getIsScanned()) {
-			isScannedTxt.setText("Zeskanowany");
-		} else {
-			isScannedTxt.setText("Własny produkt");
-		}
-		
+		isScannedTxt.setText(productStatus);
 		setImage(image);
 		setBarcode(code, codeFormat);
+		setProggres(progress, progressDrawable);
 		
 		dodatkoweImage.setOnClickListener(this);
 		pickGenerate.setOnClickListener(this);
-		
-        setProggres(progress, progressDrawable);
 	}
 	
 	private void initDodatkowe() {
@@ -260,7 +262,7 @@ public class FragmentProdukt extends SherlockFragment implements FinalVariables,
 	        String przypDate = przypomnienia.get(i).get(PRZYP_DATE);
 	        long notifTime = Long.parseLong(przypDate);
 	        long currentTime = System.currentTimeMillis();
-	        String date = "za " + utilities.dateToWords(currentTime, notifTime);
+	        String date = makeEstimateText(currentTime, notifTime);
 	        
 	        kiedyPow.setText(date);
 	        
@@ -280,7 +282,7 @@ public class FragmentProdukt extends SherlockFragment implements FinalVariables,
 	
 	private void setBarcode(String code, String codeFormat) {
 		if (!code.equals("")) {
-			codeBmp = utilities.encodeCodeToBitmap(code, codeFormat, getActivity());
+			codeBmp = utilities.encodeCodeToBitmap(code, codeFormat);
 			barcodeImage.setImageBitmap(codeBmp);
 			barcodeImage.setOnClickListener(this);
 		}
@@ -327,9 +329,13 @@ public class FragmentProdukt extends SherlockFragment implements FinalVariables,
 	
 	private void showChoiceDeleteDialog(final Product product) {
 		AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
-		dialog.setTitle("Usuwanie");
-		dialog.setMessage("Czy na pewno usunąć " + product.getNazwa() + "?");
-		dialog.setPositiveButton("Tak",new DialogInterface.OnClickListener() {
+		String message = getString(R.string.dialog_delete_default_message);
+		String positive = getString(R.string.possitive_button);
+		String cancel = getString(R.string.cancel_button);
+		
+		dialog.setTitle(R.string.dialog_delete_title);
+		dialog.setMessage(message + product.getNazwa() + "?");
+		dialog.setPositiveButton(positive, new DialogInterface.OnClickListener() {
 
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
@@ -337,7 +343,7 @@ public class FragmentProdukt extends SherlockFragment implements FinalVariables,
 			}
 		});
 
-		dialog.setNegativeButton("Anuluj",new DialogInterface.OnClickListener() {
+		dialog.setNegativeButton(cancel, new DialogInterface.OnClickListener() {
 
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
@@ -365,21 +371,35 @@ public class FragmentProdukt extends SherlockFragment implements FinalVariables,
 		if (deleteStatus) {
 			ArrayList<HashMap<String, String>> przypomnienia = product.getPrzypomnienia();
 			String productId = product.getProductId();
-			utilities.cancelAlarms(przypomnienia, productId, getActivity());
-			Toast.makeText(getActivity(), "Usunięto " + product.getNazwa(), 2000).show();
+			utilities.cancelAlarms(przypomnienia, productId);
+			
+			String message = getString(R.string.toast_delete_succes);
+			Toast.makeText(getActivity(), message + " " + product.getNazwa(), 2000).show();
 			
 			switchToProductsFragment();
 		} else {
-			Toast.makeText(getActivity(), "Usuwanie zakończone niepowodzeniem", 2000).show();
+			String message = getString(R.string.toast_delete_error);
+			Toast.makeText(getActivity(), message, 2000).show();
 		}
 	}
 	
 	private void onShare() {
 		if (PremiumUtilities.APP_VERSION_NONE) {
-  		  Toast.makeText(getActivity(), "Aby korzystać z tej funkcji należy wykupic wersję premium", 2000).show();
-  	  } else {
-  		  DialogShare dialogShare = new DialogShare(getActivity(), product);
-      	  dialogShare.show();
-  	  } 
-	}	
+			String message = getString(R.string.toast_delete_error);
+  		  	Toast.makeText(getActivity(), message, 2000).show();
+  	  	} else {
+  	  		DialogShare dialogShare = new DialogShare(getActivity(), product);
+  	  		dialogShare.show();
+  	  	}	 
+	}
+	
+	private String makeEstimateText(long currentTime, long powiadomienieDate) {
+		String text = utilities.dateToWords(currentTime, powiadomienieDate);
+		if (text.equals("Powiadomiono")) { //TODO strings
+			return text;
+		} else {
+			String forTime = getString(R.string.date_for);
+			return forTime + text;
+		}
+	}
 }

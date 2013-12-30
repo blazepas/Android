@@ -65,7 +65,6 @@ public class AdapterCustomSpinner extends BaseAdapter{
 		} else {
 			return convertView;
 		}
-		
 	}
 	
 	public void setData(String[] data) {

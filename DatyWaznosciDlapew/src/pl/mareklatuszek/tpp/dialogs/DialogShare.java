@@ -2,6 +2,7 @@ package pl.mareklatuszek.tpp.dialogs;
 
 import java.util.ArrayList;
 
+import pl.mareklatuszek.tpp.TPPApp;
 import pl.mareklatuszek.tpp.Product;
 import pl.mareklatuszek.tpp.R;
 import pl.mareklatuszek.tpp.utilities.CommonUtilities;
@@ -15,7 +16,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 public class DialogShare extends Dialog implements android.view.View.OnClickListener {
-	CommonUtilities utilities = new CommonUtilities();
+	CommonUtilities utilities = TPPApp.getUtilities();
 	FragmentActivity mActivity;
 	ArrayList<Product> products = new ArrayList<Product>();
 	Product product;
@@ -27,14 +28,14 @@ public class DialogShare extends Dialog implements android.view.View.OnClickList
 		super(mActivity);
 		this.products = products;
 		this.mActivity = mActivity;
-		setTitle("Wyślij listę produktów");
+		setTitle(R.string.dialog_share_title_products);
 	}
 	
 	public DialogShare(FragmentActivity mActivity, Product product) {
 		super(mActivity);
 		this.product = product;
 		this.mActivity = mActivity;
-		setTitle("Udostępnij produkt");
+		setTitle(R.string.dialog_share_title_product);
 	}
 
 	@Override
@@ -48,7 +49,6 @@ public class DialogShare extends Dialog implements android.view.View.OnClickList
 				
 		okButton.setOnClickListener(this);
 		anulujButton.setOnClickListener(this);
-
 	}
 	
 	@Override
@@ -62,8 +62,7 @@ public class DialogShare extends Dialog implements android.view.View.OnClickList
 		default:
 			break;
 		}
-		dismiss();
-		
+		dismiss();		
 	}
 		
 	private class Share extends AsyncTask<Void, Void, Void> {
@@ -72,7 +71,8 @@ public class DialogShare extends Dialog implements android.view.View.OnClickList
 		
 		@Override
 		protected void onPreExecute() {
-			Toast.makeText(getContext(), "Wysyłanie...", 1000).show();
+			String message = mActivity.getString(R.string.dialog_share_toast_sending);
+			Toast.makeText(mActivity, message, 1000).show();
 		}
 		
 		@Override
@@ -82,7 +82,7 @@ public class DialogShare extends Dialog implements android.view.View.OnClickList
 			if (!email.equals("")) {
 				
 				if (product != null) {
-					emailStatus = utilities.sendEmailWithSingleProduct(email, product, mActivity);
+					emailStatus = utilities.sendEmailWithSingleProduct(email, product);
 				} else {
 					String productsTable = utilities.getProductsTableHTML(products);
 					emailStatus = utilities.sendEmailWithProductList(email, productsTable);
@@ -94,14 +94,12 @@ public class DialogShare extends Dialog implements android.view.View.OnClickList
 		@Override
 		protected void onPostExecute(Void v) {
 			if (emailStatus) {
-				Toast.makeText(getContext(), "Wysłano!", 1000).show();
+				String message = mActivity.getString(R.string.dialog_share_toast_succes);
+				Toast.makeText(getContext(), message, 1000).show();
 			} else {
-				Toast.makeText(getContext(), "Nie wysłano!", 1000).show();
+				String message = mActivity.getString(R.string.dialog_share_toast_error);
+				Toast.makeText(getContext(), message, 2000).show();
 			}
 		}
-
-	}
-		
-	
-				
+	}		
 }

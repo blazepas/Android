@@ -2,6 +2,7 @@ package pl.mareklatuszek.tpp.fragments;
 
 import java.util.ArrayList;
 
+import pl.mareklatuszek.tpp.TPPApp;
 import pl.mareklatuszek.tpp.R;
 import pl.mareklatuszek.tpp.atapters.AdapterDB;
 import pl.mareklatuszek.tpp.atapters.AdapterKategorie;
@@ -35,14 +36,15 @@ public class FragmentKategorie extends SherlockFragment implements OnClickListen
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		rootView = inflater.inflate(R.layout.fragment_kategorie, container, false);
 		
-		CommonUtilities utilities = new CommonUtilities();
-		utilities.setActionBarTitle("Kategorie", getSherlockActivity());
+		CommonUtilities utilities = TPPApp.getUtilities();
+		String title = getString(R.string.frag_kategorie_title);
+		utilities.setActionBarTitle(title, getSherlockActivity());
 		
 		categoryTxtBoxKat = (EditText) rootView.findViewById(R.id.categoryTxtBoxKat);
 		addCat = (ImageView) rootView.findViewById(R.id.addCat);
 		addCat.setOnClickListener(this);
 		
-		initList();
+		new InitList().execute();
 				
 		return rootView;
 	}
@@ -59,10 +61,12 @@ public class FragmentKategorie extends SherlockFragment implements OnClickListen
 	private void add() {
 		String category = categoryTxtBoxKat.getText().toString();
 		if (category.equals("")) {
-			Toast.makeText(getActivity(), "Proszę podać nazwę kategorii", 2000).show();
+			String message = getString(R.string.toast_empty_category_name);
+			Toast.makeText(getActivity(), message, 2000).show();
 		} else {
 			if (categories.contains(category)) {
-				Toast.makeText(getActivity(), "Podana kategoria jest już w bazie", 2000).show();
+				String message = getString(R.string.toast_empty_category_name);
+				Toast.makeText(getActivity(), message, 2000).show();
 			} else {
 				addCategory(category);
 				categoryTxtBoxKat.setText("");
@@ -70,30 +74,27 @@ public class FragmentKategorie extends SherlockFragment implements OnClickListen
 		}	
 	}
 	
-	private void initList() {
+	private class InitList extends AsyncTask<Void, Void, Void> {
 		
-		new AsyncTask<Void, Void, Void>() {
-			
-			@Override
-			protected void onPreExecute() {
-				adapterDb = new AdapterDB(getActivity());
-				categoryList = (ListView) rootView.findViewById(R.id.categoryList);
-			}
-			
-			@Override
-			protected Void doInBackground(Void... params) {
-				adapterDb.open();
-				categories = adapterDb.getAllCategories();
-				adapterDb.close();
-				return null;
-			}
-			
-			@Override
-			protected void onPostExecute(Void v) {
-				adapterCat = new AdapterKategorie(getActivity(), categories, getFragmentManager(), getId());
-				categoryList.setAdapter(adapterCat);
-			}
-		}.execute();
+		@Override
+		protected void onPreExecute() {
+			adapterDb = new AdapterDB(getActivity());
+			categoryList = (ListView) rootView.findViewById(R.id.categoryList);
+		}
+		
+		@Override
+		protected Void doInBackground(Void... params) {
+			adapterDb.open();
+			categories = adapterDb.getAllCategories();
+			adapterDb.close();
+			return null;
+		}
+		
+		@Override
+		protected void onPostExecute(Void v) {
+			adapterCat = new AdapterKategorie(getActivity(), categories, getFragmentManager(), getId());
+			categoryList.setAdapter(adapterCat);
+		}
 	}
 	
 	private boolean addCategory(String category) {

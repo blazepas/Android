@@ -112,7 +112,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="8dp"
-                    android:text="Data otwarcia"
+                    android:text="@string/tv_open_date"
                     android:textAppearance="@style/TPP.XSmall.TextAppearance"
                     android:textColor="@color/light_text_view" />
 
@@ -130,7 +130,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="8dp"
-                    android:text="Termin ważności"
+                    android:text="@string/tv_validity_date"
                     android:textAppearance="@style/TPP.XSmall.TextAppearance"
                     android:textColor="@color/light_text_view" />
 
@@ -183,7 +183,8 @@
                     android:layout_height="wrap_content"
                     android:clickable="false"
                     android:gravity="center_horizontal"
-                    android:text="STRONA\nPRODUKTU"
+                    android:text="@string/tv_product_page"
+                    android:textAllCaps="true"
                     android:textAppearance="@style/TPP.Normal.TextAppearance"
                     android:textColor="@color/light_text_view" />
 

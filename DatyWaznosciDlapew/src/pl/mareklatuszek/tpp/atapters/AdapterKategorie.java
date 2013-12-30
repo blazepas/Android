@@ -100,9 +100,13 @@ public class AdapterKategorie extends BaseAdapter {
 	
 	private void showDialog(final String category) {
 		AlertDialog.Builder dialog = new AlertDialog.Builder(mActivity);
-		dialog.setTitle("Usuwanie");
-		dialog.setMessage("Czy na pewno usunąć ketegorię: " + category + "?");
-		dialog.setPositiveButton("Tak",new DialogInterface.OnClickListener() {
+		String message = mActivity.getString(R.string.dialog_delete_kategorie_message);
+		String positive = mActivity.getString(R.string.possitive_button);
+		String cancel = mActivity.getString(R.string.cancel_button);
+		
+		dialog.setTitle(R.string.dialog_delete_title);
+		dialog.setMessage(message + " " + category + "?");
+		dialog.setPositiveButton(positive, new DialogInterface.OnClickListener() {
 
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
@@ -110,7 +114,7 @@ public class AdapterKategorie extends BaseAdapter {
 			}
 		});
 
-		dialog.setNegativeButton("Anuluj",new DialogInterface.OnClickListener() {
+		dialog.setNegativeButton(cancel, new DialogInterface.OnClickListener() {
 
 			@Override
 			public void onClick(DialogInterface dialog, int which) {

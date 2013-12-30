@@ -26,7 +26,7 @@
                 android:layout_width="@dimen/add_textview_width"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="25dp"
-                android:text="Data otwarcia"
+                android:text="@string/tv_open_date"
                 android:textAppearance="@style/TPP.Small.TextAppearance"
                 android:textColor="@color/dark_text_view" />
 
@@ -60,7 +60,7 @@
                 android:layout_width="@dimen/add_textview_width"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="25dp"
-                android:text="Kategoria"
+                android:text="@string/tv_category"
                 android:textAppearance="@style/TPP.Small.TextAppearance"
                 android:textColor="@color/dark_text_view" />
 
@@ -100,7 +100,7 @@
                 android:id="@+id/TextView01"
                 android:layout_width="@dimen/add_textview_width"
                 android:layout_height="wrap_content"
-                android:text="Data zużycia"
+                android:text="@string/tv_consump_date"
                 android:textAppearance="@style/TPP.Small.TextAppearance"
                 android:textColor="@color/dark_text_view" />
 

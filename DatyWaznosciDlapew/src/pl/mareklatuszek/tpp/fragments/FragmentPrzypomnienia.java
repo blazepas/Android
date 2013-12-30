@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import pl.mareklatuszek.tpp.MainActivity;
+import pl.mareklatuszek.tpp.TPPApp;
 import pl.mareklatuszek.tpp.Product;
 import pl.mareklatuszek.tpp.R;
 import pl.mareklatuszek.tpp.atapters.AdapterDB;
@@ -32,14 +33,15 @@ public class FragmentPrzypomnienia extends SherlockFragment implements FinalVari
 	AdapterPrzypomnienia adapterPrzyp;
 	ArrayList<HashMap<String, String>> dataToAdpter = new ArrayList<HashMap<String,String>>();
 	ArrayList<Product> products = new ArrayList<Product>();
-	CommonUtilities utilities = new CommonUtilities();	
+	CommonUtilities utilities = TPPApp.getUtilities();
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		rootView = inflater.inflate(R.layout.fragment_przypomnienia, container, false);
 		adapterDb = new AdapterDB(getActivity());
 		
-		utilities.setActionBarTitle("Przypomnienia", getSherlockActivity());
+		String title = getString(R.string.frag_alarms_title);
+		utilities.setActionBarTitle(title, getSherlockActivity());
 		
 		initList();
 		
@@ -160,7 +162,7 @@ public class FragmentPrzypomnienia extends SherlockFragment implements FinalVari
 		adapterDb.close();
 		
 		if (removeStatus) {
-			utilities.cancelAlarm(alarmTime, productId, getActivity());
+			utilities.cancelAlarm(alarmTime, productId);
 			initList();
 		}
 	}

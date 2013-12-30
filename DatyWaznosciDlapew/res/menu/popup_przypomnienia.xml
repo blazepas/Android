@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
     <item android:id="@+id/usunPopup"
           android:visible="true" 
-          android:title="Usuń" 
+          android:title="@string/action_item_delete" 
           android:enabled="true">       
     </item>
 </menu>

@@ -50,12 +50,12 @@
                 android:gravity="center"
                 android:orientation="vertical" >
 
-                <TextView
+                <pl.mareklatuszek.tpp.views.TextViewBariol
                     android:id="@+id/textView1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="DODAJ\nQRCode/\nkod kreskowy"
+                    android:text="@string/tv_add_code"
                     android:textAppearance="@style/TPP.Small.TextAppearance"
                     android:textColor="@color/dark_text_view" />
 
@@ -79,7 +79,7 @@
                 android:id="@+id/TextView01"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Termin ważności"
+                android:text="@string/tv_validity_date"
                 android:textAppearance="@style/TPP.Normal.TextAppearance"
                 android:textColor="@color/dark_text_view" />
 
@@ -100,7 +100,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_below="@+id/TextView01"
-                android:text="Data"
+                android:text="@string/tv_date"
                 android:textAppearance="@style/TPP.Normal.TextAppearance"
                 android:textColor="@color/dark_text_view" />
 
@@ -138,7 +138,7 @@
                 android:id="@+id/buttonTxt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="generuj"
+                android:text="@string/generate_button"
                 android:textAllCaps="true"
                 android:textAppearance="@style/TPP.Normal.TextAppearance"
                 android:textColor="@color/light_text_view" />

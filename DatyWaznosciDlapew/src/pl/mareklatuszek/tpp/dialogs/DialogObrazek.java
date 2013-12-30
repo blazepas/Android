@@ -26,10 +26,7 @@ public class DialogObrazek extends Dialog implements android.view.View.OnClickLi
 		setContentView(R.layout.dialog_obrazek);
 		
 		image = (ImageView) findViewById(R.id.obrazek);
-
 		image.setImageBitmap(imageToShow);
-		
-
 	}
 	
 	@Override
@@ -39,10 +36,5 @@ public class DialogObrazek extends Dialog implements android.view.View.OnClickLi
 			dismiss();
 			break;
 		}
-		
 	}
-	
-
-
-	
 }

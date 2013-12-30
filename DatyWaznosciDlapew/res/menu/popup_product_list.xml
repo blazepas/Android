@@ -2,19 +2,19 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
     <item android:id="@+id/udostepnijPopup"
           android:visible="true" 
-          android:title="Udostępnij" 
+          android:title="@string/action_item_share" 
           android:enabled="true">       
     </item>
     
     <item android:id="@+id/edytujPopup"
           android:visible="true" 
-          android:title="Edytuj" 
+          android:title="@string/action_item_edit" 
           android:enabled="true">       
     </item>
     
     <item android:id="@+id/usunPopup"
           android:visible="true" 
-          android:title="Usuń" 
+          android:title="@string/action_item_delete" 
           android:enabled="true">       
     </item>
 </menu>

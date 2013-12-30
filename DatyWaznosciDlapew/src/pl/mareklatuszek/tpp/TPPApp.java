@@ -5,7 +5,9 @@ import org.acra.ReportingInteractionMode;
 import org.acra.annotation.ReportsCrashes;
 
 import pl.mareklatuszek.tpp.R;
+import pl.mareklatuszek.tpp.utilities.CommonUtilities;
 import android.app.Application;
+import android.content.Context;
 
 @ReportsCrashes(
 		formKey = "",
@@ -13,13 +15,24 @@ import android.app.Application;
         mode = ReportingInteractionMode.TOAST,
         resToastText = R.string.crash_toast_text
         )
-public class MyApp extends Application {
-	
+
+public class TPPApp extends Application {
+	private static Context mContext;
+	private static CommonUtilities utilities;
+
 	@Override
 	public void onCreate() {
 		super.onCreate();
         ACRA.init(this);
+        mContext = this;
+        utilities = new CommonUtilities();
 	}
 	
-
+    public static Context getContext() {
+        return mContext;
+    }
+    
+    public static CommonUtilities getUtilities() {
+        return utilities;
+    }
 }

@@ -33,7 +33,7 @@ public class DialogDodajProdukt extends Dialog implements FinalVariables, androi
 		setContentView(R.layout.dialog_dodaj_produkt);
 
 		scan = (LinearLayout) findViewById(R.id.scan);
-		custom = (LinearLayout) findViewById(R.id.custom);
+		custom = (LinearLayout) findViewById(R.id.own);
 		scanInfoArea = (LinearLayout) findViewById(R.id.scanInfoArea);
 		customInfoArea = (LinearLayout) findViewById(R.id.customInfoArea);
 
@@ -51,7 +51,7 @@ public class DialogDodajProdukt extends Dialog implements FinalVariables, androi
 			dismiss();
 			scanCode();
 			break;
-		case R.id.custom:
+		case R.id.own:
 			selectFragmentDodaj();
 			dismiss();
 			break;

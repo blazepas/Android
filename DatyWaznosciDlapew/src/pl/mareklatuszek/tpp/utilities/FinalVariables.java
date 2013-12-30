@@ -59,32 +59,11 @@ public interface FinalVariables {
 	public static final String PRZYP_SPINNER = "przypSpinner";
 	public static final String PRZYP_DATE = "przypDate";
 	public static final String PRZYP_HOUR = "przypHour";
-	
-	//wartości z array_date w array resources
-	public static final String SPINNER_DATE_DAY = "Dzień"; 
-	public static final String SPINNER_DATE_WEEK = "Tydzień"; 
-	public static final String SPINNER_DATE_MONTH = "Miesiąc"; 
-	public static final String SPINNER_DATE_YEAR = "Rok"; 
-	
-	public static final String SPINNER_OKRES = "wybierz termin";
-	public static final String SPINNER_KATEGORIE = "wybierz kategorię"; 
-	public static final String SPINNER_PRZPOMNIENIE = "wybierz termin";
-	
+		
 	public static final int CAMERA_ADD_RQ_CODE = 100;
 	public static final int CAMERA_EDIT_RQ_CODE = 200;
 	public static final int GALLERY_ADD_RQ_CODE = 300;
 	public static final int GALLERY_EDIT_RQ_CODE = 400;
-		
-	public static final String INFO_OKRES = "Czas przydatności produktu do użycia/spożycia po otwarciu produktu"
-			+ " (data podawana na niektórych opakowaniach) np. 2 miesiące"; 
-	public static final String INFO_TERMIN_WAZNOSCI = "Po tym terminie produkt nie nadaje się do użycia/spożycia"
-			+ " jest przeterminowany (data nadrukowana na opakowaniu)."; 
-	public static final String INFO_DATA_ZUZYCIA = "Po tym terminie produkt nie nadaje się do użycia/spożycia"
-			+ " jest przeterminowany (data nadrukowana na opakowaniu)."; 
-	public static final String INFO_SKANOWANIE = "Po tym terminie produkt nie nadaje się do użycia/spożycia"
-			+ " jest przeterminowany (data nadrukowana na opakowaniu)."; 
-	public static final String INFO_WLASNY_PRODUKT = "Po tym terminie produkt nie nadaje się do użycia/spożycia"
-			+ " jest przeterminowany (data nadrukowana na opakowaniu)."; 
 	
 	public static final int INFO_MENU_0_ITEM_ID = 100;
 	public static final int INFO_MENU_1_ITEM_ID = 200;

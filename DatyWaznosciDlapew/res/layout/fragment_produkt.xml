@@ -32,7 +32,7 @@
                     android:id="@+id/textView1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Nazwa"
+                    android:text="@string/tv_name"
                     android:textAppearance="@style/TPP.Normal.TextAppearance"
                     android:textColor="@color/medium_text_view" />
 
@@ -43,7 +43,7 @@
                     android:layout_alignLeft="@+id/estimateTimeTxt"
                     android:layout_below="@+id/textView1"
                     android:layout_marginTop="@dimen/product_row_top_margin"
-                    android:text="Data otwarcia"
+                    android:text="@string/tv_open_date"
                     android:textAppearance="@style/TPP.Normal.TextAppearance"
                     android:textColor="@color/medium_text_view" />
 
@@ -54,7 +54,7 @@
                     android:layout_alignLeft="@+id/textView2"
                     android:layout_below="@+id/textView2"
                     android:layout_marginTop="@dimen/product_row_top_margin"
-                    android:text="Trwałość po otwarciu"
+                    android:text="@string/tv_durability"
                     android:textAppearance="@style/TPP.Normal.TextAppearance"
                     android:textColor="@color/medium_text_view" />
 
@@ -65,7 +65,7 @@
                     android:layout_alignLeft="@+id/textView3"
                     android:layout_below="@+id/textView3"
                     android:layout_marginTop="@dimen/product_row_top_margin"
-                    android:text="Trwałość po otwarciu mija za"
+                    android:text="@string/tv_durability_passes_for"
                     android:textAppearance="@style/TPP.Normal.TextAppearance"
                     android:textColor="@color/medium_text_view" />
 
@@ -158,7 +158,7 @@
                             android:layout_centerHorizontal="true"
                             android:gravity="center"
                             android:lines="2"
-                            android:text="Zdjęcie\n produktu"
+                            android:text="@string/tv_product_picture"
                             android:textAppearance="@style/TPP.XSmall.TextAppearance"
                             android:textColor="@color/light_text_view" />
 
@@ -188,7 +188,7 @@
                             android:layout_centerHorizontal="true"
                             android:gravity="center"
                             android:lines="2"
-                            android:text="QRCode lub\nkod kreskowy"
+                            android:text="@string/tv_product_code"
                             android:textAppearance="@style/TPP.XSmall.TextAppearance"
                             android:textColor="@color/light_text_view" />
 
@@ -227,7 +227,7 @@
                 android:id="@+id/textView8"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="dodatkow informacje"
+                android:text="@string/tv_additional_info"
                 android:textAppearance="@style/TPP.Small.TextAppearance"
                 android:textColor="@color/medium_text_view" />
 

@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import pl.mareklatuszek.tpp.TPPApp;
 import pl.mareklatuszek.tpp.R;
 import pl.mareklatuszek.tpp.atapters.AdapterCustomSpinner;
 import pl.mareklatuszek.tpp.utilities.CommonUtilities;
@@ -20,14 +21,18 @@ public class CustomViewPrzypomnienia extends LinearLayout implements FinalVariab
 
 	private AdapterCustomSpinner adapter;
 	private LayoutInflater inflater;
+	private CommonUtilities utilities = TPPApp.getUtilities();
+	String spinnerTitle;
 
 	public CustomViewPrzypomnienia(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		
 		String[] okresSpinnData = getResources().getStringArray(R.array.array_date);
-		this.adapter = new AdapterCustomSpinner(context, okresSpinnData);
+		adapter = new AdapterCustomSpinner(context, okresSpinnData);
+
 		
 		inflater = LayoutInflater.from(context);
+		spinnerTitle = context.getString(R.string.spinner_title_alarm);
 
 		initEmptyRow(0);
 	}
@@ -43,7 +48,7 @@ public class CustomViewPrzypomnienia extends LinearLayout implements FinalVariab
 		textBox.setId(position);
 		
 		spinner.setAdapter(adapter);
-		spinner.setText(SPINNER_PRZPOMNIENIE);
+		spinner.setText(spinnerTitle);
 		
 		buttonImage.setOnClickListener(new ButtonListener());
 		
@@ -109,7 +114,6 @@ public class CustomViewPrzypomnienia extends LinearLayout implements FinalVariab
 	}
 	
 	public ArrayList<HashMap<String,String>> getPrzypomnienia(String endDate) {
-		CommonUtilities utilities = new CommonUtilities();
 		ArrayList<HashMap<String, String>> przypomnienia = new ArrayList<HashMap<String,String>>();
 		
 		int count = getChildCount();
@@ -127,7 +131,7 @@ public class CustomViewPrzypomnienia extends LinearLayout implements FinalVariab
 			String przypHour = "14:00";
 			String przypDate = "0";
 			
-			if (boxTxt.length() != 0 & !boxTxt.equals("0") & !spinnerChoice.equals(SPINNER_PRZPOMNIENIE)) {
+			if (boxTxt.length() != 0 & !boxTxt.equals("0") & !spinnerChoice.equals(spinnerTitle)) {
 				try {
 					long dateInMillis = utilities.parsePrzypmnienieToDate(boxTxt, spinnerChoice, endDate, przypHour);
 					przypDate = String.valueOf(dateInMillis);

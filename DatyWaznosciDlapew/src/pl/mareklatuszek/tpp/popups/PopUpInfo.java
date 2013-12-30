@@ -45,31 +45,31 @@ public class PopUpInfo extends PopupWindow implements FinalVariables{
         case R.id.okresInfoImage:
         	leftSide = false;
         	infoRes = R.drawable.ic_okres_info;
-        	message = INFO_OKRES;
+        	message = mActivity.getString(R.string.info_okres);
         	break;
         case R.id.terminWazInfoImage:
         	leftSide = false;
         	infoRes = R.drawable.ic_termin_info;
-        	message = INFO_TERMIN_WAZNOSCI;
+        	message = mActivity.getString(R.string.info_termin_waznosci);
         	break;
         case R.id.dataZuzInfoImage:
         	leftSide = true;
         	infoRes = R.drawable.ic_datazuz_info;
-        	message = INFO_DATA_ZUZYCIA;
+        	message = mActivity.getString(R.string.info_data_zuzycia);
         	break;
         case R.id.scanInfoArea:	
         case INFO_MENU_0_ITEM_ID:
         	leftSide = true;
         	infoRes = R.drawable.ic_scan_info;
         	clickedView = clickedView.findViewById(R.id.infoIcon); //okno względem ikonki
-        	message = INFO_SKANOWANIE;
+        	message = mActivity.getString(R.string.info_scan);
         	break;
         case R.id.customInfoArea:	
         case INFO_MENU_1_ITEM_ID:
         	leftSide = true;
         	infoRes = R.drawable.ic_add_item_info;
         	clickedView = clickedView.findViewById(R.id.infoIcon); //okno względem ikonki
-        	message = INFO_WLASNY_PRODUKT;
+        	message = mActivity.getString(R.string.info_add_own);
         	break;
         }
         

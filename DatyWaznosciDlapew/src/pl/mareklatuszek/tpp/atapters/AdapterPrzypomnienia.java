@@ -3,6 +3,7 @@ package pl.mareklatuszek.tpp.atapters;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import pl.mareklatuszek.tpp.TPPApp;
 import pl.mareklatuszek.tpp.R;
 import pl.mareklatuszek.tpp.utilities.CommonUtilities;
 import pl.mareklatuszek.tpp.utilities.FinalVariables;
@@ -19,7 +20,7 @@ public class AdapterPrzypomnienia extends BaseAdapter implements FinalVariables 
 	private Activity mActivity;
 	ArrayList<HashMap<String, String>> przypomnienia = new ArrayList<HashMap<String,String>>();
 	private LayoutInflater inflater = null;
-	private CommonUtilities utilities = new CommonUtilities();
+	private CommonUtilities utilities = TPPApp.getUtilities();
 	
 	TextView nazwaPow, pozostaloPow, terminWazPow;
 	ProgressBar progressPow;
@@ -64,7 +65,7 @@ public class AdapterPrzypomnienia extends BaseAdapter implements FinalVariables 
         String endDate = przypomnienie.get(DB_END_DATE);
         long powiadomienieDate = Long.parseLong(przypomnienie.get(PRZYP_DATE));
         long currentTime = System.currentTimeMillis();
-        String pozostaloText = "za " + utilities.dateToWords(currentTime, powiadomienieDate);
+        String pozostaloText = makeEstimateText(currentTime, powiadomienieDate);
         int progress = utilities.getProgress(dataOtw, endDate);
         
         nazwaPow.setText(nazwa);
@@ -75,5 +76,13 @@ public class AdapterPrzypomnienia extends BaseAdapter implements FinalVariables 
 		return vi;
 	}
 	
-	
+	private String makeEstimateText(long currentTime, long powiadomienieDate) {
+		String text = utilities.dateToWords(currentTime, powiadomienieDate);
+		if (text.equals("Powiadomiono")) { //TODO strings
+			return text;
+		} else {
+			String forTime = mActivity.getString(R.string.date_for);
+			return forTime + text;
+		}
+	}
 }

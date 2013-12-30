@@ -2,6 +2,7 @@ package pl.mareklatuszek.tpp.dialogs;
 
 import java.text.ParseException;
 
+import pl.mareklatuszek.tpp.TPPApp;
 import pl.mareklatuszek.tpp.Product;
 import pl.mareklatuszek.tpp.R;
 import pl.mareklatuszek.tpp.utilities.CommonUtilities;
@@ -16,7 +17,8 @@ import android.widget.TextView;
 public class DialogPrzypomnienie extends Dialog {
 	
 	Product product;
-	CommonUtilities utilities = new CommonUtilities();
+	CommonUtilities utilities = TPPApp.getUtilities();
+	Activity mActivity;
 	
 	TextView nazwaTxt, okresTxt, dataOtwTxt, terminWazTxt, kategoriaTxt;
 	ProgressBar okresProgress;
@@ -24,6 +26,7 @@ public class DialogPrzypomnienie extends Dialog {
 	public DialogPrzypomnienie(Activity mActivity, Product product) {
 		super(mActivity);
 		this.product = product;
+		this.mActivity = mActivity;
 	}
 
 	@Override
@@ -45,14 +48,15 @@ public class DialogPrzypomnienie extends Dialog {
 		
 		String nazwa = product.getNazwa();
 		String terminWaz = product.getTerminWaznosci();
-		long terminDateInMillis = 0;
+		String endDate = product.getEndDate();
+		long endDateInMillis = 0;
 		try {
-			terminDateInMillis = utilities.parseDate(terminWaz);
+			endDateInMillis = utilities.parseDate(endDate);
 		} catch (ParseException e) {
 			Log.i("dialog przyp", "parse error");
 		}
 		long currentTime = System.currentTimeMillis();
-		String okres = "za " + utilities.dateToWords(currentTime, terminDateInMillis);
+		String okres = makeEstimateText(currentTime, endDateInMillis);
 		String dataOtw = product.getDataOtwarcia();		
 		String kategoria = product.getKategoria();
 		int progress = utilities.getProgress(dataOtw, terminWaz);
@@ -63,6 +67,16 @@ public class DialogPrzypomnienie extends Dialog {
 		terminWazTxt.setText(terminWaz);
 		kategoriaTxt.setText(kategoria);
 		okresProgress.setProgress(progress);
+	}
+	
+	private String makeEstimateText(long currentTime, long endDateInMillis) {
+		String text = utilities.dateToWords(currentTime, endDateInMillis);
+		if (text.equals("Powiadomiono")) { //TODO strings
+			return text;
+		} else {
+			String forTime = mActivity.getString(R.string.date_for);
+			return forTime + text;
+		}
 	}
 		
 }

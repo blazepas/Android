@@ -20,11 +20,11 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal" >
 
-            <TextView
+            <pl.mareklatuszek.tpp.views.TextViewBariol
                 android:id="@+id/nazwaTxtList"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Email:  " />
+                android:text="@string/tv_email" />
 
             <EditText
                 android:id="@+id/emailTxtBox"
@@ -55,14 +55,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
-            android:text="Anuluj" />
+            android:text="@string/cancel_button" />
 
         <Button
             android:id="@+id/okButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
-            android:text="Ok" />
+            android:text="@string/ok_button" />
 
     </LinearLayout>
 

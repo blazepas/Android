@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import pl.mareklatuszek.tpp.HelperDB;
+import pl.mareklatuszek.tpp.TPPApp;
 import pl.mareklatuszek.tpp.Product;
 import pl.mareklatuszek.tpp.utilities.CommonUtilities;
 import pl.mareklatuszek.tpp.utilities.FinalVariables;
@@ -18,7 +19,7 @@ public class AdapterDB implements FinalVariables {
 	private SQLiteDatabase db;
 	private Activity mActivity;
 	private HelperDB dbHelper;
-	private CommonUtilities utilities = new CommonUtilities();
+	private CommonUtilities utilities = TPPApp.getUtilities();
 	
 	public AdapterDB(Activity mActivity) {
 	    this.mActivity = mActivity;
