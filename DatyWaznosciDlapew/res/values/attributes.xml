@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     
-    <!-- pl.mareklatuszek.tpp -->
+    <!-- general -->
     <dimen name="text_view_font_size">20sp</dimen>
     <dimen name="text_view_xlarge_size">20sp</dimen>
     <dimen name="text_view_large_size">18sp</dimen>
@@ -65,6 +65,12 @@
     <dimen name="categories_row_height">52dp</dimen>
     <dimen name="categories_button_delete_width">45dp</dimen>
     <dimen name="categories_image_delete_height">14dp</dimen>
+    
+    <!-- Fragment przypomnienia -->
+    <dimen name="alarms_row_height">52dp</dimen>
+    <dimen name="alarms_peroid_width">80dp</dimen>
+    <dimen name="alarms_show_width">52dp</dimen>
+    <dimen name="alarms_image_show">18dp</dimen>
     
     <!-- Fragment Produkt -->  
     <dimen name="product_row_top_margin">20dp</dimen>

@@ -13,6 +13,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -22,8 +24,8 @@ public class AdapterPrzypomnienia extends BaseAdapter implements FinalVariables 
 	private LayoutInflater inflater = null;
 	private CommonUtilities utilities = TPPApp.getUtilities();
 	
-	TextView nazwaPow, pozostaloPow, terminWazPow;
-	ProgressBar progressPow;
+	TextView nazwaPow, pozostaloPow;
+	LinearLayout peroid, show;
 	
 	public AdapterPrzypomnienia(Activity mActivity, ArrayList<HashMap<String, String>> przypomnienia) {
 		this.mActivity = mActivity;
@@ -54,25 +56,37 @@ public class AdapterPrzypomnienia extends BaseAdapter implements FinalVariables 
         
         nazwaPow = (TextView) vi.findViewById(R.id.nazwaPow);  
         pozostaloPow = (TextView) vi.findViewById(R.id.pozostaloPow);
-        terminWazPow = (TextView) vi.findViewById(R.id.terminWazPow);
-        progressPow = (ProgressBar) vi.findViewById(R.id.progressPow);  
-        
+        peroid = (LinearLayout) vi.findViewById(R.id.peroid);
+        show = (LinearLayout) vi.findViewById(R.id.show);
+
         HashMap<String, String> przypomnienie = przypomnienia.get(position);
         
         String nazwa = przypomnienie.get(DB_NAZWA);
-        String dataOtw = przypomnienie.get(DB_DATA_OTWARCIA);
-        String terminWaz = przypomnienie.get(DB_TERMIN_WAZNOSCI);
-        String endDate = przypomnienie.get(DB_END_DATE);
         long powiadomienieDate = Long.parseLong(przypomnienie.get(PRZYP_DATE));
         long currentTime = System.currentTimeMillis();
         String pozostaloText = makeEstimateText(currentTime, powiadomienieDate);
-        int progress = utilities.getProgress(dataOtw, endDate);
         
         nazwaPow.setText(nazwa);
         pozostaloPow.setText(pozostaloText);
-        terminWazPow.setText(terminWaz);
-        progressPow.setProgress(progress);
-               
+        
+        int rowBackground;
+        int peroidBackground;
+        int showBackground;
+        
+        if((position % 2) == 0) { // przypomnienie parzyste lub nie
+			rowBackground = R.color.alarms_even;
+			peroidBackground = R.color.alarms_peroid_even;
+			showBackground = R.color.alarms_show_even;
+		} else {
+			rowBackground = R.color.alarms_odd;
+			peroidBackground = R.color.alarms_peroid_odd;
+			showBackground = R.color.alarms_show_odd;
+		}
+        
+        vi.setBackgroundResource(rowBackground);
+        peroid.setBackgroundResource(peroidBackground);
+        show.setBackgroundResource(showBackground);
+        
 		return vi;
 	}
 	
@@ -82,7 +96,7 @@ public class AdapterPrzypomnienia extends BaseAdapter implements FinalVariables 
 			return text;
 		} else {
 			String forTime = mActivity.getString(R.string.date_for);
-			return forTime + text;
+			return forTime + " " + text;
 		}
 	}
 }

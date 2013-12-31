@@ -63,6 +63,14 @@
     <color name="categories_delete_even_bg">#82ced7</color>
     <color name="categories_delete_odd_bg">#48b5c2</color>
     
+    <!-- fragment przypomnienia -->
+    <color name="alarms_even">@color/fragment_background</color>
+    <color name="alarms_odd">#bee7ec</color>
+    <color name="alarms_peroid_even">#bee7ec</color>
+    <color name="alarms_peroid_odd">#82ced7</color>
+    <color name="alarms_show_even">#82ced7</color>
+    <color name="alarms_show_odd">#48b5c2</color>
+    
     <!-- fragment przypomnienie -->
     <color name="alarm_light_text">#0a8594</color>
     
