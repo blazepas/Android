@@ -50,7 +50,7 @@ public class FragmentProdukt extends SherlockFragment implements FinalVariables,
 	boolean dodatkoweIsVisible = false;
 	
 	View rootView;
-	LinearLayout layDodatkoweShow, dodatkowe, przypomnieniaLayout;
+	LinearLayout layDodatkoweShow, toggle, dodatkowe, przypomnieniaLayout;
 	TextViewBariol nazwaTxt, okresTxt, dataOtwTxt, terminWazTxt, kategoriaTxt, isScannedTxt, estimateTimeTxt;
 	ImageView barcodeImage, obrazekImage, pickGenerate, dodatkoweImage;
 	PopupOverflow popupOverflow;
@@ -155,12 +155,8 @@ public class FragmentProdukt extends SherlockFragment implements FinalVariables,
 			DialogObrazek showImage = new DialogObrazek(getActivity(), imageBmp);
 			showImage.show();
 			break;
-		case R.id.dodatkoweImage:
-			if (dodatkoweIsVisible) {
-				hideDodatkowe();
-			} else {
-				showDodatkowe();
-			}
+		case R.id.toggle:
+			toggleDodatkowe();
 			break;
 		case R.id.pickGenerate:
 			DialogGeneruj dialogGen = new DialogGeneruj(this, product, barcodeImage);
@@ -197,6 +193,7 @@ public class FragmentProdukt extends SherlockFragment implements FinalVariables,
 		estimateTimeTxt = (TextViewBariol) rootView.findViewById(R.id.estimateTimeTxt);
 		barcodeImage = (ImageView) rootView.findViewById(R.id.barcodeImage);
 		obrazekImage = (ImageView) rootView.findViewById(R.id.obrazekImage);
+		toggle = (LinearLayout) rootView.findViewById(R.id.toggle);
 		dodatkoweImage = (ImageView) rootView.findViewById(R.id.dodatkoweImage);
 		pickGenerate = (ImageView) rootView.findViewById(R.id.pickGenerate);
 		progressLay = (RelativeLayout) rootView.findViewById(R.id.progressLay);		
@@ -228,7 +225,7 @@ public class FragmentProdukt extends SherlockFragment implements FinalVariables,
 		setBarcode(code, codeFormat);
 		setProggres(progress, progressDrawable);
 		
-		dodatkoweImage.setOnClickListener(this);
+		toggle.setOnClickListener(this);
 		pickGenerate.setOnClickListener(this);
 	}
 	
@@ -311,6 +308,14 @@ public class FragmentProdukt extends SherlockFragment implements FinalVariables,
         String estimate = utilities.dateToWords(System.currentTimeMillis(), endTime);
 		
 		return estimate;
+	}
+	
+	private void toggleDodatkowe() {
+		if (dodatkoweIsVisible) {
+			hideDodatkowe();
+		} else {
+			showDodatkowe();
+		}
 	}
 	
 	private void showDodatkowe() {

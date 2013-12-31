@@ -22,7 +22,6 @@
                 android:id="@+id/podstawowe"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
                 android:gravity="center_horizontal"
                 android:orientation="vertical"
                 android:padding="5dp" >
@@ -276,6 +275,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/toggle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
@@ -285,6 +285,7 @@
                     android:id="@+id/textView2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
                     android:text="@string/tv_additional_info"
                     android:textAppearance="@style/TPP.Small.TextAppearance"
                     android:textColor="@color/dark_text_view" />

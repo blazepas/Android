@@ -231,12 +231,22 @@
                 android:textAppearance="@style/TPP.Small.TextAppearance"
                 android:textColor="@color/medium_text_view" />
 
-            <ImageView
-                android:id="@+id/dodatkoweImage"
-                android:layout_width="@dimen/product_pick_expand"
-                android:layout_height="@dimen/product_pick_expand"
-                android:layout_marginTop="5dp"
-                android:src="@drawable/pick_expand" />
+            <LinearLayout
+                android:id="@+id/toggle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical" >
+
+                <ImageView
+                    android:id="@+id/dodatkoweImage"
+                    android:layout_width="@dimen/product_pick_expand"
+                    android:layout_height="@dimen/product_pick_expand"
+                    android:layout_marginBottom="@dimen/product_row_top_margin"
+                    android:layout_marginTop="5dp"
+                    android:src="@drawable/pick_expand" />
+
+            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/dodatkowe"

@@ -67,7 +67,7 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 	View rootView;
 	ImageView barcodeImage, obrazekImage, dodatkoweImage, kategroieImage, okresInfoImage, terminWazInfoImage, dataZuzInfoImage;
 	EditText nazwaTextBox, okresWazTextBox, opisTxtBox, dataOtwTxtBox, terminWazTextBox, dataZuzTextBox;
-	LinearLayout podstawowe, dodatkowe, latDodatkoweEdit, zapiszButton;
+	LinearLayout podstawowe, dodatkowe, latDodatkoweEdit, toggle, zapiszButton;
 	CustomSpinner okresWazDropDown, kategorieDropDown;
 	CustomViewPrzypomnienia przypLayout;
 	ScrollView scrollView;
@@ -191,7 +191,7 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 	@Override
 	public void onClick(View view) {
 		DialogDatePicker dialogDatePicker = new DialogDatePicker(getActivity(), view);
-		
+
 		switch (view.getId()) {
 		case R.id.okresInfoImage:
 		case R.id.dataZuzInfoImage:
@@ -211,15 +211,11 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		case R.id.dataZuzTextBox:
 			dialogDatePicker.show();
 			break;
-		case R.id.zapiszButton:
-			save();
+		case R.id.toggle:
+			toggleDodatkowe();
 			break;
-		case R.id.dodatkoweImage:	
-			if (dodatkoweIsVisible) {
-				hideDodatkowe();
-			} else {
-				showDodatkowe();
-			}
+		case R.id.zapiszButton:
+			save();			
 			break;	
 		case R.id.obrazekImage:
 			view.showContextMenu();
@@ -244,6 +240,7 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		okresWazDropDown = (CustomSpinner) rootView.findViewById(R.id.okresWazDropDown);
 		okresInfoImage = (ImageView) rootView.findViewById(R.id.okresInfoImage);
 		zapiszButton = (LinearLayout) rootView.findViewById(R.id.zapiszButton);
+		toggle = (LinearLayout) rootView.findViewById(R.id.toggle);
 		dodatkoweImage = (ImageView) rootView.findViewById(R.id.dodatkoweImage);
 		scrollView = (ScrollView) rootView.findViewById(R.id.scrollView);
 		
@@ -264,9 +261,8 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		terminWazTextBox.setOnClickListener(this);
 		terminWazInfoImage.setOnClickListener(this);
 		okresInfoImage.setOnClickListener(this);
-		zapiszButton.setOnClickListener(this);		
-		dodatkoweImage.setOnClickListener(this);
-
+		zapiszButton.setOnClickListener(this);	
+		toggle.setOnClickListener(this);
 	}
 	
 	private void initDodatkowe() {		
@@ -313,6 +309,14 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		String title = getString(R.string.spinner_title_okres);
 		okresWazDropDown.setText(title);
 		okresWazDropDown.setAdapter(adapterOkresSpinner);
+	}
+	
+	private void toggleDodatkowe() {
+		if (dodatkoweIsVisible) {
+			hideDodatkowe();
+		} else {
+			showDodatkowe();
+		}
 	}
 	
 		
