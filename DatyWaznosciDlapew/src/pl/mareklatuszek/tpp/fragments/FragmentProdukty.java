@@ -42,6 +42,8 @@ import com.actionbarsherlock.view.MenuItem;
 
 public class FragmentProdukty extends SherlockFragment implements FinalVariables, OnClickListener {
 	
+	String spinnerTitle = "";
+	
 	AdapterDB dbAdapter;
 	AdapterProductList listAdapter;
 	AdapterCustomSpinner adapterKategorieSpinner;
@@ -65,6 +67,8 @@ public class FragmentProdukty extends SherlockFragment implements FinalVariables
 		
 		String title = getString(R.string.frag_products_title);
 		utilities.setActionBarTitle(title, getSherlockActivity());
+		
+		spinnerTitle = getString(R.string.spinner_title_category);
 
 		rootView = inflater.inflate(R.layout.fragment_produkty, container, false);
 		dodajLay = (LinearLayout) rootView.findViewById(R.id.dodajLay);
@@ -199,15 +203,19 @@ public class FragmentProdukty extends SherlockFragment implements FinalVariables
 	};
 	
 	private ArrayList<Product> getSortedList(String choice) {
-		ArrayList<Product> sorted = new ArrayList<Product>();
-		for (int i = 0; i < productsTemp.size(); i++) {
-			Product product = productsTemp.get(i);
-			String category = product.getKategoria();
-			if (category.equals(choice)) {
-				sorted.add(product);
+		if (choice.equals(spinnerTitle)) {
+			return productsTemp;
+		} else {
+			ArrayList<Product> sorted = new ArrayList<Product>();
+			for (int i = 0; i < productsTemp.size(); i++) {
+				Product product = productsTemp.get(i);
+				String category = product.getKategoria();
+				if (category.equals(choice)) {
+					sorted.add(product);
+				}
 			}
-		}
-		return sorted;
+			return sorted;
+		}		
 	}
 
 	private class InitSort extends AsyncTask<Void, Void, Void> {
@@ -234,9 +242,10 @@ public class FragmentProdukty extends SherlockFragment implements FinalVariables
 		
 		@Override
 		protected void onPostExecute(Void v) {
+			categories.add(0, spinnerTitle);			
 			adapterKategorieSpinner = new AdapterCustomSpinner(getActivity(), categories);
-			String title = getString(R.string.spinner_title_category);
-			kategorieDropDown.setText(title);
+			
+			kategorieDropDown.setText(spinnerTitle);
 			kategorieDropDown.setAdapter(adapterKategorieSpinner);
 			kategorieDropDown.setOnItemSelectedListener(new SpinnerListener());
 		}
@@ -288,6 +297,7 @@ public class FragmentProdukty extends SherlockFragment implements FinalVariables
 		
 		if (deleteStatus) {
 			products.remove(product);
+			productsTemp.remove(product);
 			listAdapter.notifyDataSetChanged();
 			
 			ArrayList<HashMap<String, String>> przypomnienia = product.getPrzypomnienia();
