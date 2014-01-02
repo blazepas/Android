@@ -104,7 +104,7 @@ public class FragmentPrzypomnienie extends SherlockFragment implements FinalVari
 	}
 
 	private void switchToPrzypomnieniaFragment() {
-		((MainActivity) getActivity()).selectFragment(2);;
+		((MainActivity) getActivity()).selectFragment(SELECTION_ALARMS);
 	}
 
 }

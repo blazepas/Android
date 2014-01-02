@@ -415,7 +415,7 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		protected void onPostExecute(Void v) {
 			progressDialog.dismiss();
 			MainActivity.imageUri = Uri.parse("");
-			((MainActivity) getActivity()).selectFragment(2); // prze��cza a ekran listy produkt�w
+			((MainActivity) getActivity()).selectFragment(SELECTION_PRODUCTS);
 		}
 	}
 			

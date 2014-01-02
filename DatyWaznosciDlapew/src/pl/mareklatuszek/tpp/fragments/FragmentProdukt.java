@@ -13,10 +13,10 @@ import pl.mareklatuszek.tpp.dialogs.DialogGeneruj;
 import pl.mareklatuszek.tpp.dialogs.DialogObrazek;
 import pl.mareklatuszek.tpp.dialogs.DialogShare;
 import pl.mareklatuszek.tpp.popups.PopupOverflow;
+import pl.mareklatuszek.tpp.premium.PremiumUtilities;
 import pl.mareklatuszek.tpp.utilities.BitmapLoader;
 import pl.mareklatuszek.tpp.utilities.CommonUtilities;
 import pl.mareklatuszek.tpp.utilities.FinalVariables;
-import pl.mareklatuszek.tpp.utilities.PremiumUtilities;
 import pl.mareklatuszek.tpp.views.TextViewBariol;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -364,7 +364,7 @@ public class FragmentProdukt extends SherlockFragment implements FinalVariables,
 	}
 	
 	private void switchToProductsFragment() {
-		((MainActivity) getActivity()).selectFragment(2);;
+		((MainActivity) getActivity()).selectFragment(SELECTION_PRODUCTS);
 	}
 	
 	private void deleteProduct(Product product) {

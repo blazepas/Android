@@ -13,9 +13,9 @@ import pl.mareklatuszek.tpp.atapters.AdapterProductList;
 import pl.mareklatuszek.tpp.dialogs.DialogDodajProdukt;
 import pl.mareklatuszek.tpp.dialogs.DialogShare;
 import pl.mareklatuszek.tpp.popups.PopupOverflow;
+import pl.mareklatuszek.tpp.premium.PremiumUtilities;
 import pl.mareklatuszek.tpp.utilities.CommonUtilities;
 import pl.mareklatuszek.tpp.utilities.FinalVariables;
-import pl.mareklatuszek.tpp.utilities.PremiumUtilities;
 import pl.mareklatuszek.tpp.views.CustomSpinner;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -327,11 +327,11 @@ public class FragmentProdukty extends SherlockFragment implements FinalVariables
 	}
 		
 	public void selectFragmentDodaj() {
-		((MainActivity) getActivity()).selectFragment(1);
+		((MainActivity) getActivity()).selectFragment(SELECTION_ADD);
 	}
 	
 	private void scanCode() {
-		((MainActivity) getActivity()).selectFragment(0);
+		((MainActivity) getActivity()).selectFragment(SELECTION_SCAN);
 	}
 	
 	private void onShare() {

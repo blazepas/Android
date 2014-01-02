@@ -1,11 +1,28 @@
-package pl.mareklatuszek.tpp.utilities;
+package pl.mareklatuszek.tpp.premium;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+
+import pl.mareklatuszek.tpp.utilities.FinalVariables;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.util.Log;
 
 public class PremiumUtilities {
 	
@@ -85,8 +102,7 @@ public class PremiumUtilities {
 	    return status;
 	} 
 	
-	public boolean isPremiumInstalled()
-    {
+	public boolean isPremiumInstalled() {
         PackageManager pm = mActivity.getPackageManager();
         boolean app_installed = false;
         try {
@@ -103,14 +119,9 @@ public class PremiumUtilities {
 		if (!isNetworkOnline()) {
 			return false;
 		} else {
-			// symulacja opóźnienia odpowiedzi z serwera
-			try {
-				Thread.sleep(5000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			return true; //TODO
+			ServletConnection conn = new ServletConnection(mActivity);
+			return conn.verificatePremium();
 		}
-		
 	}
+	
 }

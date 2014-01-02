@@ -2,10 +2,11 @@ package pl.mareklatuszek.tpp.atapters;
 
 import pl.mareklatuszek.tpp.R;
 import pl.mareklatuszek.tpp.popups.PopUpInfo;
+import pl.mareklatuszek.tpp.premium.PremiumUtilities;
 import pl.mareklatuszek.tpp.utilities.FinalVariables;
-import pl.mareklatuszek.tpp.utilities.PremiumUtilities;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;

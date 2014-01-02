@@ -699,13 +699,13 @@ int string action_item_own_product 0x7f08003f
 int string action_item_scan 0x7f08003e
 int string action_item_share 0x7f08003d
 int string action_item_share_list 0x7f08003c
-int string app_name 0x7f08006a
+int string app_name 0x7f08006e
 int string cancel_button 0x7f08000d
 int string context_generate_code 0x7f080042
 int string context_get_from_gallery 0x7f080044
 int string context_scan_code 0x7f080043
 int string context_take_photo 0x7f080045
-int string crash_toast_text 0x7f08006c
+int string crash_toast_text 0x7f080070
 int string date_day 0x7f080061
 int string date_for 0x7f080060
 int string date_month 0x7f080063
@@ -719,6 +719,10 @@ int string dialog_after_validate_message 0x7f08004f
 int string dialog_delete_default_message 0x7f080015
 int string dialog_delete_kategorie_message 0x7f080053
 int string dialog_delete_title 0x7f080014
+int string dialog_non_premium_message 0x7f08006b
+int string dialog_non_premium_title 0x7f08006a
+int string dialog_premium_message 0x7f08006d
+int string dialog_premium_title 0x7f08006c
 int string dialog_share_title_product 0x7f080066
 int string dialog_share_title_products 0x7f080065
 int string dialog_share_toast_error 0x7f080069
@@ -742,7 +746,7 @@ int string info_data_zuzycia 0x7f08005d
 int string info_okres 0x7f08005b
 int string info_scan 0x7f08005e
 int string info_termin_waznosci 0x7f08005c
-int string menu_settings 0x7f08006b
+int string menu_settings 0x7f08006f
 int string ok_button 0x7f080010
 int string possitive_button 0x7f08000c
 int string save_button 0x7f08000f

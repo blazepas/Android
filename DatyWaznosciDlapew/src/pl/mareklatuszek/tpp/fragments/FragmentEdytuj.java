@@ -396,7 +396,7 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 			//TODO zrobic okienko jesli niepowodzenie
 			progressDialog.dismiss();
 			MainActivity.imageUri = Uri.parse("");
-			((MainActivity) getActivity()).selectFragment(2); // prze��cza a ekran listy produkt�w
+			((MainActivity) getActivity()).selectFragment(SELECTION_PRODUCTS);
 		}	
 	}
 			

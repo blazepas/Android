@@ -3,6 +3,7 @@ package pl.mareklatuszek.tpp;
 import pl.mareklatuszek.tpp.R;
 import pl.mareklatuszek.tpp.atapters.AdapterDB;
 import pl.mareklatuszek.tpp.atapters.AdapterMenu;
+import pl.mareklatuszek.tpp.dialogs.DialogPremium;
 import pl.mareklatuszek.tpp.dialogs.DialogPrzypomnienie;
 import pl.mareklatuszek.tpp.fragments.FragmentDodaj;
 import pl.mareklatuszek.tpp.fragments.FragmentEdytuj;
@@ -11,8 +12,9 @@ import pl.mareklatuszek.tpp.fragments.FragmentProdukt;
 import pl.mareklatuszek.tpp.fragments.FragmentProdukty;
 import pl.mareklatuszek.tpp.fragments.FragmentPrzypomnienia;
 import pl.mareklatuszek.tpp.fragments.FragmentPrzypomnienie;
+import pl.mareklatuszek.tpp.premium.InitPremiumStatus;
+import pl.mareklatuszek.tpp.premium.PremiumUtilities;
 import pl.mareklatuszek.tpp.utilities.FinalVariables;
-import pl.mareklatuszek.tpp.utilities.PremiumUtilities;
 import jim.h.common.android.lib.zxing.integrator.IntentIntegrator;
 import jim.h.common.android.lib.zxing.integrator.IntentResult;
 import android.content.Intent;
@@ -100,7 +102,7 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
 			menuPos = savedInstanceState.getInt("menuPos");
 			initMenu();
 		}		
-		new InitVersion().execute();
+		new InitPremiumStatus(this, menuAdapter).execute();
 	}
 	
 	@Override
@@ -165,18 +167,18 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
 	
 	@Override
     public void onBackPressed() {		
-		if (currentFragmentPos == 6) { // jesli fragment edytuj			
+		if (currentFragmentPos == SELECTION_EDIT) { // jesli fragment edytuj			
 			if (fragmentEdytuj != null) {
 				Bundle extras = fragmentEdytuj.getArguments();// TODO
 				Product product = (Product) extras.getSerializable("product");
 				selectFragmentToShowProduct(product);
 			} else {
-				selectFragment(2);	
+				selectFragment(SELECTION_PRODUCTS);	
 			}
-		} else if (currentFragmentPos == 5) { //jesli fragment produkt			
-			selectFragment(2);	
-		} else if (currentFragmentPos == 7) { //jesli fragment przypomnienie	
-			selectFragment(4);
+		} else if (currentFragmentPos == SELECTION_PRODUCT) { //jesli fragment produkt			
+			selectFragment(SELECTION_PRODUCTS);	
+		} else if (currentFragmentPos == SELECTION_ALARM) { //jesli fragment przypomnienie	
+			selectFragment(SELECTION_ALARMS);
 		} else {
 	        if (backIsDoublePressed) {
 	            super.onBackPressed();
@@ -242,35 +244,39 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
 
 		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 		switch (position) {
-		case 0:
+		case SELECTION_SCAN:
 			startScanner();
 			break;
-		case 1:
+		case SELECTION_ADD:
 			selectItemMenu(position);
 			fragmentDodaj = new FragmentDodaj();
 			ft.replace(R.id.content_frame, fragmentDodaj);
 			break;
-		case 2:
+		case SELECTION_PRODUCTS:
 			selectItemMenu(position);
 			ft.replace(R.id.content_frame, fragmentProdukty);
 			break;
-		case 3:
+		case SELECTION_CATEGORIES:
 			selectItemMenu(position);
 			ft.replace(R.id.content_frame, fragmentKategorie);
 			break;
-		case 4:
+		case SELECTION_ALARMS:
 			selectItemMenu(position);
 			ft.replace(R.id.content_frame, fragmentPrzypomnienia);
 			break;
-		case 5:
+		case SELECTION_PREMIUM:
+			DialogPremium dialog = new DialogPremium(this);
+			dialog.show();
+			return;	
+		case SELECTION_PRODUCT:
 			ft.replace(R.id.content_frame, fragmentProdukt);
 			ft.commit();
 			return;
-		case 6:
+		case SELECTION_EDIT:
 			ft.replace(R.id.content_frame, fragmentEdytuj);
 			ft.commit();
 			return;
-		case 7:
+		case SELECTION_ALARM:
 			ft.replace(R.id.content_frame, fragmentPrzypomnienie);
 			ft.commit();
 			return;
@@ -298,10 +304,10 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
 	}
 	
 	public void startScanner() {
-		if (currentFragmentPos != 1) {
-            selectFragment(1);
+		if (currentFragmentPos != SELECTION_ADD) {
+            selectFragment(SELECTION_ADD);
         }
-		selectItemMenu(0);
+		selectItemMenu(SELECTION_SCAN);
 		IntentIntegrator.initiateScan(MainActivity.this);
 	}
 	
@@ -320,7 +326,7 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
             data.putString("scanResultCodeFormat", codeFormat);
             
         	fragmentDodaj.setArguments(data);
-            selectFragment(1);
+            selectFragment(SELECTION_ADD);
         }		
 	}
 	
@@ -369,7 +375,7 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
         data.putSerializable("product", product);
 
         fragmentProdukt.setArguments(data);
-        selectFragment(5);		
+        selectFragment(SELECTION_PRODUCT);		
 	}
 	
 	public void selectFragmentToShowPrzypomienie(Product product) {
@@ -377,7 +383,7 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
         data.putSerializable("product", product);
 
         fragmentPrzypomnienie.setArguments(data);
-        selectFragment(7);		
+        selectFragment(SELECTION_ALARM);		
 	}
 	
 	public void selectFragmentToEditProduct(Product product) {
@@ -385,7 +391,7 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
         data.putSerializable("product", product);
         fragmentEdytuj = new FragmentEdytuj();
         fragmentEdytuj.setArguments(data);
-        selectFragment(6);		
+        selectFragment(SELECTION_EDIT);		
 	}
 	
 	public void removeFragmentEdytuj() {		
@@ -426,71 +432,5 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
             return false;
         }
     }
-	
-	private class InitVersion extends AsyncTask<Void, Void, Void> {
-		boolean isTrial = false;
-		boolean isPremium = false;
-		boolean isPremiumInstalled = false;
-		boolean isVerificated = false;
-		boolean isFirstRun = false;
-		
-		PremiumUtilities premUtils = new PremiumUtilities(MainActivity.this);
-
-		@Override
-		protected Void doInBackground(Void... params) {
 			
-			isPremium = premUtils.isPremium();
-			
-			if (isPremium) {
-				return null;
-			} else {
-				isPremiumInstalled = premUtils.isPremiumInstalled();
-				
-				if(isPremiumInstalled) {
-					isVerificated = premUtils.isVerificated();
-					if (isVerificated) {					
-						premUtils.setPremium();
-						isPremium = true;
-						isTrial = false;
-						return null;
-					}
-				}
-			}
-			
-			isFirstRun = premUtils.isFirstRun();
-			
-			if (isFirstRun) {
-				premUtils.setFirstRunFalse();
-				premUtils.setTrial();
-				isTrial = true;
-			} else {
-				isTrial = premUtils.isTrial();
-			}
-			
-			return null;
-		}
-		
-		@Override
-		protected void onPostExecute(Void v) {
-			
-			if (isTrial) {
-				Log.i("init version", "trial");
-				PremiumUtilities.APP_VERSION_TRIAL = true;
-				PremiumUtilities.APP_VERSION_PREMIUM = false;
-				PremiumUtilities.APP_VERSION_NONE = false;
-			} else if (isPremium) {
-				Log.i("init version", "premium");
-				PremiumUtilities.APP_VERSION_TRIAL = false;
-				PremiumUtilities.APP_VERSION_PREMIUM = true;
-				PremiumUtilities.APP_VERSION_NONE = false;
-			} else {
-				Log.i("init version", "trial is over");
-				PremiumUtilities.APP_VERSION_TRIAL = false;
-				PremiumUtilities.APP_VERSION_PREMIUM = false;
-				PremiumUtilities.APP_VERSION_NONE = true;
-			}
-			
-			menuAdapter.notifyDataSetChanged();
-		}
-	}		
 }

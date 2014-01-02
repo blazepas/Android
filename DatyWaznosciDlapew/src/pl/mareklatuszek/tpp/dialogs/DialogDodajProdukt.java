@@ -67,11 +67,11 @@ public class DialogDodajProdukt extends Dialog implements FinalVariables, androi
 	}
 	
 	private void selectFragmentDodaj() {
-		((MainActivity) mActivity).selectFragment(1);
+		((MainActivity) mActivity).selectFragment(SELECTION_ADD);
 	}
 	
 	private void scanCode() {
-		((MainActivity) mActivity).selectFragment(0);
+		((MainActivity) mActivity).selectFragment(SELECTION_SCAN);
 	}
 	
 	
