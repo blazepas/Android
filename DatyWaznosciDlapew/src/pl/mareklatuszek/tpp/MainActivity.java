@@ -41,6 +41,7 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.MenuItem;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
+import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu.OnClosedListener;
 
 
 public class MainActivity extends SherlockFragmentActivity implements FinalVariables, OnClickListener {
@@ -205,8 +206,10 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
 		menu.setShadowDrawable(R.drawable.shadow);
 		menu.setBehindOffsetRes(R.dimen.slidingmenu_offset);
 		menu.setFadeDegree(0.35f);
+		menu.setFadeEnabled(true);
 		menu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
 		menu.setMenu(getMenuList());
+		menu.setOnClosedListener(new MenuCloseListener());
 	}
 	
 	private void initActionBar() {	
@@ -218,10 +221,20 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
 
 	private class MenuItemClickListener implements ListView.OnItemClickListener {
 		@Override
-		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {		
-			selectFragment(position);
+		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {	
+			// po wybraniu z menu chowa je i zapisuje wybraną pozycje
+			selectItemMenu(position);
 			menu.toggle();
 		}
+	}
+	
+	private class MenuCloseListener implements OnClosedListener {
+		// po schowaniu menu ładuje fragment
+		@Override
+		public void onClosed() {
+			selectFragment(menuPos);
+		}
+		
 	}
 
 	public void selectFragment(int position) {		
@@ -266,9 +279,11 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
 	}
 	
 	private void selectItemMenu(int position) {
-		menuPos = position;
-		menuAdapter.setClickedPos(position);
-		menuAdapter.notifyDataSetChanged();
+		if(menuPos != position) {
+			menuPos = position;
+			menuAdapter.setClickedPos(position);
+			menuAdapter.notifyDataSetChanged();
+		}
 	}
 	
 	private void onNotification(String productId, String alarmTime) {	

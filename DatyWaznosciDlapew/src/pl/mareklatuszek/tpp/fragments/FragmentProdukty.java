@@ -242,12 +242,19 @@ public class FragmentProdukty extends SherlockFragment implements FinalVariables
 		
 		@Override
 		protected void onPostExecute(Void v) {
-			categories.add(0, spinnerTitle);			
-			adapterKategorieSpinner = new AdapterCustomSpinner(getActivity(), categories);
+			try {
+				
+				categories.add(0, spinnerTitle);			
+				adapterKategorieSpinner = new AdapterCustomSpinner(getActivity(), categories);
+				
+				kategorieDropDown.setText(spinnerTitle);
+				kategorieDropDown.setAdapter(adapterKategorieSpinner);
+				kategorieDropDown.setOnItemSelectedListener(new SpinnerListener());
+				
+			} catch (NullPointerException e) {
+				//TODO
+			}
 			
-			kategorieDropDown.setText(spinnerTitle);
-			kategorieDropDown.setAdapter(adapterKategorieSpinner);
-			kategorieDropDown.setOnItemSelectedListener(new SpinnerListener());
 		}
 	}
     

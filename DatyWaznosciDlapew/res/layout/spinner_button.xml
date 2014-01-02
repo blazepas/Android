@@ -18,7 +18,7 @@
             android:layout_alignParentLeft="false"
             android:layout_centerInParent="true"
             android:layout_centerVertical="true"
-            android:text="wybierz termin"
+            android:text=""
             android:textAppearance="@style/TPP.Small.TextAppearance"
             android:textColor="@color/light_text_view" />
 

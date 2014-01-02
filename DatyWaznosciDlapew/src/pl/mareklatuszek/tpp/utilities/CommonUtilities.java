@@ -858,7 +858,7 @@ public class CommonUtilities implements FinalVariables {
         	BitmapFactory.Options options = new Options();
         	options.inSampleSize = 5;
         	Bitmap b = BitmapFactory.decodeFile(path, options);
-    		Bitmap out = Bitmap.createScaledBitmap(b, 60, 60, false);
+    		Bitmap out = Bitmap.createScaledBitmap(b, 100, 100, false);
 
             File file = new File(path + "thumb");
             FileOutputStream fOut = new FileOutputStream(file);

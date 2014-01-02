@@ -65,7 +65,7 @@ public class AdapterProductList extends BaseAdapter implements OnClickListener, 
 		this.fragmentManager = fM;
 		this.fragmentId = fragmentId;
 		this.parentListView = parentListView;
-		
+				
 		parentListView.setOnScrollListener(this);
 		itemHeightInDps = mActivity.getResources().getDimensionPixelSize(R.dimen.products_item_height);
 		inflater = (LayoutInflater) mActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -222,10 +222,10 @@ public class AdapterProductList extends BaseAdapter implements OnClickListener, 
         	File imgFile = new  File(image + "thumb");
         	if(imgFile.exists()){
         	    Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-        	    obrazekImage.setImageBitmap(myBitmap);
+        	    obrazekImage.setImageBitmap(myBitmap);       	    
         	}	
 		}
-        
+ 
         initAnimations(pos); // animacje rozsuwania i chowania dodatkowych
          
         //przypisywanie menu kontekstowego

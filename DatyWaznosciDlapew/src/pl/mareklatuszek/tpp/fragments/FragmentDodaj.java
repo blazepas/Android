@@ -227,7 +227,7 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 			break;
 		}		
 	}
-						
+							
 	private void initPodstawowe() {		
 
 		podstawowe = (LinearLayout) rootView.findViewById(R.id.podstawowe);
