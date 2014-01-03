@@ -25,6 +25,7 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
+import android.widget.Toast;
 
 public class ServletConnection {
 	
@@ -43,6 +44,7 @@ public class ServletConnection {
 			
 			if (responseMessage != null) {
 				status = checkResponse(responseMessage);
+				Toast.makeText(context, "positive", 2000).show();
 			} else {
 				status = false;
 			}

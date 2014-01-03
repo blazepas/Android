@@ -234,14 +234,18 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
 		// po schowaniu menu ładuje fragment
 		@Override
 		public void onClosed() {
-			selectFragment(menuPos);
+			
+			if(currentFragmentPos != menuPos) {
+				selectFragment(menuPos);
+			}
+			
 		}
 		
 	}
 
-	public void selectFragment(int position) {		
+	public void selectFragment(int position) {	
 		currentFragmentPos = position;
-
+		
 		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 		switch (position) {
 		case SELECTION_SCAN:

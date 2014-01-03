@@ -11,6 +11,7 @@ import pl.mareklatuszek.tpp.Product;
 import pl.mareklatuszek.tpp.R;
 import pl.mareklatuszek.tpp.fragments.FragmentProdukty;
 import pl.mareklatuszek.tpp.utilities.CommonUtilities;
+import pl.mareklatuszek.tpp.utilities.ThumbLoader;
 import pl.mareklatuszek.tpp.views.TextViewBariol;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -45,7 +46,6 @@ public class AdapterProductList extends BaseAdapter implements OnClickListener, 
 	private int fragmentId;
 	
 	private Boolean[] isExpanded;
-	private View[] views;
 	private ListView parentListView;
 	private int clickedPos = -1;
 	private int lastVisible = 0;
@@ -71,7 +71,6 @@ public class AdapterProductList extends BaseAdapter implements OnClickListener, 
 		inflater = (LayoutInflater) mActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		isExpanded = new Boolean[products.size()];
 		Arrays.fill(isExpanded, false);
-		views = new View[products.size()];//TODO	
 	}
 	
 	@Override
@@ -91,24 +90,31 @@ public class AdapterProductList extends BaseAdapter implements OnClickListener, 
 
 	@Override
 	public View getView(final int position, View convertView, ViewGroup parent) {
-		View vi = views[position];
-        boolean convertViewStatus = (vi == null); 
+		View vi;
 
-        if (clickedPos == position){
+        if (clickedPos == position){	        
+	        vi = (View) convertView.getTag();
 	        
-	        vi = views[position];
 	        detailsLay = (LinearLayout) vi.findViewById(R.id.detailsLay);
 	        imageInfo = (ImageView) vi.findViewById(R.id.imageInfo);
-	        initAnimations((Integer) vi.getTag());
-        	        
-	        return vi;
-        } else if (convertViewStatus) {
+	        
+	        initAnimations(position);	
+	        
+	        return convertView;
+        } else if (convertView == null) {
         	vi = inflater.inflate(R.layout.listview_products, null);
- 	        vi = initRow(vi, position);
- 	        views[position] = vi;
- 	        return vi;
+        	
+ 	        convertView = initRow(vi, position);
+ 	        convertView.setTag(vi); 	
+ 	        
+ 	        return convertView;
         } else {
-            return views[position];                    
+        	vi = (View) convertView.getTag();
+        	
+        	convertView = initRow(vi, position);
+        	convertView.setTag(vi);
+        	
+            return convertView;                    
         }
 	}
 	
@@ -204,7 +210,6 @@ public class AdapterProductList extends BaseAdapter implements OnClickListener, 
         int progress = utilities.getProgress(dataOtw, endDate);
         Drawable progressDrawable = mActivity.getResources().getDrawable(R.drawable.progress_bar_bg);
         
-        vi.setTag(pos);
         vi.setBackgroundResource(rowBackground);
         basicLay.setTag(pos);
         expandLay.setTag(pos);
@@ -218,16 +223,8 @@ public class AdapterProductList extends BaseAdapter implements OnClickListener, 
         pozostaloPrgsList.setProgress(progress);
         pozostaloPrgsList.setProgressDrawable(progressDrawable);
         
-        if (!image.equals("")) {
-        	File imgFile = new  File(image + "thumb");
-        	if(imgFile.exists()){
-        	    Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-        	    obrazekImage.setImageBitmap(myBitmap);       	    
-        	}	
-		}
+        new ThumbLoader(image, obrazekImage).execute();
  
-        initAnimations(pos); // animacje rozsuwania i chowania dodatkowych
-         
         //przypisywanie menu kontekstowego
         vi.setOnLongClickListener(this);
         basicLay.setOnLongClickListener(this);
@@ -252,6 +249,8 @@ public class AdapterProductList extends BaseAdapter implements OnClickListener, 
 				showProduct(pos);				
 			}
 		});
+        
+        initAnimations(pos); // animacje rozsuwania i chowania dodatkowych
                 
         return vi;
 	}

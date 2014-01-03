@@ -10,6 +10,7 @@ import pl.mareklatuszek.tpp.R;
 import pl.mareklatuszek.tpp.atapters.AdapterCustomSpinner;
 import pl.mareklatuszek.tpp.atapters.AdapterDB;
 import pl.mareklatuszek.tpp.atapters.AdapterProductList;
+import pl.mareklatuszek.tpp.atapters.ExpandableListTest;
 import pl.mareklatuszek.tpp.dialogs.DialogDodajProdukt;
 import pl.mareklatuszek.tpp.dialogs.DialogShare;
 import pl.mareklatuszek.tpp.popups.PopupOverflow;
@@ -31,6 +32,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ExpandableListView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -46,6 +48,7 @@ public class FragmentProdukty extends SherlockFragment implements FinalVariables
 	
 	AdapterDB dbAdapter;
 	AdapterProductList listAdapter;
+//	ExpandableListTest listAdapter;
 	AdapterCustomSpinner adapterKategorieSpinner;
 	ArrayList<Product> products = new ArrayList<Product>();
 	ArrayList<Product> productsTemp = new ArrayList<Product>();
@@ -53,6 +56,7 @@ public class FragmentProdukty extends SherlockFragment implements FinalVariables
 	CommonUtilities utilities = TPPApp.getUtilities();
 	FragmentManager fM;
 	
+//	ExpandableListView productsList;
 	ListView productsList;
 	View rootView;
 	LinearLayout dodajLay, scanLay;
@@ -68,7 +72,8 @@ public class FragmentProdukty extends SherlockFragment implements FinalVariables
 		String title = getString(R.string.frag_products_title);
 		utilities.setActionBarTitle(title, getSherlockActivity());
 		
-		spinnerTitle = getString(R.string.spinner_title_category);
+		spinnerTitle = getString(R.string.spinner_title_category);		
+		dbAdapter = new AdapterDB(getActivity());
 
 		rootView = inflater.inflate(R.layout.fragment_produkty, container, false);
 		dodajLay = (LinearLayout) rootView.findViewById(R.id.dodajLay);
@@ -77,7 +82,7 @@ public class FragmentProdukty extends SherlockFragment implements FinalVariables
 		dodajLay.setOnClickListener(this);
 		scanLay.setOnClickListener(this);
 
-		new InitList().execute(); //TODO dodać synchronizację do adapterDb
+		new InitList().execute();
 		
 		return rootView;
 	}
@@ -178,6 +183,7 @@ public class FragmentProdukty extends SherlockFragment implements FinalVariables
 			String choice = (String) view.getTag();
 			products = getSortedList(choice);
 			listAdapter = new AdapterProductList(getActivity(), products, fM, getId(), productsList);
+//			listAdapter = new ExpandableListTest(FragmentProdukty.this, productsList, products);
 			productsList.setAdapter(listAdapter);
 		}		
 	};
@@ -229,7 +235,6 @@ public class FragmentProdukty extends SherlockFragment implements FinalVariables
 		protected Void doInBackground(Void... params) {
 			try {
 				
-				dbAdapter = new AdapterDB(getActivity());
 				dbAdapter.open();
 				categories = dbAdapter.getAllCategories();
 				dbAdapter.close();
@@ -263,12 +268,12 @@ public class FragmentProdukty extends SherlockFragment implements FinalVariables
 		@Override
 		protected void onPreExecute() {
 			productsList = (ListView) rootView.findViewById(R.id.productsList);
+//			productsList = (ExpandableListView) rootView.findViewById(R.id.productsList);
 		}
 
 		@Override
 		protected Void doInBackground(Void... params) {
 			try {
-				dbAdapter = new AdapterDB(getActivity());
 				dbAdapter.open();
 				products = dbAdapter.getAllProducts();
 				productsTemp = products;
@@ -284,9 +289,10 @@ public class FragmentProdukty extends SherlockFragment implements FinalVariables
 		protected void onPostExecute(Void v) {
 			if (!products.isEmpty()) {
 				listAdapter = new AdapterProductList(getActivity(), products, fM, getId(), productsList);
+//				listAdapter = new ExpandableListTest(FragmentProdukty.this, productsList, products);
 				productsList.setAdapter(listAdapter);
 				
-				registerForContextMenu(productsList); // TODO prawdopodobnie nie bedzie uzywane
+				registerForContextMenu(productsList);
 			}
 			
 			new InitSort().execute();// lista kategorii
@@ -312,6 +318,7 @@ public class FragmentProdukty extends SherlockFragment implements FinalVariables
 			removeAlarms(przypomnienia, productId);
 			
 			listAdapter = new AdapterProductList(getActivity(), products, fM, getId(), productsList);
+//			listAdapter = new ExpandableListTest(this, productsList, products);
 			productsList.setAdapter(listAdapter);
 			
 			String message = getString(R.string.toast_delete_succes);
