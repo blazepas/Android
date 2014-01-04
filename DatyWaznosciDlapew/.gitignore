@@ -1,0 +1,15 @@
+/bin
+/gen
+project.properties
+.project
+.classpath
+/.settings
+
+*.apk
+*.ap_
+*.dex
+*.class
+.gradle/
+build/
+local.properties
+proguard/
