@@ -443,6 +443,5 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
             }
             return false;
         }
-    }
-			
+    }		
 }
