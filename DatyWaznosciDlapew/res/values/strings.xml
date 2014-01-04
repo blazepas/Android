@@ -3,6 +3,7 @@
     <!-- 				general 					-->
     <string name="possitive_button">Tak</string>
     <string name="cancel_button">Anuluj</string>
+    <string name="close_button">Zamknij</string>
     <string name="generate_button">Generuj</string>
     <string name="save_button">Zapisz</string>
     <string name="ok_button">Ok</string>
@@ -63,6 +64,7 @@
     <string name="action_item_own_product">Własny produkt</string>
     <string name="action_item_edit">Edytuj</string>
     <string name="action_item_delete">Usuń</string> 
+    <string name="action_item_about">O aplikacji</string> 
     
     
     <!-- 		   		   context menu 			-->
@@ -114,8 +116,20 @@
     	
     <!-- 			 fragment przypomnienie 		-->
    	<string name="frag_alarm_title">Przypomnienie</string>
-      
-    	
+   	
+   	
+   	<!-- 			 fragment o aplikacji 		-->
+   	<string name="frag_about_title">O aplikacji</string>
+   	<string name="dialog_regulations_title">Regulamin</string>
+   	<string name="dialog_regulations_message">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Proin nibh augue, suscipit a, scelerisque sed, lacinia in, mi. Cras vel lorem. Etiam pellentesque aliquet tellus. Phasellus pharetra nulla ac diam.</string>
+   	<string name="tv_version">Wersja</string>
+   	<string name="tv_instruction">Instrukcja</string>
+   	<string name="tv_discription">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Proin nibh augue, suscipit a, scelerisque sed, lacinia in, mi. Cras vel lorem. Etiam pellentesque aliquet tellus. Phasellus pharetra nulla ac diam.</string>
+    <string name="tv_regulations">Regulamin</string>
+    <string name="copy_button">Kopiuj</string>
+    <string name="toast_copy_regulations">Regulamin został skopiowany</string>
+    
+    
     <!-- popup info -->
    	<string name="info_okres">Czas przydatności produktu do użycia/spożycia po otwarciu produktu (data podawana na niektórych opakowaniach) np. 2 miesiące</string>
    	<string name="info_termin_waznosci">Po tym terminie produkt nie nadaje się do użycia/spożycia jest przeterminowany (data nadrukowana na opakowaniu).</string>

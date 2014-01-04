@@ -8,6 +8,7 @@ import pl.mareklatuszek.tpp.dialogs.DialogPrzypomnienie;
 import pl.mareklatuszek.tpp.fragments.FragmentDodaj;
 import pl.mareklatuszek.tpp.fragments.FragmentEdytuj;
 import pl.mareklatuszek.tpp.fragments.FragmentKategorie;
+import pl.mareklatuszek.tpp.fragments.FragmentOAplikacji;
 import pl.mareklatuszek.tpp.fragments.FragmentProdukt;
 import pl.mareklatuszek.tpp.fragments.FragmentProdukty;
 import pl.mareklatuszek.tpp.fragments.FragmentPrzypomnienia;
@@ -61,6 +62,8 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
 	int menuPos = -1;
 	public static Uri imageUri = new Uri.Builder().build();
 	public static boolean notification = false;
+	boolean menuClicked = false;
+	
 	
 	Fragment fragmentDodaj = new FragmentDodaj();
 	Fragment fragmentProdukty = new FragmentProdukty();
@@ -68,6 +71,7 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
 	Fragment fragmentPrzypomnienia = new FragmentPrzypomnienia();
 	Fragment fragmentProdukt = new FragmentProdukt();
 	Fragment fragmentPrzypomnienie = new FragmentPrzypomnienie();
+	Fragment fragmentOAplikacji = new FragmentOAplikacji();
 	Fragment fragmentEdytuj;
 	
     @Override   
@@ -96,7 +100,7 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
 
 		if (savedInstanceState == null) {
 			initMenu();
-			selectFragment(2);	
+			selectFragment(SELECTION_PRODUCTS);	
 			menu.toggle();
 		} else {
 			menuPos = savedInstanceState.getInt("menuPos");
@@ -225,6 +229,7 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {	
 			// po wybraniu z menu chowa je i zapisuje wybraną pozycje
+			menuClicked = true;
 			selectItemMenu(position);
 			menu.toggle();
 		}
@@ -235,18 +240,18 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
 		@Override
 		public void onClosed() {
 			
-			if(currentFragmentPos != menuPos) {
+			if(currentFragmentPos != menuPos & menuClicked) {
 				selectFragment(menuPos);
 			}
-			
+			menuClicked = false;
 		}
-		
 	}
 
 	public void selectFragment(int position) {	
 		currentFragmentPos = position;
 		
 		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+
 		switch (position) {
 		case SELECTION_SCAN:
 			startScanner();
@@ -282,6 +287,9 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
 			return;
 		case SELECTION_ALARM:
 			ft.replace(R.id.content_frame, fragmentPrzypomnienie);
+			ft.commit();
+		case SELECTION_ABOUT:
+			ft.replace(R.id.content_frame, fragmentOAplikacji);
 			ft.commit();
 			return;
 		}

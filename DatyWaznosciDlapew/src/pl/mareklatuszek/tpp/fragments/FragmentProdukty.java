@@ -204,6 +204,9 @@ public class FragmentProdukty extends SherlockFragment implements FinalVariables
 			case 2:
 				selectFragmentDodaj();
 				break;	
+			case 3:
+				selectFragmentOAplikacji();
+				break;
 			}
 		}
 	};
@@ -336,6 +339,11 @@ public class FragmentProdukty extends SherlockFragment implements FinalVariables
 	public void selectFragmentDodaj() {
 		((MainActivity) getActivity()).selectFragment(SELECTION_ADD);
 	}
+	
+	public void selectFragmentOAplikacji() {
+		((MainActivity) getActivity()).selectFragment(SELECTION_ABOUT);
+	}
+	
 	
 	private void scanCode() {
 		((MainActivity) getActivity()).selectFragment(SELECTION_SCAN);

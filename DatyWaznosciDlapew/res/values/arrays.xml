@@ -40,6 +40,7 @@
         <item>@string/action_item_share</item>
         <item>@string/tv_scan</item>
         <item>@string/tv_own</item>
+        <item>@string/action_item_about</item>
     </string-array>
     
     <string-array name="array_popup_product_title">

@@ -11,6 +11,6 @@ public class TppPremiumCheckConsts implements Serializable {
 	public static String APPVERSION = "appVersion";
 	public static String HASH = "hash";
 	public static String PREMIUM_CHECK_JSON_DATA = "premiumCheckJsonData";
-
+	
 	public static final String HASH_SECRET = "pVVUGp4UxQmwGmD";
 }

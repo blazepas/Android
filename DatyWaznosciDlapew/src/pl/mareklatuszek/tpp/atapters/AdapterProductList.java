@@ -91,8 +91,9 @@ public class AdapterProductList extends BaseAdapter implements OnClickListener, 
 	@Override
 	public View getView(final int position, View convertView, ViewGroup parent) {
 		View vi;
+		boolean viewIsNull = convertView == null;
 
-        if (clickedPos == position){	        
+        if (clickedPos == position & !viewIsNull){	        
 	        vi = (View) convertView.getTag();
 	        
 	        detailsLay = (LinearLayout) vi.findViewById(R.id.detailsLay);
@@ -101,7 +102,7 @@ public class AdapterProductList extends BaseAdapter implements OnClickListener, 
 	        initAnimations(position);	
 	        
 	        return convertView;
-        } else if (convertView == null) {
+        } else if (viewIsNull) {
         	vi = inflater.inflate(R.layout.listview_products, null);
         	
  	        convertView = initRow(vi, position);
