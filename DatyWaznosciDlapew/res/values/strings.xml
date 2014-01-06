@@ -115,6 +115,7 @@
 	    
     <!-- 			 fragment przypomnienia 		-->
    	<string name="frag_alarms_title">Przypomnienia</string>
+   	<string name="dialog_alarms_title">Przypomnienie</string>
     
     	
     <!-- 			 fragment przypomnienie 		-->
@@ -162,6 +163,11 @@
     <string name="dialog_non_premium_message">Czy chcesz przejść teraz do sklepu?</string>
     <string name="dialog_premium_title">Masz wersję premium</string>
     <string name="dialog_premium_message">Posiadasz zainstalowaną wersję premium</string>
+    
+    
+    <!-- notification -->
+    <string name="message_product">Produkt</string>
+    <string name="message_passes_for">przydatność mija za</string>
    
 
     <string name="app_name">Termin Przydatności Produktów - TPP</string>

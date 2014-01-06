@@ -5,7 +5,7 @@ public interface FinalVariables {
 	public static final String PREMIUM_APP_URI = "pl.jacek.jablonka.android.tpp.premium";
 	public static final String IMAGE_DIRECTORY_NAME = "TPP";
 
-	public static final int DB_VERSION = 1;
+	public static final int DB_VERSION = 2;
 	public static final String DB_DEBUG_TAG = "Product database"; 
 	public static final String DB_NAME = "database.db";
 	public static final String DB_PRODUCT_TABLE = "product";
@@ -28,6 +28,7 @@ public interface FinalVariables {
 	public static final String DB_END_DATE = "endDate";
 	public static final String DB_IS_SCANNED = "isScanned";
 	public static final String DB_PRODUCT_ID = "productId";
+	public static final String DB_ALARMS_ID = "alarmsId";
 	
 	public static final String DB_CAT_CATEGORY = "cat_category";
 	
@@ -48,7 +49,8 @@ public interface FinalVariables {
             DB_IS_SCANNED + " " + CELL_DEFAULT + ", " +
             DB_DATA_ZUZYCIA + " " + CELL_DEFAULT + ", " +
             DB_END_DATE + " " + CELL_DEFAULT + ", " +
-            DB_PRODUCT_ID + " " + CELL_DEFAULT +
+            DB_PRODUCT_ID + " " + CELL_DEFAULT + ", " +
+            DB_ALARMS_ID + " " + CELL_DEFAULT +
             ");";
 	
 	public static final String DB_CREATE_CATEGORIES_TABLE = "CREATE TABLE " + DB_CATEGORIES_TABLE + "( " +

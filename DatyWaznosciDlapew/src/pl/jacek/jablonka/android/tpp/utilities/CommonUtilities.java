@@ -753,23 +753,23 @@ public class CommonUtilities implements FinalVariables {
 		return f;
 	}
 	
-	public void startAlarms(ArrayList<HashMap<String, String>> przypomnienia, String nazwa, String productId) {
+	public void startAlarms(ArrayList<HashMap<String, String>> przypomnienia, Product product) {
 		for (int i = 0; i < przypomnienia.size(); i++) {
 			HashMap<String, String> przypomnienie = przypomnienia.get(i);
 			String time = przypomnienie.get(PRZYP_DATE);
-			startAlarm(time, nazwa, productId);
+			startAlarm(time, product);
 		}
 	}
 	
-	public void cancelAlarms(ArrayList<HashMap<String, String>> przypomnienia, String productId) {
+	public void cancelAlarms(ArrayList<HashMap<String, String>> przypomnienia, String alarmsId) {
 		for (int i = 0; i < przypomnienia.size(); i++) {
 			HashMap<String, String> przypomnienie = przypomnienia.get(i);
 			String time = przypomnienie.get(PRZYP_DATE);
-			cancelAlarm(time, productId);
+			cancelAlarm(time, alarmsId);
 		}
 	}
 	
-	public void startAlarm(String alarmTimeInMillis, String nazwa, String productId) {
+	public void startAlarm(String alarmTimeInMillis, Product product) {
 		long alarmTime = Long.parseLong(alarmTimeInMillis);	
 	    AlarmManager alarmManager = (AlarmManager) context.getSystemService(context.ALARM_SERVICE);
 	    
@@ -777,11 +777,11 @@ public class CommonUtilities implements FinalVariables {
 	    cal.setTimeInMillis(alarmTime);
 	    
 	    long when = cal.getTimeInMillis(); // czas powiadomienia
-	    int intentId = productId.hashCode();
+	    int intentId = product.getAlarmsId().hashCode();
 	    Intent intent = new Intent(context, ReminderService.class);
-	    intent.putExtra("message", "Przypomnienie o koncu ważności produktu: " + nazwa);
-	    intent.putExtra("productId", productId);
-	    intent.putExtra("timeInMillis", alarmTimeInMillis);
+	    intent.putExtra("productName", product.getNazwa());
+	    intent.putExtra("productId", product.getProductId());
+	    intent.putExtra("endDate", product.getEndDate());
 	    PendingIntent pendingIntent = PendingIntent.getService(context, intentId, intent, 0);
 	    alarmManager.set(AlarmManager.RTC_WAKEUP, when, pendingIntent);
 	            
@@ -789,14 +789,14 @@ public class CommonUtilities implements FinalVariables {
           
 	}
 	
-	public void cancelAlarm(String alarmTimeInMillis, String productId) {
+	public void cancelAlarm(String alarmTimeInMillis, String alarmsId) {
 		long alarmTime = Long.parseLong(alarmTimeInMillis);		
 	    AlarmManager alarmManager = (AlarmManager) context.getSystemService(context.ALARM_SERVICE);
 	    
 	    Calendar cal = new GregorianCalendar();
 	    cal.setTimeInMillis(alarmTime);
 	    
-	    int intentId = productId.hashCode();
+	    int intentId = alarmsId.hashCode();
 	    Intent intent = new Intent(context, ReminderService.class);
 	    PendingIntent pendingIntent = PendingIntent.getService(context, intentId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 	    alarmManager.cancel(pendingIntent);

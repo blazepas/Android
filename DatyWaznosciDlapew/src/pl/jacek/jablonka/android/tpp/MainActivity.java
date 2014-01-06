@@ -76,11 +76,11 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
     	super.onResume();    	
     	if(notification) {
     		String productId = getIntent().getStringExtra("productId");
-            String timeInMillis = getIntent().getStringExtra("timeInMillis");
             notification = false;
-            if (productId != null & timeInMillis != null) {
-        		onNotification(productId, timeInMillis);
+            if (productId != null) {
+        		onNotification(productId);
             } else {
+            	Log.i("notificanion", "null");
             	//TODO
             }
     	}
@@ -301,15 +301,13 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
 		}
 	}
 	
-	private void onNotification(String productId, String alarmTime) {	
+	private void onNotification(String productId) {	
 		adapterDb.open();
 		Product product = adapterDb.getProduct(productId);
 		adapterDb.close();
 		
 		DialogPrzypomnienie dialogPrzypomnienie = new DialogPrzypomnienie(this, product);
 		dialogPrzypomnienie.show();
-		
-//		removePrzypomnienie(productId, alarmTime);
 	}
 	
 	public void startScanner() {

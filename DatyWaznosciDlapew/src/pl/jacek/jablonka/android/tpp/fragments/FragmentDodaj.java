@@ -373,12 +373,14 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		String okresWaznosci = getOkresWaz(okresWazTextBox, okresWazDropDown);
 		String kod = code;
 		String typKodu = codeFormat;
+		String alarmsId = String.valueOf(System.currentTimeMillis());
 		
 		product.setNazwa(nazwa);
 		product.setOkresWaznosci(okresWaznosci);			
 		product.setCode(kod);
 		product.setCodeFormat(typKodu);	
 		product.setIsScanned(isScanned);
+		product.setAlarmsId(alarmsId);
 
 		String dataOtwarcia = dataOtwTxtBox.getText().toString();			
 		String kategoria = getKategoria();
@@ -435,9 +437,7 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		
 		if (storeStatus) {
 			ArrayList<HashMap<String, String>> przypomnienia = product.getPrzypomnienia();
-			String nazwa = product.getNazwa();
-			String productId = product.getProductId();
-			setAlarms(przypomnienia, nazwa, productId);
+			setAlarms(przypomnienia, product);
 			isScanned = false;
 		}
 		
@@ -550,8 +550,8 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		okresWazDropDown.setText(okresSpinnVal);
 	}
 	
-	private void setAlarms(ArrayList<HashMap<String, String>> przypomnienia, String nazwa, String productId) {
-		utilities.startAlarms(przypomnienia, nazwa, productId);
+	private void setAlarms(ArrayList<HashMap<String, String>> przypomnienia, Product product) {
+		utilities.startAlarms(przypomnienia, product);
 	}
 		
 	private void setKategoria(String kategoria) {

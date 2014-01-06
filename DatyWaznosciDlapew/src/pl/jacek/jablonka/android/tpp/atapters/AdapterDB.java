@@ -129,6 +129,7 @@ public class AdapterDB implements FinalVariables {
 		int columnEndDate =  cursor.getColumnIndex(DB_END_DATE);
 		int columnIsScanned =  cursor.getColumnIndex(DB_IS_SCANNED);
 		int columnProductId=  cursor.getColumnIndex(DB_PRODUCT_ID);
+		int columnAlarmsId=  cursor.getColumnIndex(DB_ALARMS_ID);
 		
 		while(cursor.moveToNext()) {
 			Product product = new Product();
@@ -147,6 +148,7 @@ public class AdapterDB implements FinalVariables {
 			String endDate = cursor.getString(columnEndDate);
 			String isScanned = cursor.getString(columnIsScanned);
 			String productId = cursor.getString(columnProductId);
+			String alarmsId = cursor.getString(columnAlarmsId);
 	        
 			product.setNazwa(nazwa);
 			product.setDataOtwarcia(dataOtwarcia);
@@ -162,6 +164,7 @@ public class AdapterDB implements FinalVariables {
 			product.setEndDate(endDate);
 			product.setIsScanned(isScanned);
 			product.setProductId(productId);
+			product.setAlarmsId(alarmsId);
 			
 			productList.add(product);
 		}
@@ -212,6 +215,7 @@ public class AdapterDB implements FinalVariables {
 			String endDate = cursor.getString(cursor.getColumnIndex(DB_END_DATE));
 			String isScanned = cursor.getString(cursor.getColumnIndex(DB_IS_SCANNED));
 			String productIdDB = cursor.getString(cursor.getColumnIndex(DB_PRODUCT_ID));
+			String alarmsId = cursor.getString(cursor.getColumnIndex(DB_ALARMS_ID));
 	        
 			product.setNazwa(nazwa);
 			product.setDataOtwarcia(dataOtwarcia);
@@ -227,6 +231,7 @@ public class AdapterDB implements FinalVariables {
 			product.setEndDate(endDate);
 			product.setIsScanned(isScanned);
 			product.setProductId(productIdDB);
+			product.setAlarmsId(alarmsId);
 			
 	    }
 	    
@@ -338,6 +343,7 @@ public class AdapterDB implements FinalVariables {
 		String endDate = product.getEndDate();
 		String isScanned = product.getIsScannedToDB();
 		String productId = product.getProductId();
+		String alarmsId = product.getAlarmsId();
 	    
 		newProductVal.put(DB_NAZWA, nazwa);
 		newProductVal.put(DB_DATA_OTWARCIA, dataOtwarcia);
@@ -353,6 +359,7 @@ public class AdapterDB implements FinalVariables {
 		newProductVal.put(DB_END_DATE, endDate);
 		newProductVal.put(DB_IS_SCANNED, isScanned);
 		newProductVal.put(DB_PRODUCT_ID, productId);
+		newProductVal.put(DB_ALARMS_ID, alarmsId);
 		
 		return newProductVal;
 	}

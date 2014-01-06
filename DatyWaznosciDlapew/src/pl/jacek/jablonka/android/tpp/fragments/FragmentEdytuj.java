@@ -60,7 +60,7 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 	String currentDate = "";
 	public String code = "";
 	public String codeFormat = "";
-	String oldCode = "";
+	String oldAlarmsId = "";
 	String productId = "0";
 	
 	AdapterDB dbAdapter;
@@ -97,7 +97,7 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 		
 			if (extras != null) {//TODO
 				Product bundleProduct = (Product) extras.getSerializable("product");
-				oldCode = bundleProduct.getCode();
+				oldAlarmsId = bundleProduct.getAlarmsId();
 				oldPrzypomnienia = bundleProduct.getPrzypomnienia();
 				isScanned = bundleProduct.getIsScanned();
 				productId = bundleProduct.getProductId();
@@ -108,7 +108,7 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 		} else {
 			orientationChanged = true;
 			Product savedStateProduct = (Product) savedInstanceState.getSerializable("product");
-			oldCode = savedInstanceState.getString("oldCode");
+			oldAlarmsId = savedInstanceState.getString("oldAlarmsId");
 			oldPrzypomnienia = (ArrayList<HashMap<String, String>>) savedInstanceState.getSerializable("oldPrzypomnienia");
 			dodatkoweIsVisible = savedInstanceState.getBoolean("dodatkowe");
 			isScanned = savedInstanceState.getBoolean("isScanned");
@@ -138,7 +138,7 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 		}
 		
 		bundle.putBoolean("isScanned", isScanned);
-		bundle.putString("oldCode", oldCode);
+		bundle.putString("oldAlarmsId", oldAlarmsId);
 		bundle.putString("productId", productId);
 		bundle.putSerializable("oldPrzypomnienia", oldPrzypomnienia);
 	    bundle.putSerializable("product", productToSave);     
@@ -339,12 +339,14 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 		String okresWaznosci = getOkresWaz(okresWazTextBox, okresWazDropDown);
 		String kod = code;
 		String typKodu = codeFormat;
+		String alarmsId = String.valueOf(System.currentTimeMillis());
 		
 		product.setNazwa(nazwa);
 		product.setOkresWaznosci(okresWaznosci);			
 		product.setCode(kod);
 		product.setCodeFormat(typKodu);	
 		product.setIsScanned(isScanned);
+		product.setAlarmsId(alarmsId);
 
 		String dataOtwarcia = dataOtwTxtBox.getText().toString();			
 		String kategoria = getKategoria();
@@ -401,9 +403,7 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 		
 		if (storeStatus) {
 			ArrayList<HashMap<String, String>> przypomnienia = product.getPrzypomnienia();
-			String nazwa = product.getNazwa();
-			String productId = product.getProductId();
-			setAlarms(przypomnienia, nazwa, productId); // gdy zmienia się id produktu, zaktualizować id alarmu!
+			setAlarms(przypomnienia, product); // gdy zmienia się id produktu, zaktualizować id alarmu!
 		}
 		
 		return storeStatus; //je�li zapisze do poprawnie
@@ -519,9 +519,9 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 		okresWazDropDown.setText(okresSpinnVal);
 	}
 	
-	private void setAlarms(ArrayList<HashMap<String, String>> przypomnienia, String nazwa, String productId) {
-		utilities.cancelAlarms(oldPrzypomnienia, productId);
-		utilities.startAlarms(przypomnienia, nazwa, productId);
+	private void setAlarms(ArrayList<HashMap<String, String>> przypomnienia, Product product) {
+		utilities.cancelAlarms(oldPrzypomnienia, oldAlarmsId);
+		utilities.startAlarms(przypomnienia, product);
 	}
 		
 	private void setKategoria(String kategoria) {

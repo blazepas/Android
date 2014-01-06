@@ -2,123 +2,135 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/fragment_background"
+    android:gravity="center"
     android:orientation="vertical" >
 
     <LinearLayout
-        android:layout_width="300dp"
-        android:layout_height="300dp"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/products_add"
         android:gravity="center"
         android:orientation="vertical" >
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp" >
+            android:text="@string/dialog_alarms_title"
+            android:textAppearance="@style/TPP.XLarge.TextAppearance"
+            android:textColor="@color/light_text_view" />
+    </LinearLayout>
 
-            <TextView
-                android:id="@+id/nazwaTxtList"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Nazwa: " />
-
-            <TextView
-                android:id="@+id/nazwaTxt"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="TextView" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="25dp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
+        android:gravity="center"
+        android:orientation="vertical" >
+        
+        <pl.jacek.jablonka.android.tpp.views.TextViewBariol
+            android:id="@+id/nazwaTxt"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:orientation="vertical" >
+            android:layout_marginTop="10dp"
+            android:text="TextView"
+            android:textAllCaps="true"
+            android:textAppearance="@style/TPP.XLarge.TextAppearance"
+            android:textColor="@color/medium_text_view" />
 
-            <TextView
-                android:id="@+id/textView3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Okres ważności mija za:" />
+    <pl.jacek.jablonka.android.tpp.views.TextViewBariol
+        android:id="@+id/kategoriaTxt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="TextView"
+        android:textAllCaps="true"
+        android:textAppearance="@style/TPP.Normal.TextAppearance"
+        android:textColor="@color/medium_text_view" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_margin="5dp" >
+    <pl.jacek.jablonka.android.tpp.views.TextViewBariol
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:text="@string/tv_validity_passes_for"
+        android:textAppearance="@style/TPP.Normal.TextAppearance"
+        android:textColor="@color/dark_text_view" />
 
-                <TextView
-                    android:id="@+id/okresTxt"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:gravity="bottom"
-                    android:text="TextView" />
+    <RelativeLayout
+        android:id="@+id/progressLay"
+        android:layout_width="220dp"
+        android:layout_height="54dp" >
+    </RelativeLayout>
 
-                <ProgressBar
-                    android:id="@+id/okresProgress"
-                    style="?android:attr/progressBarStyleHorizontal"
-                    android:layout_width="180dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="5dp"
-                    android:layout_weight="0.65" />
-            </LinearLayout>
+    <pl.jacek.jablonka.android.tpp.views.TextViewBariol
+        android:id="@+id/estimateTxt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="TextView"
+        android:textAllCaps="true"
+        android:textAppearance="@style/TPP.Large.TextAppearance"
+        android:textColor="@color/alarm_light_text" />
 
-        </LinearLayout>
+    <RelativeLayout
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp" >
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <pl.jacek.jablonka.android.tpp.views.TextViewBariol
+            android:id="@+id/textView5"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp" >
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:text="@string/tv_validity_peroid"
+            android:textAppearance="@style/TPP.Normal.TextAppearance"
+            android:textColor="@color/dark_text_view" />
 
-            <TextView
-                android:id="@+id/textView4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Data otwarcia: " />
-
-            <TextView
-                android:id="@+id/dataOtwTxt"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="TextView" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
+        <pl.jacek.jablonka.android.tpp.views.TextViewBariol
+            android:id="@+id/dataOtwTxt"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp" >
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:text="TextView"
+            android:textAppearance="@style/TPP.Normal.TextAppearance"
+            android:textColor="@color/alarm_light_text" />
 
-            <TextView
-                android:id="@+id/TextView01"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Termin ważności:" />
-
-            <TextView
-                android:id="@+id/terminWazTxt"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="TextView" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
+        <pl.jacek.jablonka.android.tpp.views.TextViewBariol
+            android:id="@+id/textView7"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp" >
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/textView5"
+            android:layout_marginTop="15dp"
+            android:text="@string/tv_validity_date"
+            android:textAppearance="@style/TPP.Normal.TextAppearance"
+            android:textColor="@color/dark_text_view" />
 
-            <TextView
-                android:id="@+id/TextView03"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Kategoria: " />
+        <pl.jacek.jablonka.android.tpp.views.TextViewBariol
+            android:id="@+id/terminWazTxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/textView7"
+            android:layout_alignBottom="@+id/textView7"
+            android:layout_alignParentRight="true"
+            android:text="TextView"
+            android:textAppearance="@style/TPP.Normal.TextAppearance"
+            android:textColor="@color/alarm_light_text" />
 
-            <TextView
-                android:id="@+id/kategoriaTxt"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="TextView" />
-        </LinearLayout>
-
+    </RelativeLayout>
+        
+        
+        
+        
+        
+        
+        
     </LinearLayout>
 
 </LinearLayout>

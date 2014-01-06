@@ -2,6 +2,7 @@ package pl.jacek.jablonka.android.tpp.utilities;
 
 import pl.jacek.jablonka.android.tpp.MainActivity;
 import pl.jacek.jablonka.android.tpp.R;
+import pl.jacek.jablonka.android.tpp.TPPApp;
 import android.app.IntentService;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -11,6 +12,7 @@ import android.content.Intent;
 
 public class ReminderService extends IntentService implements FinalVariables {
     private static final int NOTIF_ID = 1;
+    CommonUtilities utilities = TPPApp.getUtilities();
 
     public ReminderService(){
         super("ReminderService");
@@ -22,21 +24,30 @@ public class ReminderService extends IntentService implements FinalVariables {
         long when = System.currentTimeMillis();         // notification time
         MainActivity.notification = true;
         
-        String message = intent.getStringExtra("message");
+        String productName = intent.getStringExtra("productName");
 		String productId = intent.getStringExtra("productId");
-        String timeInMillis = intent.getStringExtra("timeInMillis");
-        int intentId = 0;
+        String endTime = intent.getStringExtra("endDate");
         
-        Notification notification = new Notification(R.drawable.ic_launcher, "TPP", when);
+        String productTxt = getString(R.string.message_product);
+        String passesFor = getString(R.string.message_passes_for);
+        long endTimeInMillis;
+		try {
+			endTimeInMillis = utilities.parseDate(endTime);
+		} catch (Exception e) {
+			endTimeInMillis = 0;
+		}
+        String peroid =  utilities.dateToWords(when, endTimeInMillis);
+        String message = productTxt + ": " + productName + " " + passesFor + " " + peroid;
+        
+        Notification notification = new Notification(R.drawable.icon, "TPP", when);
         notification.defaults |= Notification.DEFAULT_SOUND;
         notification.flags |= notification.FLAG_AUTO_CANCEL;
         
         Intent notificationIntent = new Intent(this, MainActivity.class);
         notificationIntent.putExtra("productId", productId);
-        notificationIntent.putExtra("timeInMillis", timeInMillis);
-        PendingIntent contentIntent = PendingIntent.getActivity(this, intentId, notificationIntent , 0);
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent , 0);
        
-        notification.setLatestEventInfo(getApplicationContext(), "Test", message, contentIntent);
+        notification.setLatestEventInfo(getApplicationContext(), "TPP", message, contentIntent);
         nm.notify(NOTIF_ID, notification);
         
     }
