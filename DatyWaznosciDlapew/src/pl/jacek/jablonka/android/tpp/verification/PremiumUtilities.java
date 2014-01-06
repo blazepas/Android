@@ -118,15 +118,31 @@ public class PremiumUtilities {
 	
 	public boolean isPremiumInstalled() {
         PackageManager pm = mActivity.getPackageManager();
-        boolean app_installed = false;
+		String installerName = null;
+		
         try {
-	        pm.getPackageInfo(FinalVariables.PREMIUM_APP_URI, PackageManager.GET_ACTIVITIES);
-	        app_installed = true;
+        	
+        	installerName = pm.getInstallerPackageName(FinalVariables.PREMIUM_APP_URI);
         }
-        catch (PackageManager.NameNotFoundException e) {
-        	app_installed = false;
+        catch (Exception e) {
+        	
+        	return false;
         }
-        return app_installed ;
+        
+        if (installerName != null) {
+        	
+        	if (installerName.equals("com.android.vending")) {
+        		
+        		return true;       		
+        	} else {
+        		
+        		return false;      		
+        	}          	
+        } else {
+        	
+        	return false;
+        }
+
     }
 	
 	public boolean isServerVerificate() {
