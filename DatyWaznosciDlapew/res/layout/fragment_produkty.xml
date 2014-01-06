@@ -68,33 +68,4 @@
         android:divider="@null"
         android:dividerHeight="0dp"/>
 
-    <LinearLayout
-        android:id="@+id/scanLay"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="@drawable/button_add_back"
-        android:gravity="center" >
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center" >
-
-            <ImageView
-                android:id="@+id/ImageView01"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginRight="7dp"
-                android:src="@drawable/ic_scan_info" />
-
-            <pl.jacek.jablonka.android.tpp.views.TextViewBariol
-                android:id="@+id/TextViewBariol01"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/tv_scan"
-                android:textAppearance="@style/TPP.Normal.TextAppearance"
-                android:textColor="@color/light_text_view" />
-        </LinearLayout>
-    </LinearLayout>
-
 </LinearLayout>

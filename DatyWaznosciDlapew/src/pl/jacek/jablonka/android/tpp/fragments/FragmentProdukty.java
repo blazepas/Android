@@ -75,10 +75,8 @@ public class FragmentProdukty extends SherlockFragment implements FinalVariables
 
 		rootView = inflater.inflate(R.layout.fragment_produkty, container, false);
 		dodajLay = (LinearLayout) rootView.findViewById(R.id.dodajLay);
-		scanLay = (LinearLayout) rootView.findViewById(R.id.scanLay);
 		
 		dodajLay.setOnClickListener(this);
-		scanLay.setOnClickListener(this);
 
 		new InitList().execute();
 		
@@ -167,8 +165,6 @@ public class FragmentProdukty extends SherlockFragment implements FinalVariables
 			DialogDodajProdukt dialog = new DialogDodajProdukt(getActivity());
 			dialog.show();
 			break;
-		case R.id.scanLay:
-			scanCode();
 		}
 	}
 	
