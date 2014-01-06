@@ -21,6 +21,7 @@ import pl.jacek.jablonka.android.tpp.utilities.FinalVariables;
 import pl.jacek.jablonka.android.tpp.verification.PremiumUtilities;
 import pl.jacek.jablonka.android.tpp.views.CustomSpinner;
 import pl.jacek.jablonka.android.tpp.views.CustomViewPrzypomnienia;
+import pl.jacek.jablonka.android.tpp.views.EditTextBariol;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
@@ -649,9 +650,34 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 			String message = getString(R.string.toast_empty_termin_okres);
 			Toast.makeText(getActivity(), message, 2000).show();
 			return false;
+		} else if (checkIfAlarmsIsFill()) {
+			String message = getString(R.string.toast_wrong_alarm_value);
+			Toast.makeText(getActivity(), message, 2000).show();
+			return false;
 		} else {
 			return true;
 		}
+	}
+	
+	private boolean checkIfAlarmsIsFill() {
+		int count = przypLayout.getChildCount();
+		String spinnerDefault = getString(R.string.spinner_title_alarm);
+
+		for (int i = 0; i < count; i++) {
+			View currentRow = przypLayout.getChildAt(i);
+			int tag = (Integer) currentRow.getTag();
+			
+			EditTextBariol textBox = (EditTextBariol) currentRow.findViewById(tag);
+			CustomSpinner spinner = (CustomSpinner) currentRow.findViewById(R.id.spinner);
+			
+			String boxTxt = textBox.getText().toString();
+			String spinnerChoice = spinner.getText();
+
+			if(!boxTxt.equals("") & spinnerChoice.equals(spinnerDefault)) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	private void switchToShowFragment(Product product) {

@@ -83,6 +83,7 @@
     <string name="toast_pick_camera_error">Błąd aparatu!</string>
     <string name="toast_empty_product_name">Należy podać nazwę produktu</string>
     <string name="toast_empty_termin_okres">Należy podać termin ważności lub okres trwałości produktu</string>
+    <string name="toast_wrong_alarm_value">Proszę wybrać termin przypomnienia</string>
 
 	<string name="dialog_add_db_title">Dodaję</string>
     <string name="dialog_add_db_message">Dodawanie do bazy</string>
