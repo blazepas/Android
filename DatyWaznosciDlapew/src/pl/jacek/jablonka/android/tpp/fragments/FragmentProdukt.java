@@ -414,7 +414,7 @@ public class FragmentProdukt extends SherlockFragment implements FinalVariables,
 	
 	private String makeEstimateText(long currentTime, long powiadomienieDate) {
 		String text = utilities.dateToWords(currentTime, powiadomienieDate);
-		if (text.equals("Powiadomiono")) { //TODO strings
+		if (currentTime >= powiadomienieDate) {
 			return text;
 		} else {
 			String forTime = getString(R.string.date_for);

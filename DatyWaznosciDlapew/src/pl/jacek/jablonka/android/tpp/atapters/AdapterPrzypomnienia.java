@@ -90,7 +90,7 @@ public class AdapterPrzypomnienia extends BaseAdapter implements FinalVariables 
 	
 	private String makeEstimateText(long currentTime, long powiadomienieDate) {
 		String text = utilities.dateToWords(currentTime, powiadomienieDate);
-		if (text.equals("Powiadomiono")) { //TODO strings
+		if (currentTime >= powiadomienieDate) {
 			return text;
 		} else {
 			String forTime = mActivity.getString(R.string.date_for);
