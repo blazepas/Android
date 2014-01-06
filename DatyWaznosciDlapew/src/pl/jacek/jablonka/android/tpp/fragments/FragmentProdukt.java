@@ -159,13 +159,7 @@ public class FragmentProdukt extends SherlockFragment implements FinalVariables,
 			toggleDodatkowe();
 			break;
 		case R.id.pickGenerate:
-			if (PremiumUtilities.APP_VERSION_NONE) {
-    			String message = getString(R.string.toast_must_have_premium);
-      		  	Toast.makeText(getActivity(), message, 2000).show();
-      	  	} else {
-	      	  	DialogGeneruj dialogGen = new DialogGeneruj(this, product, barcodeImage);
-				dialogGen.show();
-      	  	} 			
+			getDialogGeneruj();		
 			break;
 		}
 	}
@@ -313,6 +307,21 @@ public class FragmentProdukt extends SherlockFragment implements FinalVariables,
         String estimate = utilities.dateToWords(System.currentTimeMillis(), endTime);
 		
 		return estimate;
+	}
+	
+	private void getDialogGeneruj() {
+		boolean isScanned = product.getIsScanned();
+		
+		if(!isScanned) {
+			if (PremiumUtilities.APP_VERSION_NONE) {
+				String message = getString(R.string.toast_must_have_premium);
+	  		  	Toast.makeText(getActivity(), message, 2000).show();
+	  	  	} else {
+	      	  	DialogGeneruj dialogGen = new DialogGeneruj(this, product, barcodeImage);
+				dialogGen.show();
+	  	  	} 	
+		}
+	
 	}
 	
 	private void toggleDodatkowe() {
