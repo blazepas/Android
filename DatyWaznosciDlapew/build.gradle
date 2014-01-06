@@ -13,7 +13,7 @@ android {
     buildToolsVersion "19.0.0"
 
     sourceSets {
-        pl.mareklatuszek.tpp {
+        pl.jacek.jablonka.android.tpp {
             manifest.srcFile 'AndroidManifest.xml'
             java.srcDirs = ['src']
             resources.srcDirs = ['src']
@@ -29,7 +29,7 @@ android {
         // Move the build types to build-types/<type>
         // For instance, build-types/debug/java, build-types/debug/AndroidManifest.xml, ...
         // This moves them out of them default location under src/<type>/... which would
-        // conflict with src/ being used by the pl.mareklatuszek.tpp source set.
+        // conflict with src/ being used by the pl.jacek.jablonka.android.tpp source set.
         // Adding new build types or product flavors should be accompanied
         // by a similar customization.
         debug.setRoot('build-types/debug')

@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="pl.mareklatuszek.tpp"
+    package="pl.jacek.jablonka.android.tpp"
     android:versionCode="1"
-    android:versionName="1.0.7" >
+    android:versionName="1.0.8" >
 
     <uses-sdk
         android:minSdkVersion="8"
@@ -28,7 +28,7 @@
 			android:windowSoftInputMode="stateAlwaysHidden" />
         
         <service 
-            android:name="pl.mareklatuszek.tpp.utilities.ReminderService" >
+            android:name="pl.jacek.jablonka.android.tpp.utilities.ReminderService" >
         </service>
         
     </application>

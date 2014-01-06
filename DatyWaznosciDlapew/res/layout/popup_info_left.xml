@@ -6,7 +6,7 @@
     android:background="@color/item_pressed"
     android:orientation="vertical" >
 
-    <pl.mareklatuszek.tpp.views.TextViewBariol
+    <pl.jacek.jablonka.android.tpp.views.TextViewBariol
         android:id="@+id/popupTxt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

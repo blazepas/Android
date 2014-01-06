@@ -12,7 +12,7 @@
         android:background="@color/categories_header"
         android:gravity="center" >
 
-       	<pl.mareklatuszek.tpp.views.EditTextBariol
+       	<pl.jacek.jablonka.android.tpp.views.EditTextBariol
        	    android:id="@+id/categoryTxtBoxKat"
        	    android:layout_width="@dimen/categories_editbox_width"
        	    android:layout_height="@dimen/categories_editbox_height"

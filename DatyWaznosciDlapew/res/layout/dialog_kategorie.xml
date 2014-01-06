@@ -24,7 +24,7 @@
         android:orientation="horizontal"
         android:paddingBottom="5dp" >
 
-        <pl.mareklatuszek.tpp.views.TextViewBariol
+        <pl.jacek.jablonka.android.tpp.views.TextViewBariol
             android:id="@+id/textView1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

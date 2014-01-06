@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="pl.mareklatuszek.tpp.premium"
+    package="pl.jacek.jablonka.android.tpp.premium"
     android:versionCode="1"
     android:versionName="1.0.0" >
 
@@ -17,7 +17,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="pl.mareklatuszek.tpp.activator.MainActivity"
+            android:name="pl.jacek.jablonka.android.tpp.premium.MainActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

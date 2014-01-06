@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal" >
 
-            <pl.mareklatuszek.tpp.views.TextViewBariol
+            <pl.jacek.jablonka.android.tpp.views.TextViewBariol
                 android:id="@+id/nazwaTxtList"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

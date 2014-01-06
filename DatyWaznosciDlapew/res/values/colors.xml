@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- pl.mareklatuszek.tpp -->
+    <!-- pl.jacek.jablonka.android.tpp -->
     <color name="light_text_view">#ffffff</color>
     <color name="medium_text_view">#065862</color>
     <color name="dark_text_view">#013f46</color>

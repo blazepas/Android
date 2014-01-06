@@ -9,7 +9,7 @@
         android:layout_height="@dimen/categories_row_height"
         android:gravity="right|center_vertical" >
 
-        <pl.mareklatuszek.tpp.views.TextViewBariol
+        <pl.jacek.jablonka.android.tpp.views.TextViewBariol
             android:id="@+id/catNameTxt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

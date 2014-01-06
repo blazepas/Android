@@ -15,7 +15,7 @@
             android:layout_weight="1"
             android:gravity="left|center" >
 
-            <pl.mareklatuszek.tpp.views.TextViewBariol
+            <pl.jacek.jablonka.android.tpp.views.TextViewBariol
                 android:id="@+id/nazwaPow"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -33,7 +33,7 @@
             android:background="@color/products_expand_even_bg"
             android:gravity="center" >
 
-            <pl.mareklatuszek.tpp.views.TextViewBariol
+            <pl.jacek.jablonka.android.tpp.views.TextViewBariol
                 android:id="@+id/pozostaloPow"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
