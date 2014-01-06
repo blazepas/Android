@@ -91,6 +91,8 @@
     <string name="dialog_after_validate_btn_edit">Edytuj</string>
     <string name="dialog_after_validate_btn_preview">Podgląd</string>
     
+    <string name="hint_discription">Opis...</string>
+    
     
     <!-- 			fragment kategorie 				-->
    	<string name="frag_kategorie_title">Kategorie</string>

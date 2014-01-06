@@ -107,7 +107,7 @@
             <pl.jacek.jablonka.android.tpp.views.EditTextBariol
                 android:id="@+id/dataZuzTextBox"
                 android:layout_width="150dp"
-                android:layout_height="36dp"
+                android:layout_height="@dimen/editbox_height"
                 android:layout_marginLeft="5dp"
                 android:background="@drawable/edittext_back"
                 android:editable="false"
@@ -128,19 +128,24 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
+            android:layout_marginBottom="35dp"
+            android:layout_marginLeft="25dp"
+            android:layout_marginTop="5dp"
             android:layout_weight="1"
             android:gravity="center"
             android:orientation="horizontal" >
 
             <pl.jacek.jablonka.android.tpp.views.EditTextBariol
                 android:id="@+id/opisTxtBox"
+                style="@style/TPP.Normal.EditTextAppearance"
                 android:layout_width="159dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.50"
                 android:ems="10"
+                android:hint="@string/hint_discription"
                 android:inputType="textMultiLine"
-                android:text="Opis..." />
+              	android:padding="10dp" />
+
         </LinearLayout>
 
     </LinearLayout>
