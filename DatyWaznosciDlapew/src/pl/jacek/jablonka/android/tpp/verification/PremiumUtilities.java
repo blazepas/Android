@@ -145,6 +145,8 @@ public class PremiumUtilities {
 
     }
 	
+	
+	
 	public boolean isServerVerificate() {
 		if (!isNetworkOnline()) {
 			return false;
