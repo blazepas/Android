@@ -2,6 +2,7 @@ package pl.jacek.jablonka.android.tpp.utilities;
 
 public interface FinalVariables {
 	
+	public static final String PREMIUM_APP_URI = "pl.jacek.jablonka.android.tpp.premium";
 	public static final String IMAGE_DIRECTORY_NAME = "TPP";
 
 	public static final int DB_VERSION = 2;

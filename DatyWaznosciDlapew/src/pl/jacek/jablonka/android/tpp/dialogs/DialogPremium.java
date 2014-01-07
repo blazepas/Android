@@ -26,7 +26,7 @@ public class DialogPremium extends AlertDialog {
 	}
 
 	private void openInStore() {
-		final String appPackageName = PremiumUtilities.PREMIUM_APP_URI;
+		final String appPackageName = FinalVariables.PREMIUM_APP_URI;
 		try {
 		    context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
 		} catch (android.content.ActivityNotFoundException anfe) {
