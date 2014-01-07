@@ -6,6 +6,7 @@ import pl.jacek.jablonka.android.tpp.utilities.FinalVariables;
 import pl.jacek.jablonka.android.tpp.verification.PremiumUtilities;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -34,6 +35,7 @@ public class AdapterMenu extends BaseAdapter implements FinalVariables{
 		this.icons = icons;
 		this.colors = colors;
 		this.clickedPos = menuPos;
+		inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	}
 
 	@Override
@@ -52,58 +54,73 @@ public class AdapterMenu extends BaseAdapter implements FinalVariables{
 	}
 
 	public View getView(int position, View convertView, ViewGroup parent) {
-		if (convertView == null) {
-			if (position == 0 | position == 1) {
-				return initRowsWithInfo(position);
-			}
-			
-			inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			View itemView = inflater.inflate(R.layout.listview_menu, parent, false);
-			
-			imgIcon = (ImageView) itemView.findViewById(R.id.icon);
-			txtTitle = (TextView) itemView.findViewById(R.id.actionBarTitle);
-			
-			imgIcon.setImageResource(icons.getResourceId(position, R.drawable.collections_cloud));
-			txtTitle.setText(titles[position]);			
-			
-			if (position == clickedPos) {
-				int pressedColor = context.getResources().getColor(R.color.menu_item_pressed);
-				itemView.setBackgroundColor(pressedColor);
-			} else {
-				int backgroundColor = getItemBackgroundColor(position);
-				itemView.setBackgroundColor(backgroundColor);
-			}
-
-			if (position == getCount() - 1) {
-				// premium item
-				
-				ImageView arrow = (ImageView) itemView.findViewById(R.id.arrow);
-				
-				int iconSize = context.getResources().getDimensionPixelSize(R.dimen.menu_icon_premium);
-				int starSize = context.getResources().getDimensionPixelSize(R.dimen.menu_star);
-				
-				imgIcon.getLayoutParams().height = iconSize;
-				imgIcon.getLayoutParams().width = iconSize;
-				arrow.getLayoutParams().height = starSize;
-				arrow.getLayoutParams().width = starSize;
-				arrow.setImageResource(R.drawable.image_star);
-				
-				if(PremiumUtilities.APP_VERSION_PREMIUM) {
-					String title = context.getString(R.string.tv_have_premium);
-					txtTitle.setText(title);
-				}
-			} 
-					
-			return itemView;	
-		} else if (position == clickedPos) {
+		boolean viewIsNull = convertView == null;
+		View vi;
+		
+		if (viewIsNull) {
+			vi = inflater.inflate(R.layout.listview_menu, parent, false);
+			convertView = initNormalRows(vi, position);
+			convertView.setTag(vi);
+			return convertView;	
+		} else if (position == clickedPos & !viewIsNull) {
 			int pressedColor = context.getResources().getColor(R.color.menu_item_pressed);
+			vi = (View) convertView.getTag();
+        	convertView = initNormalRows(vi, position);
 			convertView.setBackgroundColor(pressedColor);
 			return convertView;
 		} else {
-			int backgroundColor = getItemBackgroundColor(position);
+        	int backgroundColor = getItemBackgroundColor(position);
+			vi = (View) convertView.getTag();
+        	convertView = initNormalRows(vi, position);
 			convertView.setBackgroundColor(backgroundColor);
+        	convertView.setTag(vi);
+			
 			return convertView;
 		}
+	}
+	
+	private View initNormalRows(View itemView, int position) {
+		if (position == 0 | position == 1) {
+			return initRowsWithInfo(position);
+		}
+		
+		inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		
+		imgIcon = (ImageView) itemView.findViewById(R.id.icon);
+		txtTitle = (TextView) itemView.findViewById(R.id.actionBarTitle);
+		
+		imgIcon.setImageResource(icons.getResourceId(position, R.drawable.collections_cloud));
+		txtTitle.setText(titles[position]);			
+		
+		if (position == clickedPos) {
+			int pressedColor = context.getResources().getColor(R.color.menu_item_pressed);
+			itemView.setBackgroundColor(pressedColor);
+		} else {
+			int backgroundColor = getItemBackgroundColor(position);
+			itemView.setBackgroundColor(backgroundColor);
+		}
+
+		if (position == getCount() - 1) {
+			// premium item
+			
+			ImageView arrow = (ImageView) itemView.findViewById(R.id.arrow);
+			
+			int iconSize = context.getResources().getDimensionPixelSize(R.dimen.menu_icon_premium);
+			int starSize = context.getResources().getDimensionPixelSize(R.dimen.menu_star);
+			
+			imgIcon.getLayoutParams().height = iconSize;
+			imgIcon.getLayoutParams().width = iconSize;
+			arrow.getLayoutParams().height = starSize;
+			arrow.getLayoutParams().width = starSize;
+			arrow.setImageResource(R.drawable.image_star);
+			
+			if(PremiumUtilities.APP_VERSION_PREMIUM) {
+				String title = context.getString(R.string.tv_have_premium);
+				txtTitle.setText(title);
+			}
+		} 
+				
+		return itemView;	
 	}
 	
 	private View initRowsWithInfo(int position){

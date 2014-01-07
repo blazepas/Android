@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.util.Log;
 
 public class PremiumUtilities {
 	
@@ -172,21 +173,17 @@ public class PremiumUtilities {
         	installerName = pm.getInstallerPackageName(PREMIUM_APP_URI);
         }
         catch (Exception e) {
-        	
         	return false;
         }
         
         if (installerName != null) {
         	
         	if (installerName.equals("com.android.vending")) {
-        		
         		return true;       		
         	} else {
-        		
         		return false;      		
         	}          	
         } else {
-        	
         	return false;
         }
 	}

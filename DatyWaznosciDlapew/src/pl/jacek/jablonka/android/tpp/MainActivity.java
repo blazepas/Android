@@ -84,6 +84,7 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
             	//TODO
             }
     	}
+    	new InitPremiumStatus(this, menuList).execute();
     }
 
 	@Override
@@ -103,7 +104,6 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
 			menuPos = savedInstanceState.getInt("menuPos");
 			initMenu();
 		}		
-		new InitPremiumStatus(this, menuList).execute();
 	}
 	
 	@Override
