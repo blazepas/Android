@@ -418,7 +418,7 @@ public class FragmentProdukt extends SherlockFragment implements FinalVariables,
 			return text;
 		} else {
 			String forTime = getString(R.string.date_for);
-			return forTime + text;
+			return forTime + " " + text;
 		}
 	}
 }

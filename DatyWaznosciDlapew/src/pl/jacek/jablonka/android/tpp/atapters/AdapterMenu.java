@@ -67,6 +67,7 @@ public class AdapterMenu extends BaseAdapter implements FinalVariables{
 			vi = (View) convertView.getTag();
         	convertView = initNormalRows(vi, position);
 			convertView.setBackgroundColor(pressedColor);
+			convertView.setTag(vi);
 			return convertView;
 		} else {
         	int backgroundColor = getItemBackgroundColor(position);
@@ -74,7 +75,6 @@ public class AdapterMenu extends BaseAdapter implements FinalVariables{
         	convertView = initNormalRows(vi, position);
 			convertView.setBackgroundColor(backgroundColor);
         	convertView.setTag(vi);
-			
 			return convertView;
 		}
 	}
