@@ -32,7 +32,6 @@ public class InitPremiumStatus extends AsyncTask<Void, Void, Void> {
 		} else {
 			isTrial = premUtils.isTrial(currentTime);
 		}
-		
 
 		return null;
 	}
