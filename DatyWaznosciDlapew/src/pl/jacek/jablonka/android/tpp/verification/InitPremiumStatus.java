@@ -1,9 +1,14 @@
 package pl.jacek.jablonka.android.tpp.verification;
 
+import pl.jacek.jablonka.android.tpp.R;
 import pl.jacek.jablonka.android.tpp.atapters.AdapterMenu;
 import android.app.Activity;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 
 public class InitPremiumStatus extends AsyncTask<Void, Void, Void> {
 	private boolean isTrial = false;
@@ -13,11 +18,11 @@ public class InitPremiumStatus extends AsyncTask<Void, Void, Void> {
 	private boolean isFirstRun = false;
 	
 	private PremiumUtilities premUtils;
-	AdapterMenu menuAdapter;
+	private ListView menuList;
 	
-	public InitPremiumStatus(Activity mActivity, AdapterMenu menuAdapter) {
+	public InitPremiumStatus(Activity mActivity, ListView menuList) {
 		premUtils = new PremiumUtilities(mActivity);
-		this.menuAdapter = menuAdapter;
+		this.menuList = menuList;
 	}
 
 	@Override
@@ -73,7 +78,19 @@ public class InitPremiumStatus extends AsyncTask<Void, Void, Void> {
 			PremiumUtilities.APP_VERSION_PREMIUM = false;
 			PremiumUtilities.APP_VERSION_NONE = true;
 		}
-		
+
+		changeMenu();
+	}
+	
+	private void changeMenu() {
+		AdapterMenu menuAdapter = (AdapterMenu) menuList.getAdapter();
 		menuAdapter.notifyDataSetChanged();
+		
+		if (isPremium) {
+			LinearLayout parent = (LinearLayout) menuList.getParent();
+			ImageView premium = (ImageView) parent.findViewById(R.id.premiumLogo);
+			premium.setVisibility(View.VISIBLE);
+		}
+		
 	}
 }
