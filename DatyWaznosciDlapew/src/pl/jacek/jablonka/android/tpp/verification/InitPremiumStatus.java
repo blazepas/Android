@@ -28,7 +28,7 @@ public class InitPremiumStatus extends AsyncTask<Void, Void, Void> {
 		isPremium = premUtils.isPremium(currentTime);
 		
 		if (isPremium) {
-//			checkVerification();
+			premUtils.checkVerification();
 		} else {
 			isTrial = premUtils.isTrial(currentTime);
 		}

@@ -21,6 +21,7 @@ public class PremiumUtilities {
 	public static final String PREFERENCES_END_PREMIUM = "endPremium";
 	public static final String PREFERENCES_INSTALL_DATE = "installDate";
 	public static final String PREFERENCES_PREMIUM_INSTALL_DATE = "premiumInstallDate";
+	public static final String PREFERENCES_IS_VERIFICATED = "isVerificated";
 	
 	public static final long PEROID_TRIAL = 2592000000L; // 30 dni  // milisekundy
 	public static final long PEROID_PREMIUM = 31536000000L; // 1 rok
@@ -59,8 +60,7 @@ public class PremiumUtilities {
 		return installDate;
 	}
 	
-
-	public boolean isServerVerificate() {
+	public boolean isVerificatdOnServer() {
 		if (!isNetworkOnline()) {
 			return false;
 		} else {
@@ -200,5 +200,16 @@ public class PremiumUtilities {
         catch (PackageManager.NameNotFoundException e) {
                 return false;
         }
+	}
+	
+	public void checkVerification() {
+		boolean isVerificated = preferences.getBoolean(PREFERENCES_IS_VERIFICATED, false);
+		if (!isVerificated) {
+			isVerificated = isVerificatdOnServer();
+			
+			SharedPreferences.Editor editor = preferences.edit();
+			editor.putBoolean(PREFERENCES_IS_VERIFICATED, isVerificated);
+			editor.commit();
+		}
 	}
 }
