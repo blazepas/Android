@@ -5,7 +5,10 @@ import pl.jacek.jablonka.android.tpp.TPPApp;
 import pl.jacek.jablonka.android.tpp.dialogs.DialogRegulamin;
 import pl.jacek.jablonka.android.tpp.utilities.CommonUtilities;
 import pl.jacek.jablonka.android.tpp.utilities.FinalVariables;
+import pl.jacek.jablonka.android.tpp.verification.PremiumUtilities;
 import pl.jacek.jablonka.android.tpp.views.TextViewBariol;
+import android.app.Activity;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.text.Html;
@@ -23,7 +26,7 @@ public class FragmentOAplikacji extends SherlockFragment implements FinalVariabl
 	CommonUtilities utilities = TPPApp.getUtilities();
 	
 	View rootView;
-	TextViewBariol versionTxt, regulaminTxt;
+	TextViewBariol versionTxt, versionTypeTxt, regulaminTxt;
 
 
 	@Override
@@ -39,9 +42,11 @@ public class FragmentOAplikacji extends SherlockFragment implements FinalVariabl
 		rootView = inflater.inflate(R.layout.fragment_o_aplikacji, container, false);
 		
 		versionTxt = (TextViewBariol) rootView.findViewById(R.id.versionTxt);
+		versionTypeTxt = (TextViewBariol) rootView.findViewById(R.id.versionTypeTxt);
 		regulaminTxt = (TextViewBariol) rootView.findViewById(R.id.regulaminTxt);
 		
 		versionTxt.setText(getAppVersion());
+		versionTypeTxt.setText(getVersionType());
 		regulaminTxt.setText(getRegulationsTxt());
 		
 		regulaminTxt.setOnClickListener(new OnClickListener() {
@@ -75,9 +80,47 @@ public class FragmentOAplikacji extends SherlockFragment implements FinalVariabl
 		return Html.fromHtml(regulations);
 	}
 	
+	private String getVersionType() {
+		SharedPreferences preferences;
+		preferences = getActivity()
+				.getSharedPreferences(PremiumUtilities.PREFERENCES_PREMIUM, Activity.MODE_PRIVATE);
+		
+		long installDate = preferences.getLong(PremiumUtilities.PREFERENCES_INSTALL_DATE, 0);
+		long currentDate = System.currentTimeMillis();
+		String versionType = "";
+		String days = getString(R.string.tv_days);
+				
+		if (PremiumUtilities.APP_VERSION_TRIAL) {
+					
+			long endTrialDate = installDate + PremiumUtilities.PEROID_TRIAL;			
+			long difference = endTrialDate - currentDate;
+			int daysCount = (int) (difference / 86400000L); // dni
+			
+			String endDate = utilities.parseMillisToDate(endTrialDate);
+			String versionLeft = getString(R.string.tv_version_trial_left);			
+
+			versionType = versionLeft + " " + daysCount + " " + days + " (" + endDate + ")";
+			
+		} else if (PremiumUtilities.APP_VERSION_PREMIUM) {
+			
+			long endPremiumDate = installDate + PremiumUtilities.PEROID_PREMIUM;
+			long difference = endPremiumDate - currentDate;
+			int daysCount = (int) (difference / 86400000L); // dni
+			
+			String endDate = utilities.parseMillisToDate(endPremiumDate);
+			String versionLeft = getString(R.string.tv_version_premium_left);
+
+			versionType = versionLeft + " " + daysCount + " " + days + " (" + endDate + ")";
+		} else {
+			String versionLeft = getString(R.string.tv_version_non_left);
+			versionType = versionLeft;
+		}
+		
+		return versionType;
+	}
+	
 	private void showRegulations() {
 		DialogRegulamin dialog = new DialogRegulamin(getActivity());
 		dialog.show();
-	}
-	
+	}	
 }

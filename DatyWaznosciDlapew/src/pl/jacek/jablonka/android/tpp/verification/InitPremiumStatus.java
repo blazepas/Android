@@ -13,9 +13,6 @@ import android.widget.ListView;
 public class InitPremiumStatus extends AsyncTask<Void, Void, Void> {
 	private boolean isTrial = false;
 	private boolean isPremium = false;
-	private boolean isPremiumInstalled = false;
-	private boolean isVerificated = false;
-	private boolean isFirstRun = false;
 	
 	private PremiumUtilities premUtils;
 	private ListView menuList;
@@ -27,34 +24,15 @@ public class InitPremiumStatus extends AsyncTask<Void, Void, Void> {
 
 	@Override
 	protected Void doInBackground(Void... params) {
+		long currentTime = System.currentTimeMillis();		
+		isPremium = premUtils.isPremium(currentTime);
 		
-		isPremium = premUtils.isPremium();
 		if (isPremium) {
-			isVerificated = premUtils.isVerificated();			
-			if (!isVerificated) {
-				isVerificated = premUtils.isServerVerificate();
-				premUtils.setVerificated(isVerificated);
-			}
+//			checkVerification();
 		} else {
-			isPremiumInstalled = premUtils.isPremiumInstalled();
-			if(isPremiumInstalled) {
-				premUtils.setPremium();
-				isPremium = true;
-				isTrial = false;
-				isVerificated = premUtils.isServerVerificate();
-				premUtils.setVerificated(isVerificated);
-			} else {
-				//TODO sprawdzać czy nie jest zarejestrowany na serwerze
-				isFirstRun = premUtils.isFirstRun();
-				if (isFirstRun) {
-					premUtils.setFirstRunFalse();
-					premUtils.setTrial();
-					isTrial = true;
-				} else {
-					isTrial = premUtils.isTrial();
-				}
-			}
+			isTrial = premUtils.isTrial(currentTime);
 		}
+		
 
 		return null;
 	}
@@ -81,7 +59,7 @@ public class InitPremiumStatus extends AsyncTask<Void, Void, Void> {
 
 		changeMenu();
 	}
-	
+
 	private void changeMenu() {
 		AdapterMenu menuAdapter = (AdapterMenu) menuList.getAdapter();
 		menuAdapter.notifyDataSetChanged();

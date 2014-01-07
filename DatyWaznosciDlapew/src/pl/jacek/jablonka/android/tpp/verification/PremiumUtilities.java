@@ -29,75 +29,91 @@ public class PremiumUtilities {
 	public static boolean APP_VERSION_TRIAL = false;
 	public static boolean APP_VERSION_PREMIUM = false;
 	public static boolean APP_VERSION_NONE = true;
+	
 	public static final String PREMIUM_APP_URI = "pl.jacek.jablonka.android.tpp.premium";
 	public static final String OLD_PREMIUM_APP_URI = "pl.mareklatuszek.tpp.premium";
 	
-	private static final String FIRST_RUN = "isFirstRun";
-	private static final String IS_PREMIUM = "isPremium";
-	private static final String IS_VERIFICATED = "isVerificate";
-	private static final String END_TRIAL_DATE_MILLIS = "endTrialDateMillis";
+	public static final String PREFERENCES_PREMIUM = "premium";
+	public static final String PREFERENCES_END_TRIAL = "endTrial";
+	public static final String PREFERENCES_END_PREMIUM = "endPremium";
+	public static final String PREFERENCES_INSTALL_DATE = "installDate";
+	
+	public static final long PEROID_TRIAL = 2592000000L; // 30 dni  // milisekundy
+	public static final long PEROID_PREMIUM = 31536000000L; // 1 rok
 
 	private Activity mActivity;
 	private SharedPreferences preferences;
 	
 	public PremiumUtilities(Activity mActivity) {
 		this.mActivity = mActivity;
-		this.preferences = mActivity.getSharedPreferences("premium", Activity.MODE_PRIVATE);
+		this.preferences = mActivity.getSharedPreferences(PREFERENCES_PREMIUM, Activity.MODE_PRIVATE);
 	}
-	
-	public void setTrial() {
+		
+	public void setInstallDate() {
+		long installDate = System.currentTimeMillis();
+		
 		SharedPreferences.Editor editor = preferences.edit();
-		
-		long endTrialTime = System.currentTimeMillis() + 2592000000L;
-		editor.putLong(END_TRIAL_DATE_MILLIS, endTrialTime);
+		editor.putLong(PREFERENCES_INSTALL_DATE, installDate);
 		editor.commit();
-	}
-	
-	public void setPremium() {
-		SharedPreferences.Editor editor = preferences.edit();
-		
-		editor.putBoolean(IS_PREMIUM, true);
-		editor.commit();
-	}
-	
-	public void setVerificated(boolean isVerificated) {
-		SharedPreferences.Editor editor = preferences.edit();
-		
-		editor.putBoolean(IS_VERIFICATED, isVerificated);
-		editor.commit();
-	}
-	
-	public void setFirstRunFalse() {
-		SharedPreferences.Editor editor = preferences.edit();
-		
-		editor.putBoolean(FIRST_RUN, false);
-		editor.commit();
-	}
-	
-	public boolean isFirstRun() {
-		boolean isFirstRun = preferences.getBoolean(FIRST_RUN, true);
-		return isFirstRun;
-	}
-	
-	public boolean isTrial() {
-		long endTrialTime = preferences.getLong(END_TRIAL_DATE_MILLIS, 0);
-		long currentTime = System.currentTimeMillis();
-		
-		return currentTime < endTrialTime;
-	}
-	
-	public boolean isPremium() {
-		boolean status = preferences.getBoolean(IS_PREMIUM, false);
-		
-		return status;
-	}
-	
-	public boolean isVerificated() {
-		boolean status = preferences.getBoolean(IS_VERIFICATED, false);
-		
-		return status;
 	}
 
+	public long getInstallDate() {
+		long installDate = preferences.getLong(PREFERENCES_INSTALL_DATE, 0);
+		return installDate;
+	}
+	
+
+	public boolean isServerVerificate() {
+		if (!isNetworkOnline()) {
+			return false;
+		} else {
+			ServletConnection conn = new ServletConnection(mActivity);
+			return conn.verificatePremium();
+		}
+	}
+	
+	public boolean isTrial(long currentTime) {
+		long installDate = getInstallDate();
+		
+		if(installDate == 0) {
+			setInstallDate();
+			return true;
+		} else {
+			long difference = currentTime - installDate;
+			if(difference < PEROID_TRIAL) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+	}
+	
+	public boolean isPremium(long currentTime) {
+		long installDate = getInstallDate();
+		boolean isPremiumInstalled = isPremiumInstalled();
+		
+		if(isPremiumInstalled) {
+			if(installDate == 0) {
+				setInstallDate();
+				return true;
+			} else {
+				long difference = currentTime - installDate;
+				
+				if(difference < PEROID_PREMIUM) {
+					return true;
+				} else {
+					return false;
+				}
+			}
+
+		} else {
+			if(installDate == 0) {
+				setInstallDate();				
+			}
+			return false;
+		}
+	}
+	
 	public boolean isNetworkOnline() {
 	    boolean status = false;
 	    try {
@@ -191,15 +207,4 @@ public class PremiumUtilities {
                 return false;
         }
 	}
-	
-	
-	
-	public boolean isServerVerificate() {
-		if (!isNetworkOnline()) {
-			return false;
-		} else {
-			ServletConnection conn = new ServletConnection(mActivity);
-			return conn.verificatePremium();
-		}
-	}	
 }

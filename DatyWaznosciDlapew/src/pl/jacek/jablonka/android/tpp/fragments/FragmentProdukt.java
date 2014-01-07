@@ -404,7 +404,7 @@ public class FragmentProdukt extends SherlockFragment implements FinalVariables,
 	
 	private void onShare() {
 		if (PremiumUtilities.APP_VERSION_NONE) {
-			String message = getString(R.string.toast_delete_error);
+			String message = getString(R.string.toast_must_have_premium);
   		  	Toast.makeText(getActivity(), message, 2000).show();
   	  	} else {
   	  		DialogShare dialogShare = new DialogShare(getActivity(), product);

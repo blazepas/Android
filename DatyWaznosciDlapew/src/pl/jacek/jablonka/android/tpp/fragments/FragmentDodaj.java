@@ -170,19 +170,7 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
     			((MainActivity)getActivity()).startScanner();
     		break;
     	case R.id.generatePopup:
-    		if (checkFormIsFill()) {	
-    			if (PremiumUtilities.APP_VERSION_NONE) {
-        			String message = getString(R.string.toast_must_have_premium);
-          		  	Toast.makeText(getActivity(), message, 2000).show();
-          	  	} else {
-	          	  	Product product = prepareDataToStore();
-					DialogGeneruj dialogGen = new DialogGeneruj(this, product, barcodeImage);
-					dialogGen.show();
-          	  	} 
-    		} else {		
-				String message = getString(R.string.toast_wrong_data_to_generate);
-    			Toast.makeText(getActivity(), message, 1500).show();
-    		}	
+    		getBarcodePopup();
     		break;
     	case R.id.gallery:
     		pickImageFromGallery();
@@ -207,7 +195,7 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 			popUpInfo.showPopUp();
 			break;
 		case R.id.barcodeImage:
-			getBarcodePopup();
+			view.showContextMenu();
 			break;
 		case R.id.dataOtwTxtBox:
         	dialogDatePicker.show();

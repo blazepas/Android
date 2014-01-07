@@ -49,6 +49,7 @@
     <string name="tv_alarms">Przypomnienia</string>
     <string name="tv_buy_premium">Kup wersję premium</string>
     <string name="tv_have_premium">Masz wersję premium</string>
+    <string name="tv_days">dni</string>
     
     <string name="hint_name">NAZWA</string>
     <string name="hint_enter_date">Wprowadź datę</string>
@@ -124,13 +125,20 @@
    	
    	<!-- 			 fragment o aplikacji 		-->
    	<string name="frag_about_title">O aplikacji</string>
+   	
    	<string name="dialog_regulations_title">Regulamin</string>
    	<string name="dialog_regulations_message">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Proin nibh augue, suscipit a, scelerisque sed, lacinia in, mi. Cras vel lorem. Etiam pellentesque aliquet tellus. Phasellus pharetra nulla ac diam.</string>
+   	
    	<string name="tv_version">Wersja</string>
    	<string name="tv_instruction">Instrukcja</string>
    	<string name="tv_discription">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Proin nibh augue, suscipit a, scelerisque sed, lacinia in, mi. Cras vel lorem. Etiam pellentesque aliquet tellus. Phasellus pharetra nulla ac diam.</string>
     <string name="tv_regulations">Regulamin</string>
+    <string name="tv_version_premium_left">Wersja Premium, pozostało</string>
+    <string name="tv_version_trial_left">Wersja Próbna, pozostało</string>
+    <string name="tv_version_non_left">Wersja Darmowa. Kup wersję Premium, aby odblokować dodatkowe funkcje</string>
+    
     <string name="copy_button">Kopiuj</string>
+    
     <string name="toast_copy_regulations">Regulamin został skopiowany</string>
     
     
