@@ -142,7 +142,10 @@ public class PremiumUtilities {
         	
         	return false;
         }
-    }	
+
+    }
+	
+	
 	
 	public boolean isServerVerificate() {
 		if (!isNetworkOnline()) {

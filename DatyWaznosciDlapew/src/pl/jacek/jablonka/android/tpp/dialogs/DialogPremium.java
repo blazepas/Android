@@ -76,6 +76,8 @@ public class DialogPremium extends AlertDialog {
 			public void onClick(DialogInterface dialog, int which) {
 				dismiss();
 			}
-		});		
+		});
+		
 	}
+
 }

@@ -84,4 +84,5 @@ public interface FinalVariables {
 	public static final int SELECTION_EDIT = 7;	
 	public static final int SELECTION_ALARM = 8;
 	public static final int SELECTION_ABOUT = 9;
+
 }
