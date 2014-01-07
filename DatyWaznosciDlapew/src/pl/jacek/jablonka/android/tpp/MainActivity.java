@@ -270,6 +270,12 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
 			selectItemMenu(position);
 			ft.replace(R.id.content_frame, fragmentPrzypomnienia);
 			break;
+		case SELECTION_ALARM:
+			ft.replace(R.id.content_frame, fragmentPrzypomnienie);
+			break;
+		case SELECTION_ABOUT:
+			ft.replace(R.id.content_frame, fragmentOAplikacji);
+			break;
 		case SELECTION_PREMIUM:
 			DialogPremium dialog = new DialogPremium(this);
 			dialog.show();
@@ -280,12 +286,6 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
 			return;
 		case SELECTION_EDIT:
 			ft.replace(R.id.content_frame, fragmentEdytuj);
-			ft.commit();
-			return;
-		case SELECTION_ALARM:
-			ft.replace(R.id.content_frame, fragmentPrzypomnienie);
-		case SELECTION_ABOUT:
-			ft.replace(R.id.content_frame, fragmentOAplikacji);
 			ft.commit();
 			return;
 		}
