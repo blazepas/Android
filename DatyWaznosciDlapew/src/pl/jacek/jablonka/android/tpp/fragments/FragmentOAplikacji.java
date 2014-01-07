@@ -85,13 +85,13 @@ public class FragmentOAplikacji extends SherlockFragment implements FinalVariabl
 		preferences = getActivity()
 				.getSharedPreferences(PremiumUtilities.PREFERENCES_PREMIUM, Activity.MODE_PRIVATE);
 		
-		long installDate = preferences.getLong(PremiumUtilities.PREFERENCES_INSTALL_DATE, 0);
+		
 		long currentDate = System.currentTimeMillis();
 		String versionType = "";
 		String days = getString(R.string.tv_days);
 				
 		if (PremiumUtilities.APP_VERSION_TRIAL) {
-					
+			long installDate = preferences.getLong(PremiumUtilities.PREFERENCES_INSTALL_DATE, 0);		
 			long endTrialDate = installDate + PremiumUtilities.PEROID_TRIAL;			
 			long difference = endTrialDate - currentDate;
 			int daysCount = (int) (difference / 86400000L); // dni
@@ -102,8 +102,8 @@ public class FragmentOAplikacji extends SherlockFragment implements FinalVariabl
 			versionType = versionLeft + " " + daysCount + " " + days + " (" + endDate + ")";
 			
 		} else if (PremiumUtilities.APP_VERSION_PREMIUM) {
-			
-			long endPremiumDate = installDate + PremiumUtilities.PEROID_PREMIUM;
+			long premiumInstallDate = preferences.getLong(PremiumUtilities.PREFERENCES_PREMIUM_INSTALL_DATE, 0);
+			long endPremiumDate = premiumInstallDate + PremiumUtilities.PEROID_PREMIUM;
 			long difference = endPremiumDate - currentDate;
 			int daysCount = (int) (difference / 86400000L); // dni
 			

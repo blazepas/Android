@@ -1,28 +1,11 @@
 package pl.jacek.jablonka.android.tpp.verification;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-
-import pl.jacek.jablonka.android.tpp.utilities.FinalVariables;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.util.Log;
 
 public class PremiumUtilities {
 	
@@ -37,6 +20,7 @@ public class PremiumUtilities {
 	public static final String PREFERENCES_END_TRIAL = "endTrial";
 	public static final String PREFERENCES_END_PREMIUM = "endPremium";
 	public static final String PREFERENCES_INSTALL_DATE = "installDate";
+	public static final String PREFERENCES_PREMIUM_INSTALL_DATE = "premiumInstallDate";
 	
 	public static final long PEROID_TRIAL = 2592000000L; // 30 dni  // milisekundy
 	public static final long PEROID_PREMIUM = 31536000000L; // 1 rok
@@ -56,9 +40,22 @@ public class PremiumUtilities {
 		editor.putLong(PREFERENCES_INSTALL_DATE, installDate);
 		editor.commit();
 	}
+	
+	public void setPremiumInstallDate() {
+		long installDate = System.currentTimeMillis();
+		
+		SharedPreferences.Editor editor = preferences.edit();
+		editor.putLong(PREFERENCES_PREMIUM_INSTALL_DATE, installDate);
+		editor.commit();
+	}
 
 	public long getInstallDate() {
 		long installDate = preferences.getLong(PREFERENCES_INSTALL_DATE, 0);
+		return installDate;
+	}
+	
+	public long getPremiumInstallDate() {
+		long installDate = preferences.getLong(PREFERENCES_PREMIUM_INSTALL_DATE, 0);
 		return installDate;
 	}
 	
@@ -89,29 +86,26 @@ public class PremiumUtilities {
 	}
 	
 	public boolean isPremium(long currentTime) {
-		long installDate = getInstallDate();
+		long premiumIstallDate = getPremiumInstallDate();
 		boolean isPremiumInstalled = isPremiumInstalled();
 		
-		if(isPremiumInstalled) {
-			if(installDate == 0) {
-				setInstallDate();
+		if(premiumIstallDate == 0) {
+			if(isPremiumInstalled) {
+				setPremiumInstallDate();
 				return true;
 			} else {
-				long difference = currentTime - installDate;
-				
-				if(difference < PEROID_PREMIUM) {
-					return true;
-				} else {
-					return false;
-				}
+				return false;
 			}
-
 		} else {
-			if(installDate == 0) {
-				setInstallDate();				
+			long difference = currentTime - premiumIstallDate;
+			
+			if(difference < PEROID_PREMIUM) {
+				return true;
+			} else {
+				return false;
 			}
-			return false;
 		}
+
 	}
 	
 	public boolean isNetworkOnline() {
