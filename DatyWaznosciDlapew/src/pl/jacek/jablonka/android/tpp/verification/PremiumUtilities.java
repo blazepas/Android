@@ -29,6 +29,8 @@ public class PremiumUtilities {
 	public static boolean APP_VERSION_TRIAL = false;
 	public static boolean APP_VERSION_PREMIUM = false;
 	public static boolean APP_VERSION_NONE = true;
+	public static final String PREMIUM_APP_URI = "pl.jacek.jablonka.android.tpp.premium";
+	public static final String OLD_PREMIUM_APP_URI = "pl.mareklatuszek.tpp.premium";
 	
 	private static final String FIRST_RUN = "isFirstRun";
 	private static final String IS_PREMIUM = "isPremium";
@@ -117,12 +119,47 @@ public class PremiumUtilities {
 	} 
 	
 	public boolean isPremiumInstalled() {
-        PackageManager pm = mActivity.getPackageManager();
+//        PackageManager pm = mActivity.getPackageManager();
+//		String installerName = null;
+//		
+//        try {
+//        	
+//        	installerName = pm.getInstallerPackageName(FinalVariables.PREMIUM_APP_URI);
+//        }
+//        catch (Exception e) {
+//        	
+//        	return false;
+//        }
+//        
+//        if (installerName != null) {
+//        	
+//        	if (installerName.equals("com.android.vending")) {
+//        		
+//        		return true;       		
+//        	} else {
+//        		
+//        		return false;      		
+//        	}          	
+//        } else {
+//        	
+//        	return false;
+//        }
+		
+		if (TESTisRealPremiumInstalled()) {
+			return true;
+		} else {
+			return TESTisOlsPremiumInstalled();
+		}
+
+    }
+	
+	private boolean TESTisRealPremiumInstalled() {
+		PackageManager pm = mActivity.getPackageManager();
 		String installerName = null;
 		
         try {
         	
-        	installerName = pm.getInstallerPackageName(FinalVariables.PREMIUM_APP_URI);
+        	installerName = pm.getInstallerPackageName(PREMIUM_APP_URI);
         }
         catch (Exception e) {
         	
@@ -142,8 +179,18 @@ public class PremiumUtilities {
         	
         	return false;
         }
-
-    }
+	}
+	
+	private boolean TESTisOlsPremiumInstalled() {
+		PackageManager pm = mActivity.getPackageManager();
+        try {
+                pm.getPackageInfo(OLD_PREMIUM_APP_URI, PackageManager.GET_ACTIVITIES);
+                return true;
+        }
+        catch (PackageManager.NameNotFoundException e) {
+                return false;
+        }
+	}
 	
 	
 	
