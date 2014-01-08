@@ -12,6 +12,8 @@ import pl.jacek.jablonka.android.tpp.R;
 import pl.jacek.jablonka.android.tpp.TPPApp;
 import pl.jacek.jablonka.android.tpp.atapters.AdapterCustomSpinner;
 import pl.jacek.jablonka.android.tpp.atapters.AdapterDB;
+import pl.jacek.jablonka.android.tpp.camera.MakePhoto;
+import pl.jacek.jablonka.android.tpp.camera.PhotoHandler;
 import pl.jacek.jablonka.android.tpp.dialogs.DialogDatePicker;
 import pl.jacek.jablonka.android.tpp.dialogs.DialogGeneruj;
 import pl.jacek.jablonka.android.tpp.dialogs.DialogKategorie;
@@ -24,10 +26,13 @@ import pl.jacek.jablonka.android.tpp.verification.PremiumUtilities;
 import pl.jacek.jablonka.android.tpp.views.CustomSpinner;
 import pl.jacek.jablonka.android.tpp.views.CustomViewPrzypomnienia;
 import pl.jacek.jablonka.android.tpp.views.EditTextBariol;
+import android.hardware.Camera;
+import android.hardware.Camera.CameraInfo;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
@@ -58,6 +63,7 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 	boolean dodatkoweIsVisible = false;
 	boolean orientationChanged = false;
 	boolean isScanned = false;
+	static boolean isTakingPic = false;
 	String currentDate = "";
 	public String code = "";
 	public String codeFormat = "";
@@ -127,6 +133,17 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 //			// TODO usuwa tylko zdj 
 //			getActivity().getContentResolver().delete(MainActivity.imageUri, null, null);
 //		}
+	}
+	
+	@Override
+	public void onResume() {
+		super.onResume();
+		Uri uri = MainActivity.imageUri;
+		if (isTakingPic & uri != null) {
+			Log.i("onResume", "setImage");
+			setCameraResult(uri);
+			isTakingPic = false;
+		}
 	}
 		
 	@Override
@@ -335,17 +352,11 @@ public class FragmentDodaj extends SherlockFragment implements OnClickListener, 
 		dodatkoweImage.setImageDrawable(backg);
         dodatkowe.setVisibility(View.GONE);
 	}
-		
+
 	public void takePhoto() {	
-		Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        File f = utilities.getImageMediaFile();
-        if (f != null) {
-        	MainActivity.imageUri = Uri.fromFile(f);
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
-            getActivity().startActivityForResult(intent, CAMERA_ADD_RQ_CODE);	
-        } else {
-        	//TODO
-        } 
+		isTakingPic = true;
+		Intent intent = new Intent(getActivity(), MakePhoto.class);
+		startActivity(intent);
     }
 	
 	public void pickImageFromGallery() {

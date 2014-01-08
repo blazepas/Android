@@ -11,6 +11,7 @@ import pl.jacek.jablonka.android.tpp.R;
 import pl.jacek.jablonka.android.tpp.TPPApp;
 import pl.jacek.jablonka.android.tpp.atapters.AdapterCustomSpinner;
 import pl.jacek.jablonka.android.tpp.atapters.AdapterDB;
+import pl.jacek.jablonka.android.tpp.camera.MakePhoto;
 import pl.jacek.jablonka.android.tpp.dialogs.DialogDatePicker;
 import pl.jacek.jablonka.android.tpp.dialogs.DialogGeneruj;
 import pl.jacek.jablonka.android.tpp.dialogs.DialogKategorie;
@@ -57,6 +58,7 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 	boolean dodatkoweIsVisible = false;
 	boolean isScanned = false;
 	boolean orientationChanged = false;
+	static boolean isTakingPic = false;
 	String currentDate = "";
 	public String code = "";
 	public String codeFormat = "";
@@ -70,8 +72,10 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 	AdapterCustomSpinner adapterOkresSpinner, adapterKategorieSpinner;
 	ArrayList<HashMap<String, String>> oldPrzypomnienia = new ArrayList<HashMap<String,String>>();
 	
+	public static ImageView obrazekImage;
+	
 	View rootView;
-	ImageView barcodeImage, obrazekImage, dodatkoweImage, kategroieImage, okresInfoImage, terminWazInfoImage, dataZuzInfoImage;
+	ImageView barcodeImage, dodatkoweImage, kategroieImage, okresInfoImage, terminWazInfoImage, dataZuzInfoImage;
 	EditText nazwaTextBox, okresWazTextBox, opisTxtBox, dataOtwTxtBox, terminWazTextBox, dataZuzTextBox;
 	LinearLayout podstawowe, dodatkowe, latDodatkoweEdit, toggle, zapiszButton;
 	CustomSpinner okresWazDropDown, kategorieDropDown;
@@ -123,6 +127,16 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
 		orientationChanged = false;
 
 		return rootView;
+	}
+	
+	@Override
+	public void onResume() {
+		super.onResume();
+		Uri uri = MainActivity.imageUri;
+		if (isTakingPic & uri != null) {
+			setCameraResult(uri);
+			isTakingPic = false;
+		}
 	}
 		
 	@Override
@@ -314,16 +328,10 @@ public class FragmentEdytuj extends SherlockFragment implements OnClickListener,
         dodatkowe.setVisibility(View.GONE);
 	}
 		
-	public void takePhoto() {        
-		Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        File f = utilities.getImageMediaFile();
-        if (f != null) {
-        	MainActivity.imageUri = Uri.fromFile(f);
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
-            getActivity().startActivityForResult(intent, CAMERA_EDIT_RQ_CODE);	
-        } else {
-        	//TODO
-        }
+	public void takePhoto() {   
+		isTakingPic = true;
+		Intent intent = new Intent(getActivity(), MakePhoto.class);
+		startActivity(intent);
     }
 	
 	public void pickImageFromGallery() {

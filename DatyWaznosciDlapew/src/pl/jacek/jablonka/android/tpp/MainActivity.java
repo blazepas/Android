@@ -4,6 +4,7 @@ import jim.h.common.android.lib.zxing.integrator.IntentIntegrator;
 import jim.h.common.android.lib.zxing.integrator.IntentResult;
 import pl.jacek.jablonka.android.tpp.atapters.AdapterDB;
 import pl.jacek.jablonka.android.tpp.atapters.AdapterMenu;
+import pl.jacek.jablonka.android.tpp.camera.MakePhoto;
 import pl.jacek.jablonka.android.tpp.dialogs.DialogPremium;
 import pl.jacek.jablonka.android.tpp.dialogs.DialogPrzypomnienie;
 import pl.jacek.jablonka.android.tpp.fragments.FragmentDodaj;
@@ -403,19 +404,6 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
 	public void removeFragmentEdytuj() {		
 		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 		ft.remove(fragmentEdytuj).commit();
-	}
-	
-	private void removePrzypomnienie(String productId, String alarmTime) {
-		adapterDb.open();
-		boolean removeStatus = adapterDb.deletePrzypomnienie(productId, alarmTime);
-		adapterDb.close();	
-	}
-	
-	private boolean chcekIfCodeIsInDB(String code) {
-		adapterDb.open();
-		boolean status = adapterDb.chckIfCodeIsInDB(code);
-		adapterDb.close();
-		return status;
 	}
 	
 	private class MenuGestureDetector extends SimpleOnGestureListener {

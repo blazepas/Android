@@ -1,27 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    
-    <!-- 				general 					-->
+
+    <!-- general -->
     <string name="possitive_button">Tak</string>
     <string name="cancel_button">Anuluj</string>
     <string name="close_button">Zamknij</string>
     <string name="generate_button">Generuj</string>
     <string name="save_button">Zapisz</string>
     <string name="ok_button">Ok</string>
-
     <string name="spinner_title_okres">wybierz termin</string>
     <string name="spinner_title_category">wybierz kategorię</string>
     <string name="spinner_title_alarm">wybierz termin</string>
-  
     <string name="dialog_delete_title">Usuwanie</string>
     <string name="dialog_delete_default_message">Czy na pewno usunąć </string>
- 
     <string name="toast_delete_succes">Usunięto</string>
     <string name="toast_delete_error">Usuwanie zakończone niepowodzeniem</string>
     <string name="toast_generate_succes">Kod został wygenerowany!</string>
     <string name="toast_must_have_premium">Aby korzystać z tej funkcji należy wykupic wersję premium</string>
     <string name="toast_empty_category_name">Proszę podać nazwę kategorii</string>
-    <string name="toast_category_is_in_db">Podana kategoria jest już w bazie</string> 
-    
+    <string name="toast_category_is_in_db">Podana kategoria jest już w bazie</string>
     <string name="tv_add_code">DODAJ\nQRCode/\nkod kreskowy</string>
     <string name="tv_add_product">Dodaj produkt</string>
     <string name="tv_validity_date">Termin ważności</string>
@@ -40,7 +37,7 @@
     <string name="tv_validity_peroid">Data ważności</string>
     <string name="tv_category">Kategoria</string>
     <string name="tv_consump_date">Data zurzycia</string>
-    <string name="tv_alarm">Przypomnienie</string>   
+    <string name="tv_alarm">Przypomnienie</string>
     <string name="tv_product_page">Strona\nproduktu</string>
     <string name="tv_scan">Skanowanie produktu</string>
     <string name="tv_own">Własny produkt</string>
@@ -51,138 +48,120 @@
     <string name="tv_have_premium">Masz wersję premium</string>
     <string name="tv_days">dni</string>
     <string name="tv_about">O aplikacji</string>
-    
     <string name="hint_name">NAZWA</string>
     <string name="hint_enter_date">Wprowadź datę</string>
     <string name="hint_durability">np. 2</string>
     <string name="hint_alarm">np. 3</string>
     <string name="hint_enter_category">WPISZ NAZWĘ KATEGORII</string>
-    
-    
-    <!-- 					action bar 				-->
+
+    <!-- action bar -->
     <string name="action_item_share_list">Udostępnij listę</string>
     <string name="action_item_share">Udostępnij</string>
     <string name="action_item_scan">Skanowanie produktu</string>
     <string name="action_item_own_product">Własny produkt</string>
     <string name="action_item_edit">Edytuj</string>
-    <string name="action_item_delete">Usuń</string> 
-    <string name="action_item_about">O aplikacji</string> 
-    
-    
-    <!-- 		   		   context menu 			-->
+    <string name="action_item_delete">Usuń</string>
+    <string name="action_item_about">O aplikacji</string>
+
+    <!-- context menu -->
     <string name="context_generate_code">Generuj kod</string>
     <string name="context_scan_code">Zeskanuj kod</string>
     <string name="context_get_from_gallery">Wybierz z galerii</string>
     <string name="context_take_photo">Zrób zdjęcie</string>
-    
-    
-    <!-- 			fragment dodaj/edytuj			-->
+
+    <!-- fragment dodaj/edytuj -->
     <string name="frag_add_title">Dodaj produkt</string>
     <string name="frag_edit_title">Edycja produktu</string>
-
     <string name="toast_wrong_data_to_generate">Należy podać nazwę i okres ważności</string>
     <string name="toast_create_code_error">Błąd skanowania lub niepoprawny kod</string>
-    <string name="toast_pick_camera_error">Błąd aparatu!</string>
     <string name="toast_empty_product_name">Należy podać nazwę produktu</string>
     <string name="toast_empty_termin_okres">Należy podać termin ważności lub okres trwałości produktu</string>
     <string name="toast_wrong_alarm_value">Proszę wybrać termin przypomnienia</string>
-
-	<string name="dialog_add_db_title">Dodaję</string>
+    <string name="dialog_add_db_title">Dodaję</string>
     <string name="dialog_add_db_message">Dodawanie do bazy</string>
     <string name="dialog_after_validate_message">Produkt o takim kodzie znajduje się już w bazie. Możesz przejść do jego edycji lub do podglądu</string>
     <string name="dialog_after_validate_btn_edit">Edytuj</string>
     <string name="dialog_after_validate_btn_preview">Podgląd</string>
-    
     <string name="hint_discription">Opis...</string>
-    
-    
-    <!-- 			fragment kategorie 				-->
-   	<string name="frag_kategorie_title">Kategorie</string>
-   	
-   	<string name="dialog_delete_kategorie_message">Czy na pewno usunąć ketegorię: </string>
 
-       
-    <!--			 fragment produkt 				-->
+    <!-- fragment kategorie -->
+    <string name="frag_kategorie_title">Kategorie</string>
+    <string name="dialog_delete_kategorie_message">Czy na pewno usunąć ketegorię: </string>
+
+    <!-- fragment produkt -->
     <string name="frag_product_title">Informacje o produkcie</string>
-
     <string name="tv_product_is_scaned">Zeskanowany</string>
     <string name="tv_product_is_own">Własny produkt</string>
-	    
-	    
-    <!-- 			 fragment produkty				-->
-    <string name="frag_products_title">Lista produktów</string>
 
+    <!-- fragment produkty -->
+    <string name="frag_products_title">Lista produktów</string>
     <string name="toast_no_products_to_share">Brak produktów do udostępnienia</string>
-    
-	    
-    <!-- 			 fragment przypomnienia 		-->
-   	<string name="frag_alarms_title">Przypomnienia</string>
-   	<string name="dialog_alarms_title">Przypomnienie</string>
-    
-    	
-    <!-- 			 fragment przypomnienie 		-->
-   	<string name="frag_alarm_title">Przypomnienie</string>
-   	
-   	
-   	<!-- 			 fragment o aplikacji 		-->
-   	<string name="frag_about_title">O aplikacji</string>
-   	
-   	<string name="dialog_regulations_title">Regulamin</string>
-   	<string name="dialog_regulations_message">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Proin nibh augue, suscipit a, scelerisque sed, lacinia in, mi. Cras vel lorem. Etiam pellentesque aliquet tellus. Phasellus pharetra nulla ac diam.</string>
-   	
-   	<string name="tv_version">Wersja</string>
-   	<string name="tv_instruction">Instrukcja</string>
-   	<string name="tv_discription">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Proin nibh augue, suscipit a, scelerisque sed, lacinia in, mi. Cras vel lorem. Etiam pellentesque aliquet tellus. Phasellus pharetra nulla ac diam.</string>
+
+    <!-- fragment przypomnienia -->
+    <string name="frag_alarms_title">Przypomnienia</string>
+    <string name="dialog_alarms_title">Przypomnienie</string>
+
+    <!-- fragment przypomnienie -->
+    <string name="frag_alarm_title">Przypomnienie</string>
+
+    <!-- fragment o aplikacji -->
+    <string name="frag_about_title">O aplikacji</string>
+    <string name="dialog_regulations_title">Regulamin</string>
+    <string name="dialog_regulations_message">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Proin nibh augue, suscipit a, scelerisque sed, lacinia in, mi. Cras vel lorem. Etiam pellentesque aliquet tellus. Phasellus pharetra nulla ac diam.</string>
+    <string name="tv_version">Wersja</string>
+    <string name="tv_instruction">Instrukcja</string>
+    <string name="tv_discription">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Proin nibh augue, suscipit a, scelerisque sed, lacinia in, mi. Cras vel lorem. Etiam pellentesque aliquet tellus. Phasellus pharetra nulla ac diam.</string>
     <string name="tv_regulations">Regulamin</string>
     <string name="tv_version_premium_left">Wersja Premium, pozostało</string>
     <string name="tv_version_trial_left">Wersja Próbna, pozostało</string>
     <string name="tv_version_non">Wersja Darmowa</string>
     <string name="tv_buy_premium_non">Kup wersję premium</string>
     <string name="tv_to_unlock">aby odblokować dodatkowe funkcje</string>
-    
     <string name="copy_button">Kopiuj</string>
-    
     <string name="toast_copy_regulations">Regulamin został skopiowany</string>
-    
-    
+
     <!-- popup info -->
-   	<string name="info_okres">Czas przydatności produktu do użycia/spożycia po otwarciu produktu (data podawana na niektórych opakowaniach) np. 2 miesiące</string>
-   	<string name="info_termin_waznosci">Po tym terminie produkt nie nadaje się do użycia/spożycia jest przeterminowany (data nadrukowana na opakowaniu).</string>
-   	<string name="info_data_zuzycia">Data, w której zawartość produktu została zużyta/spożyta</string>
-   	<string name="info_scan">Umożliwia zeskanowanie kodu z opakowania produktu w celu dodania nowego produktu lub identyfikacji istniejącego</string>
-   	<string name="info_add_own">Dodanie produktu bez kodu na opakowaniu, umożliwia stworzenie własnego kodu na opakowanie</string>
-    
-    	
-    <!-- date -->    	
-   	<string name="date_for">Za </string>
-   	<string name="date_day">Dzień</string> 
-   	<string name="date_week">Tydzień</string> 
-   	<string name="date_month">Miesiąc</string>  
-   	<string name="date_year">Rok</string>
-   
-    	
+    <string name="info_okres">Czas przydatności produktu do użycia/spożycia po otwarciu produktu (data podawana na niektórych opakowaniach) np. 2 miesiące</string>
+    <string name="info_termin_waznosci">Po tym terminie produkt nie nadaje się do użycia/spożycia jest przeterminowany (data nadrukowana na opakowaniu).</string>
+    <string name="info_data_zuzycia">Data, w której zawartość produktu została zużyta/spożyta</string>
+    <string name="info_scan">Umożliwia zeskanowanie kodu z opakowania produktu w celu dodania nowego produktu lub identyfikacji istniejącego</string>
+    <string name="info_add_own">Dodanie produktu bez kodu na opakowaniu, umożliwia stworzenie własnego kodu na opakowanie</string>
+
+    <!-- date -->
+    <string name="date_for">Za </string>
+    <string name="date_day">Dzień</string>
+    <string name="date_week">Tydzień</string>
+    <string name="date_month">Miesiąc</string>
+    <string name="date_year">Rok</string>
+
     <!-- dialog share -->
     <string name="dialog_share_title_products">Wyślij listę produktów</string>
     <string name="dialog_share_title_product">Udostępnij produkt</string>
     <string name="dialog_share_toast_sending">Wysyłanie...</string>
     <string name="dialog_share_toast_succes">Wysłano!</string>
     <string name="dialog_share_toast_error">Nie wysłano!</string>
-    
-    
+
     <!-- dialog premium -->
     <string name="dialog_non_premium_title">Pobieranie wersji premium</string>
     <string name="dialog_non_premium_message">Czy chcesz przejść teraz do sklepu?</string>
     <string name="dialog_premium_title">Masz wersję premium</string>
     <string name="dialog_premium_message">Posiadasz zainstalowaną wersję premium</string>
-    
-    
+
     <!-- notification -->
     <string name="message_product">Produkt</string>
     <string name="message_passes_for">przydatność mija za</string>
-   
-
     <string name="app_name">Termin Przydatności Produktów - TPP</string>
     <string name="menu_settings">Ustawienia</string>
     <string name="crash_toast_text">Wysyłanie logów</string>
+    <string name="title_activity_make_photo">MakePhoto</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+    
+    <!-- camera -->
+    <string name="toast_pick_camera_error">Błąd aparatu!</string>
+    <string name="toast_camera_image_saved">Zdjęcie zapisane</string>
+    <string name="toast_camera_image_error">Nieudany zapis zdjęcia!</string>
+    <string name="toast_camera_image_no_dir">Nie można znaleźć folderu zdjęć!</string>
+    <string name="toast_pick_camera_error">Błąd aparatu!</string>
 
 </resources>
