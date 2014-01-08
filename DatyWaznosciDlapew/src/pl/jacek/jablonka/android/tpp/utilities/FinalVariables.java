@@ -73,15 +73,18 @@ public interface FinalVariables {
 	public static final int SWIPE_MAX_OFF_PATH = 250;
 	public static final int SWIPE_THRESHOLD_VELOCITY = 200;
 	
+	// zgodne z pozycjami menu
 	public static final int SELECTION_SCAN = 0;
 	public static final int SELECTION_ADD = 1;
 	public static final int SELECTION_PRODUCTS = 2;
 	public static final int SELECTION_CATEGORIES = 3;
 	public static final int SELECTION_ALARMS = 4;
-	public static final int SELECTION_PREMIUM = 5;
-	public static final int SELECTION_PRODUCT = 6;
-	public static final int SELECTION_EDIT = 7;	
-	public static final int SELECTION_ALARM = 8;
-	public static final int SELECTION_ABOUT = 9;
+	public static final int SELECTION_ABOUT = 5;
+	public static final int SELECTION_PREMIUM = 6;
+	////////////////////////////////////////	
+	public static final int SELECTION_PRODUCT = 7;
+	public static final int SELECTION_EDIT = 8;	
+	public static final int SELECTION_ALARM = 9;
+	
 
 }

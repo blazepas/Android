@@ -50,6 +50,7 @@
     <string name="tv_buy_premium">Kup wersję premium</string>
     <string name="tv_have_premium">Masz wersję premium</string>
     <string name="tv_days">dni</string>
+    <string name="tv_about">O aplikacji</string>
     
     <string name="hint_name">NAZWA</string>
     <string name="hint_enter_date">Wprowadź datę</string>

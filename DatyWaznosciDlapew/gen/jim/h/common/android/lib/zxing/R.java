@@ -19,7 +19,7 @@ public final class R {
 		public static final int zxinglib_viewfinder_mask = 0x7f070004;
 	}
 	public static final class drawable {
-		public static final int zxinglib_icon = 0x7f02009e;
+		public static final int zxinglib_icon = 0x7f02009f;
 	}
 	public static final class id {
 		public static final int zxinglib_auto_focus = 0x7f060005;

@@ -26,6 +26,7 @@
     <color name="menu_item_3_background">#09565f</color>
     <color name="menu_item_4_background">#06363c</color>
     <color name="menu_item_5_background">#052a2f</color>
+    <color name="menu_item_6_background">#032024</color>
 
     <!-- fragment dodaj/edytuj -->
     <color name="new_prod_text_view">@color/dark_text_view</color>

@@ -14,6 +14,7 @@
         <item>@string/tv_product_list</item>
         <item>@string/tv_categories</item>
         <item>@string/tv_alarms</item>
+        <item>@string/tv_about</item>
         <item>@string/tv_buy_premium</item>
     </string-array>
     
@@ -23,6 +24,7 @@
         <item>@drawable/image_list</item>
         <item>@drawable/image_categories</item>
         <item>@drawable/image_alarms</item>
+        <item>@drawable/ic_action_about</item>
         <item>@drawable/image_premium</item>
     </string-array>
     
@@ -33,6 +35,7 @@
         <item>@color/menu_item_3_background</item>
         <item>@color/menu_item_4_background</item>
         <item>@color/menu_item_5_background</item>
+        <item>@color/menu_item_6_background</item>
     </string-array>
     
     <!-- Popup overflow -->
