@@ -2,6 +2,7 @@ package pl.jacek.jablonka.android.tpp.fragments;
 
 import pl.jacek.jablonka.android.tpp.R;
 import pl.jacek.jablonka.android.tpp.TPPApp;
+import pl.jacek.jablonka.android.tpp.dialogs.DialogPremium;
 import pl.jacek.jablonka.android.tpp.dialogs.DialogRegulamin;
 import pl.jacek.jablonka.android.tpp.utilities.CommonUtilities;
 import pl.jacek.jablonka.android.tpp.utilities.FinalVariables;
@@ -21,7 +22,7 @@ import android.view.ViewGroup;
 
 import com.actionbarsherlock.app.SherlockFragment;
 
-public class FragmentOAplikacji extends SherlockFragment implements FinalVariables {
+public class FragmentOAplikacji extends SherlockFragment implements FinalVariables, OnClickListener {
 	
 	CommonUtilities utilities = TPPApp.getUtilities();
 	
@@ -49,16 +50,24 @@ public class FragmentOAplikacji extends SherlockFragment implements FinalVariabl
 		versionTypeTxt.setText(getVersionType());
 		regulaminTxt.setText(getRegulationsTxt());
 		
-		regulaminTxt.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				showRegulations();
-				
-			}
-		});
+		regulaminTxt.setOnClickListener(this);
 			
 		return rootView;
+	}
+	
+
+	@Override
+	public void onClick(View v) {
+		switch (v.getId()) {
+		case R.id.regulaminTxt:
+			showRegulations();
+			break;
+		case R.id.versionTypeTxt:
+			DialogPremium dialog = new DialogPremium(getActivity());
+			dialog.show();
+			break;		
+		}
+		
 	}
 	
 	private String getAppVersion() {
@@ -75,12 +84,13 @@ public class FragmentOAplikacji extends SherlockFragment implements FinalVariabl
 	}
 	
 	private Spanned getRegulationsTxt() {
-		String regulations; 
-		regulations = "<html><body><u>" + getString(R.string.tv_regulations) + "</u></body></html>";
-		return Html.fromHtml(regulations);
+		String hypertext; 
+		String regulations = getString(R.string.tv_regulations);
+		hypertext = "<html><body><u>" + regulations + "</u></body></html>";
+		return Html.fromHtml(hypertext);
 	}
 	
-	private String getVersionType() {
+	private Spanned getVersionType() {
 		SharedPreferences preferences;
 		preferences = getActivity()
 				.getSharedPreferences(PremiumUtilities.PREFERENCES_PREMIUM, Activity.MODE_PRIVATE);
@@ -91,6 +101,7 @@ public class FragmentOAplikacji extends SherlockFragment implements FinalVariabl
 		String days = getString(R.string.tv_days);
 				
 		if (PremiumUtilities.APP_VERSION_TRIAL) {
+			
 			long installDate = preferences.getLong(PremiumUtilities.PREFERENCES_INSTALL_DATE, 0);		
 			long endTrialDate = installDate + PremiumUtilities.PEROID_TRIAL;			
 			long difference = endTrialDate - currentDate;
@@ -100,8 +111,8 @@ public class FragmentOAplikacji extends SherlockFragment implements FinalVariabl
 			String versionLeft = getString(R.string.tv_version_trial_left);			
 
 			versionType = versionLeft + " " + daysCount + " " + days + " (" + endDate + ")";
-			
 		} else if (PremiumUtilities.APP_VERSION_PREMIUM) {
+			
 			long premiumInstallDate = preferences.getLong(PremiumUtilities.PREFERENCES_PREMIUM_INSTALL_DATE, 0);
 			long endPremiumDate = premiumInstallDate + PremiumUtilities.PEROID_PREMIUM;
 			long difference = endPremiumDate - currentDate;
@@ -110,17 +121,22 @@ public class FragmentOAplikacji extends SherlockFragment implements FinalVariabl
 			String endDate = utilities.parseMillisToDate(endPremiumDate);
 			String versionLeft = getString(R.string.tv_version_premium_left);
 
-			versionType = versionLeft + " " + daysCount + " " + days + " (" + endDate + ")";
+			versionType = versionLeft + " " + daysCount + " " + days + " (" + endDate + ")";						
 		} else {
-			String versionLeft = getString(R.string.tv_version_non_left);
-			versionType = versionLeft;
+
+			String versionNon = getString(R.string.tv_version_non);
+			String buyPremium = getString(R.string.tv_buy_premium_non);
+			String toUnlock = getString(R.string.tv_to_unlock);
+			versionType = versionNon + ". " + "<html><body><u>" + buyPremium + "</u></body></html>" + ", " + toUnlock;
+			versionTypeTxt.setOnClickListener(this);
 		}
 		
-		return versionType;
+		return Html.fromHtml(versionType);
 	}
 	
 	private void showRegulations() {
 		DialogRegulamin dialog = new DialogRegulamin(getActivity());
 		dialog.show();
-	}	
+	}
+	
 }

@@ -135,7 +135,9 @@
     <string name="tv_regulations">Regulamin</string>
     <string name="tv_version_premium_left">Wersja Premium, pozostało</string>
     <string name="tv_version_trial_left">Wersja Próbna, pozostało</string>
-    <string name="tv_version_non_left">Wersja Darmowa. Kup wersję Premium, aby odblokować dodatkowe funkcje</string>
+    <string name="tv_version_non">Wersja Darmowa</string>
+    <string name="tv_buy_premium_non">Kup wersję premium</string>
+    <string name="tv_to_unlock">aby odblokować dodatkowe funkcje</string>
     
     <string name="copy_button">Kopiuj</string>
     
