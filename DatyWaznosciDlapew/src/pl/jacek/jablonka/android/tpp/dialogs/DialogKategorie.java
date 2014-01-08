@@ -67,7 +67,7 @@ public class DialogKategorie extends Dialog
 			add();
 			break;
 		case R.id.okButton:
-			dismiss();
+			add();
 			break;	
 		}		
 	}
