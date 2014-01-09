@@ -57,26 +57,23 @@ public class AdapterMenu extends BaseAdapter implements FinalVariables{
 		boolean viewIsNull = convertView == null;
 		View vi;
 		
-		if (viewIsNull) {
-			vi = inflater.inflate(R.layout.listview_menu, parent, false);
+		if (clickedPos == position & !viewIsNull){	        
+	        vi = (View) convertView.getTag();
+	        int pressedColor = context.getResources().getColor(R.color.menu_item_pressed);
+	        convertView.setBackgroundColor(pressedColor);
+
+	        return convertView;
+        } else if (viewIsNull) {
+        	vi = inflater.inflate(R.layout.listview_menu, parent, false);
 			convertView = initNormalRows(vi, position);
 			convertView.setTag(vi);
 			return convertView;	
-		} else if (position == clickedPos & !viewIsNull) {
-			int pressedColor = context.getResources().getColor(R.color.menu_item_pressed);
-			vi = (View) convertView.getTag();
-        	convertView = initNormalRows(vi, position);
-			convertView.setBackgroundColor(pressedColor);
+        } else {
+        	vi = inflater.inflate(R.layout.listview_menu, parent, false);
+			convertView = initNormalRows(vi, position);
 			convertView.setTag(vi);
-			return convertView;
-		} else {
-        	int backgroundColor = getItemBackgroundColor(position);
-			vi = (View) convertView.getTag();
-        	convertView = initNormalRows(vi, position);
-			convertView.setBackgroundColor(backgroundColor);
-        	convertView.setTag(vi);
-			return convertView;
-		}
+			return convertView;	                    
+        }
 	}
 	
 	private View initNormalRows(View itemView, int position) {
