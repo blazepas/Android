@@ -27,11 +27,9 @@ public class InitPremiumStatus extends AsyncTask<Void, Void, Void> {
 		long currentTime = System.currentTimeMillis();		
 		isPremium = premUtils.isPremium(currentTime);
 		
-		if (isPremium) {
-			premUtils.checkVerification();
-		} else {
+		if (!isPremium) {
 			isTrial = premUtils.isTrial(currentTime);
-		}
+		} 
 
 		return null;
 	}
@@ -49,6 +47,7 @@ public class InitPremiumStatus extends AsyncTask<Void, Void, Void> {
 			PremiumUtilities.APP_VERSION_TRIAL = false;
 			PremiumUtilities.APP_VERSION_PREMIUM = true;
 			PremiumUtilities.APP_VERSION_NONE = false;
+			new Verify().execute();
 		} else {
 			Log.i("init version", "trial is over");
 			PremiumUtilities.APP_VERSION_TRIAL = false;
@@ -69,5 +68,14 @@ public class InitPremiumStatus extends AsyncTask<Void, Void, Void> {
 			premium.setVisibility(View.VISIBLE);
 		}
 		
+	}
+	
+	private class Verify extends AsyncTask<Void, Void, Void> {
+
+		@Override
+		protected Void doInBackground(Void... params) {
+			premUtils.checkVerification();
+			return null;
+		}
 	}
 }

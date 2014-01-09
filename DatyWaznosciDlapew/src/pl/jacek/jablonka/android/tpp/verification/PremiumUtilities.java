@@ -202,13 +202,20 @@ public class PremiumUtilities {
 	}
 	
 	public void checkVerification() {
-		boolean isVerificated = preferences.getBoolean(PREFERENCES_IS_VERIFICATED, false);
-		if (!isVerificated) {
-			isVerificated = isVerificatdOnServer();
-			
-			SharedPreferences.Editor editor = preferences.edit();
-			editor.putBoolean(PREFERENCES_IS_VERIFICATED, isVerificated);
-			editor.commit();
-		}
+		// symulacja opóźnienia odpowiedzi z serwera
+        try {
+                Thread.sleep(5000);
+        } catch (InterruptedException e) {
+                e.printStackTrace();
+        }
+        Log.i("init version", "po opoznieniu");
+//		boolean isVerificated = preferences.getBoolean(PREFERENCES_IS_VERIFICATED, false);
+//		if (!isVerificated) {
+//			isVerificated = isVerificatdOnServer();
+//			
+//			SharedPreferences.Editor editor = preferences.edit();
+//			editor.putBoolean(PREFERENCES_IS_VERIFICATED, isVerificated);
+//			editor.commit();
+//		}
 	}
 }
