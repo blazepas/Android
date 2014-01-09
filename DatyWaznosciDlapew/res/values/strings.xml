@@ -77,6 +77,7 @@
     <string name="toast_empty_product_name">Należy podać nazwę produktu</string>
     <string name="toast_empty_termin_okres">Należy podać termin ważności lub okres trwałości produktu</string>
     <string name="toast_wrong_alarm_value">Proszę wybrać termin przypomnienia</string>
+    <string name="toast_alarms_no_premium">Aby dodać przypomnienie musisz posiadać wersję premium</string>
     <string name="dialog_add_db_title">Dodaję</string>
     <string name="dialog_add_db_message">Dodawanie do bazy</string>
     <string name="dialog_after_validate_message">Produkt o takim kodzie znajduje się już w bazie. Możesz przejść do jego edycji lub do podglądu</string>

@@ -17,6 +17,7 @@ import pl.jacek.jablonka.android.tpp.fragments.FragmentPrzypomnienia;
 import pl.jacek.jablonka.android.tpp.fragments.FragmentPrzypomnienie;
 import pl.jacek.jablonka.android.tpp.utilities.FinalVariables;
 import pl.jacek.jablonka.android.tpp.verification.InitPremiumStatus;
+import pl.jacek.jablonka.android.tpp.verification.PremiumUtilities;
 import android.content.Intent;
 import android.content.res.TypedArray;
 import android.net.Uri;
@@ -74,7 +75,8 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
 	
     @Override   
     public void onResume() {
-    	super.onResume();    	
+    	super.onResume(); 
+    	
     	if(notification) {
     		String productId = getIntent().getStringExtra("productId");
             notification = false;

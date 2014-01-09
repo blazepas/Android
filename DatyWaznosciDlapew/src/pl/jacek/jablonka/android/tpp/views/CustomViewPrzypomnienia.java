@@ -3,22 +3,27 @@ package pl.jacek.jablonka.android.tpp.views;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 
 import pl.jacek.jablonka.android.tpp.R;
 import pl.jacek.jablonka.android.tpp.TPPApp;
 import pl.jacek.jablonka.android.tpp.atapters.AdapterCustomSpinner;
 import pl.jacek.jablonka.android.tpp.utilities.CommonUtilities;
 import pl.jacek.jablonka.android.tpp.utilities.FinalVariables;
+import pl.jacek.jablonka.android.tpp.verification.PremiumUtilities;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 public class CustomViewPrzypomnienia extends LinearLayout implements FinalVariables {
 
+	private Context contex;
 	private AdapterCustomSpinner adapter;
 	private LayoutInflater inflater;
 	private CommonUtilities utilities = TPPApp.getUtilities();
@@ -26,11 +31,11 @@ public class CustomViewPrzypomnienia extends LinearLayout implements FinalVariab
 
 	public CustomViewPrzypomnienia(Context context, AttributeSet attrs) {
 		super(context, attrs);
+		this.contex = context;
 		
 		String[] okresSpinnData = getResources().getStringArray(R.array.array_date);
 		adapter = new AdapterCustomSpinner(context, okresSpinnData);
 
-		
 		inflater = LayoutInflater.from(context);
 		spinnerTitle = context.getString(R.string.spinner_title_alarm);
 
@@ -46,6 +51,7 @@ public class CustomViewPrzypomnienia extends LinearLayout implements FinalVariab
 		ImageView buttonImage = (ImageView) row.findViewById(R.id.buttonImage);
 
 		textBox.setId(position);
+		textBox.setOnKeyListener(new EditBoxListener());
 		
 		spinner.setAdapter(adapter);
 		spinner.setText(spinnerTitle);
@@ -65,6 +71,7 @@ public class CustomViewPrzypomnienia extends LinearLayout implements FinalVariab
 		
 		textBox.setId(position);
 		textBox.setText(boxTxt);
+		textBox.setOnKeyListener(new EditBoxListener());
 		
 		spinner.setText(spinnerChoice);
 		spinner.setAdapter(adapter);
@@ -78,20 +85,37 @@ public class CustomViewPrzypomnienia extends LinearLayout implements FinalVariab
 	private class ButtonListener implements OnClickListener {
 		@Override
 		public void onClick(View v) {
-			View currentRow = (View) v.getParent();
-			int pos = indexOfChild(currentRow);
-			int lastPos = getChildCount() - 1;
-			
-			if (pos == lastPos) {
-				initEmptyRow(lastPos + 1);
-				changeBeforeButton(currentRow);
+			if (checkPremium()) {
+				View currentRow = (View) v.getParent();
+				int pos = indexOfChild(currentRow);
+				int lastPos = getChildCount() - 1;
+				
+				if (pos == lastPos) {
+					initEmptyRow(lastPos + 1);
+					changeBeforeButton(currentRow);
 
-			} else {
-				removeView((View) v.getParent());
+				} else {
+					removeView((View) v.getParent());
+				}
 			}
+			
 		}
 	}
+	
+	private class EditBoxListener implements OnKeyListener {
 		
+		@Override
+		public boolean onKey(View v, int keyCode, KeyEvent event) {
+			if (checkPremium()) {
+				v.setEnabled(true);
+			} else {
+				v.setEnabled(false);
+			}
+			return false;
+		}
+		
+	}
+			
 	private void changeBeforeButton(View currentRow) {
 		ImageView beforeButton = (ImageView) currentRow.findViewById(R.id.buttonImage);
 		beforeButton.setImageResource(R.drawable.button_remove_przyp);		
@@ -148,8 +172,17 @@ public class CustomViewPrzypomnienia extends LinearLayout implements FinalVariab
 			}
 			
 		}
-		Log.i("getPrzyp", przypomnienia.size()+"");
+
 		return przypomnienia;
 	}
-
+		
+	private boolean checkPremium() {
+		if (PremiumUtilities.APP_VERSION_NONE) {
+			String message = contex.getString(R.string.toast_alarms_no_premium);
+			Toast.makeText(contex, message, 3000).show();
+			return false;
+		} else {
+			return true;
+		}
+	}
 }

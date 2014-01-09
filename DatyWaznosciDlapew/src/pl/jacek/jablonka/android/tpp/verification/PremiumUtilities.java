@@ -1,5 +1,7 @@
 package pl.jacek.jablonka.android.tpp.verification;
 
+import java.util.concurrent.TimeUnit;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -24,8 +26,8 @@ public class PremiumUtilities {
 	public static final String PREFERENCES_PREMIUM_INSTALL_DATE = "premiumInstallDate";
 	public static final String PREFERENCES_IS_VERIFICATED = "isVerificated";
 	
-	public static final long PEROID_TRIAL = 2592000000L; // 30 dni  // milisekundy
-	public static final long PEROID_PREMIUM = 31536000000L; // 1 rok
+	public static final long PEROID_TRIAL = TimeUnit.MILLISECONDS.convert(30L, TimeUnit.DAYS); // 30 dni  // milisekundy
+	public static final long PEROID_PREMIUM = TimeUnit.MILLISECONDS.convert(365L, TimeUnit.DAYS); // 1 rok
 
 	private Activity mActivity;
 	private SharedPreferences preferences;
