@@ -86,13 +86,13 @@ public class PhotoHandler implements PictureCallback {
 		protected Void doInBackground(Void... params) {
 			Uri uri =  Uri.fromFile(pictureFile);
 			MainActivity.imageUri = uri;
-			String message = mActivity.getString(R.string.toast_camera_image_saved);
-			Toast.makeText(mActivity, message, Toast.LENGTH_LONG).show();
 			return null;
 		}
 		
 		@Override
 		protected void onPostExecute(Void v) {
+			String message = mActivity.getString(R.string.toast_camera_image_saved);
+			Toast.makeText(mActivity, message, Toast.LENGTH_LONG).show();
 			mActivity.finish();
 		}
 	}
