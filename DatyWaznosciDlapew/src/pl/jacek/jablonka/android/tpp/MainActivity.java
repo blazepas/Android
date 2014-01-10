@@ -378,6 +378,27 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
 				
 		return menuFrame;
 	}
+	
+	public void runAds() {
+		FragmentManager fm = getSupportFragmentManager();
+		
+		switch (currentFragmentPos) {
+		case SELECTION_PRODUCTS:
+			FragmentProdukty fragmentProdukty;
+			fragmentProdukty = (FragmentProdukty) fm.findFragmentById(currentFragmentId);
+			if (fragmentProdukty.isVisible()) {
+				fragmentProdukty.initAds();  
+			}
+			break;
+		case SELECTION_CATEGORIES:
+			FragmentKategorie fragmentKategorie;
+			fragmentKategorie = (FragmentKategorie) fm.findFragmentById(currentFragmentId); 
+			if (fragmentKategorie.isVisible()) {
+				fragmentKategorie.initAds();  
+			}
+			break;	
+		}
+	}
 		
 	public void selectFragmentToShowProduct(Product product) {
 		Bundle data = new Bundle();
@@ -427,5 +448,5 @@ public class MainActivity extends SherlockFragmentActivity implements FinalVaria
             }
             return false;
         }
-    }		
+    }	
 }

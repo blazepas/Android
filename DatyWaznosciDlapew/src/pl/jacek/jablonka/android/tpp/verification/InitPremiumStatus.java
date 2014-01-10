@@ -1,5 +1,6 @@
 package pl.jacek.jablonka.android.tpp.verification;
 
+import pl.jacek.jablonka.android.tpp.MainActivity;
 import pl.jacek.jablonka.android.tpp.R;
 import pl.jacek.jablonka.android.tpp.atapters.AdapterMenu;
 import android.app.Activity;
@@ -14,12 +15,14 @@ public class InitPremiumStatus extends AsyncTask<Void, Void, Void> {
 	private boolean isTrial = false;
 	private boolean isPremium = false;
 	
+	Activity mActivity;
 	private PremiumUtilities premUtils;
 	private ListView menuList;
 	
 	public InitPremiumStatus(Activity mActivity, ListView menuList) {
 		premUtils = new PremiumUtilities(mActivity);
 		this.menuList = menuList;
+		this.mActivity = mActivity;
 	}
 
 	@Override
@@ -66,6 +69,8 @@ public class InitPremiumStatus extends AsyncTask<Void, Void, Void> {
 			LinearLayout parent = (LinearLayout) menuList.getParent();
 			ImageView premium = (ImageView) parent.findViewById(R.id.premiumLogo);
 			premium.setVisibility(View.VISIBLE);
+		} else {
+			((MainActivity) mActivity).runAds();
 		}
 		
 	}

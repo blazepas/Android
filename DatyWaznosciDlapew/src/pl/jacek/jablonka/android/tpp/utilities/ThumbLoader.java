@@ -32,6 +32,8 @@ public class ThumbLoader extends AsyncTask<Void, Void, Void> {
 		if (exists) {
 			Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
     	    view.setImageBitmap(myBitmap);    
-		}    	    
+		} else {
+			view.setImageBitmap(null);
+		}
 	}
 }

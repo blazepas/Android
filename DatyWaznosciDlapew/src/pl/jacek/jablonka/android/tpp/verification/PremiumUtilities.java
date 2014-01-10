@@ -14,9 +14,9 @@ public class PremiumUtilities {
 	
 	public static boolean APP_VERSION_TRIAL = false;
 	public static boolean APP_VERSION_PREMIUM = false;
-	public static boolean APP_VERSION_NONE = true;
+	public static boolean APP_VERSION_NONE = false;
 	
-	public static final String PREMIUM_APP_URI = "pl.jacek.jablonka.android.tpp.premium";
+	public static final String PREMIUM_APP_URI = "pl.oneapp.mcatalog";
 	public static final String OLD_PREMIUM_APP_URI = "pl.mareklatuszek.tpp.premium";
 	
 	public static final String PREFERENCES_PREMIUM = "premium";

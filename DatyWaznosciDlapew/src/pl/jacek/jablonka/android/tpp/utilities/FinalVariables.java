@@ -3,6 +3,7 @@ package pl.jacek.jablonka.android.tpp.utilities;
 public interface FinalVariables {
 	
 	public static final String IMAGE_DIRECTORY_NAME = "TPP";
+	public static final String AD_UNIT_ID = "ca-app-pub-1889632998859814/2071461484";
 
 	public static final int DB_VERSION = 2;
 	public static final String DB_DEBUG_TAG = "Product database"; 

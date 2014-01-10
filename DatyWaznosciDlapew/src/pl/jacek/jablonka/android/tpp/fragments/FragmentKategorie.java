@@ -7,6 +7,9 @@ import pl.jacek.jablonka.android.tpp.TPPApp;
 import pl.jacek.jablonka.android.tpp.atapters.AdapterDB;
 import pl.jacek.jablonka.android.tpp.atapters.AdapterKategorie;
 import pl.jacek.jablonka.android.tpp.utilities.CommonUtilities;
+import pl.jacek.jablonka.android.tpp.utilities.FinalVariables;
+import pl.jacek.jablonka.android.tpp.verification.PremiumUtilities;
+import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,13 +19,19 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragment;
+import com.google.ads.AdRequest;
+import com.google.ads.AdSize;
+import com.google.ads.AdView;
 
-public class FragmentKategorie extends SherlockFragment implements OnClickListener {
+public class FragmentKategorie extends SherlockFragment implements OnClickListener {	
+	boolean isAdVisible = false;
 	
+	AdView adView;
 	AdapterDB adapterDb;
 	AdapterKategorie adapterCat;
 	ArrayList<String> categories = new ArrayList<String>();
@@ -35,7 +44,8 @@ public class FragmentKategorie extends SherlockFragment implements OnClickListen
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		rootView = inflater.inflate(R.layout.fragment_kategorie, container, false);
-		
+		isAdVisible = false;
+				
 		CommonUtilities utilities = TPPApp.getUtilities();
 		String title = getString(R.string.frag_kategorie_title);
 		utilities.setActionBarTitle(title, getSherlockActivity());
@@ -57,7 +67,7 @@ public class FragmentKategorie extends SherlockFragment implements OnClickListen
 			break;
 		}
 	}
-		
+			
 	private void add() {
 		String category = categoryTxtBoxKat.getText().toString();
 		if (category.equals("")) {
@@ -94,8 +104,25 @@ public class FragmentKategorie extends SherlockFragment implements OnClickListen
 		protected void onPostExecute(Void v) {
 			adapterCat = new AdapterKategorie(getActivity(), categories, getFragmentManager(), getId());
 			categoryList.setAdapter(adapterCat);
+			initAds();
 		}
 	}
+	
+	public void initAds() { 
+    	if ((PremiumUtilities.APP_VERSION_NONE | PremiumUtilities.APP_VERSION_TRIAL) & !isAdVisible) {
+    		
+    		adView = new AdView(getActivity(), AdSize.BANNER, FinalVariables.AD_UNIT_ID);
+
+    	 	LinearLayout layout = (LinearLayout) rootView;
+    	 	layout.addView(adView);
+    	 	
+    	    AdRequest adRequest = new AdRequest();
+    	    adRequest.addTestDevice(AdRequest.TEST_EMULATOR);
+    	    
+    	    adView.loadAd(adRequest);
+    	    isAdVisible = true;
+    	}
+    }
 	
 	private boolean addCategory(String category) {
 		adapterDb.open();

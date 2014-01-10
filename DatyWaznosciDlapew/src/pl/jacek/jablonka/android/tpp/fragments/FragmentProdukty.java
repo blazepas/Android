@@ -39,11 +39,16 @@ import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.google.ads.AdRequest;
+import com.google.ads.AdSize;
+import com.google.ads.AdView;
 
 public class FragmentProdukty extends SherlockFragment implements FinalVariables, OnClickListener {
 	
 	String spinnerTitle = "";
+	boolean isAdVisible = false;
 	
+	AdView adView;
 	AdapterDB dbAdapter;
 	AdapterProductList listAdapter;
 //	ExpandableListTest listAdapter;
@@ -66,7 +71,8 @@ public class FragmentProdukty extends SherlockFragment implements FinalVariables
 		super.onCreateView(inflater, container, savedInstanceState);
 		setHasOptionsMenu(true);
 		fM = getFragmentManager();
-		
+		isAdVisible = false;
+
 		String title = getString(R.string.frag_products_title);
 		utilities.setActionBarTitle(title, getSherlockActivity());
 		
@@ -82,12 +88,7 @@ public class FragmentProdukty extends SherlockFragment implements FinalVariables
 		
 		return rootView;
 	}
-	
-	@Override
-	public void onResume() {
-		super.onResume();		
-	}
-	
+		
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
 	    android.view.MenuInflater inflater = getActivity().getMenuInflater();
@@ -293,8 +294,25 @@ public class FragmentProdukty extends SherlockFragment implements FinalVariables
 			}
 			
 			new InitSort().execute();// lista kategorii
+			initAds();
 		}
 	}
+    
+    public void initAds() { 
+    	if ((PremiumUtilities.APP_VERSION_NONE | PremiumUtilities.APP_VERSION_TRIAL) & !isAdVisible) {
+    		
+    		adView = new AdView(getActivity(), AdSize.BANNER, AD_UNIT_ID);
+    		
+    		LinearLayout layout = (LinearLayout) rootView;
+        	layout.addView(adView);
+
+    	    AdRequest adRequest = new AdRequest();
+    	    adRequest.addTestDevice(AdRequest.TEST_EMULATOR);
+    	    
+    	    adView.loadAd(adRequest);
+    	    isAdVisible = true;
+    	}
+    }
 
 	private void switchToEditFragment(Product product) {
 		((MainActivity) getActivity()).selectFragmentToEditProduct(product);
