@@ -51,7 +51,6 @@ public class FragmentProdukty extends SherlockFragment implements FinalVariables
 	AdView adView;
 	AdapterDB dbAdapter;
 	AdapterProductList listAdapter;
-//	ExpandableListTest listAdapter;
 	AdapterCustomSpinner adapterKategorieSpinner;
 	ArrayList<Product> products = new ArrayList<Product>();
 	ArrayList<Product> productsTemp = new ArrayList<Product>();
@@ -59,7 +58,6 @@ public class FragmentProdukty extends SherlockFragment implements FinalVariables
 	CommonUtilities utilities = TPPApp.getUtilities();
 	FragmentManager fM;
 	
-//	ExpandableListView productsList;
 	ListView productsList;
 	View rootView;
 	LinearLayout dodajLay, scanLay;
@@ -178,7 +176,6 @@ public class FragmentProdukty extends SherlockFragment implements FinalVariables
 			String choice = (String) view.getTag();
 			products = getSortedList(choice);
 			listAdapter = new AdapterProductList(getActivity(), products, fM, getId(), productsList);
-//			listAdapter = new ExpandableListTest(FragmentProdukty.this, productsList, products);
 			productsList.setAdapter(listAdapter);
 		}		
 	};
@@ -266,7 +263,6 @@ public class FragmentProdukty extends SherlockFragment implements FinalVariables
 		@Override
 		protected void onPreExecute() {
 			productsList = (ListView) rootView.findViewById(R.id.productsList);
-//			productsList = (ExpandableListView) rootView.findViewById(R.id.productsList);
 		}
 
 		@Override
@@ -287,7 +283,6 @@ public class FragmentProdukty extends SherlockFragment implements FinalVariables
 		protected void onPostExecute(Void v) {
 			if (!products.isEmpty()) {
 				listAdapter = new AdapterProductList(getActivity(), products, fM, getId(), productsList);
-//				listAdapter = new ExpandableListTest(FragmentProdukty.this, productsList, products);
 				productsList.setAdapter(listAdapter);
 				
 				registerForContextMenu(productsList);
@@ -333,7 +328,6 @@ public class FragmentProdukty extends SherlockFragment implements FinalVariables
 			removeAlarms(przypomnienia, productId);
 			
 			listAdapter = new AdapterProductList(getActivity(), products, fM, getId(), productsList);
-//			listAdapter = new ExpandableListTest(this, productsList, products);
 			productsList.setAdapter(listAdapter);
 			
 			String message = getString(R.string.toast_delete_succes);
